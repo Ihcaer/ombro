@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>${title}</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&family=Roboto:wght@400..700&display=swap');
+    </style>
+  </head>
+  <body
+    style="
+      margin: 0;
+      color: #000;
+      background-color: #b2b4b8;
+      font-family: 'Roboto', Arial, sans-serif;
+    "
+  >
+    <table width="100%">
+      <tr>
+        <td style="text-align: center">
+          <table
+            style="
+              border-collapse: collapse;
+              margin: 0 auto;
+              width: 100%;
+              max-width: 600px;
+              padding: 10px 15px;
+            "
+          >
+            <tr>
+              <td
+                style="
+                  font-size: 20px;
+                  font-family: 'JetBrains Mono', monospace;
+                  font-weight: 700;
+                  color: #bfbcbc;
+                  background-color: #132943;
+                  padding: 12px 0;
+                  border-radius: 12px 12px 0 0;
+                "
+              >
+                ADMIN PANEL
+              </td>
+            </tr>
+            <tr>
+              <td style="background-color: #fff; padding: 16px">
+                <!-- content -->
+                <table style="text-align: start; width: 100%">
+                  <!-- image -->
+                  <tr>
+                    <td style="text-align: center">
+                      <img
+                        src="./nginx/public-assets/email/undraw_welcome_nk8k.jpg"
+                        alt="test"
+                        style="height: 144px; width: auto"
+                      />
+                    </td>
+                  </tr>
+                  <!-- text -->
+                  <tr>
+                    <td>
+                      <table style="width: 100%; border-collapse: separate; border-spacing: 0 8px">
+                        <tr>
+                          <td style="font-size: 18px; font-weight: 700; margin-bottom: 8px">
+                            Cześć ${name},
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="font-size: 16px">${content}</td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                  <!-- cta button -->
+                  <tr>
+                    <td style="text-align: center">
+                      <a
+                        href="${cta().href}"
+                        style="
+                          background-color: #5191dc;
+                          color: #dde6f9;
+                          border-radius: 8px;
+                          padding: 8px 16px;
+                        "
+                        >${cta().text}</a
+                      >
+                    </td>
+                  </tr>
+                  <!-- additional -->
+                  <tr>
+                    <td></td>
+                  </tr>
+                </table>
+                <!-- end of content -->
+              </td>
+            </tr>
+            <tr>
+              <td
+                style="
+                  border-radius: 0 0 12px 12px;
+                  color: #dadbdd;
+                  background-color: #132943;
+                  padding: 12px 0;
+                "
+              >
+                Wiadomość wysłana automatycznie. Prosimy na nią nie odpowiadać.
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

@@ -16,6 +16,8 @@
     "baseUrl": "./",
     "paths": {
       "@common/*": ["src/common/*"],
+      "@config/*": ["src/config/*"],
+      "@email/*": ["src/email/*"],
       "@prisma/*": ["src/prisma/*"],
       "@url-manager/*": ["src/url-manager/*"],
       "@app/*": ["src/*"]
