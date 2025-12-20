@@ -12,6 +12,9 @@ export class HashService {
    * @return Promise with string hashed value.
    */
   async hash(value: string, saltRounds: number = 12): Promise<string> {
+    if (!(saltRounds >= 4 && saltRounds <= 32)) {
+      throw new Error('Salt rounds must be between 4 and 32');
+    }
     const data = { value, saltRounds };
 
     return this.workerService.runTask<string>(WorkerTask.HASH_DATA, data);

@@ -26,7 +26,7 @@ export class WorkerService implements OnModuleInit, OnModuleDestroy {
   }
 
   async onModuleDestroy() {
-    await this.piscina.close();
+    if (this.piscina) await this.piscina.destroy();
   }
 
   /**
@@ -35,7 +35,7 @@ export class WorkerService implements OnModuleInit, OnModuleDestroy {
    * @param data Data to be passed to the worker.
    * @returns Promise with the result of the task.
    */
-  runTask<T>(taskType: WorkerTask, data: any): Promise<T> {
+  async runTask<T>(taskType: WorkerTask, data: any): Promise<T> {
     const filename = TASK_PATHS[taskType];
     const taskName = taskType;
 

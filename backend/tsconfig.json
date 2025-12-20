@@ -21,6 +21,7 @@
       "@email/*": ["src/email/*"],
       "@prisma/*": ["src/prisma/*"],
       "@url-manager/*": ["src/url-manager/*"],
+      "@generated/*": ["src/generated/*"],
       "@app/*": ["src/*"]
     },
     "incremental": true,

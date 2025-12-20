@@ -1,0 +1,15 @@
+{
+  "$schema": "https://swc.rs/schema.json",
+  "exclude": ["src/generated/prisma-client/.*"],
+  "sourceMaps": true,
+  "jsc": {
+    "parser": {
+      "syntax": "typescript",
+      "decorators": true,
+      "dynamicImport": true
+    },
+    "baseUrl": "./",
+    "transform": { "decoratorMetadata": true }
+  },
+  "minify": false
+}
