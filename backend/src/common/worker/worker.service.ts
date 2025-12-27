@@ -5,23 +5,30 @@ import Piscina from 'piscina';
 
 export enum WorkerTask {
   HASH_DATA = 'hashData',
+  COMPARE_HASH = 'compareHash',
 }
 
 const TASK_PATHS: Record<WorkerTask, string> = {
   [WorkerTask.HASH_DATA]: resolve(__dirname, 'tasks', 'hash', 'hash.worker.js'),
+  [WorkerTask.COMPARE_HASH]: resolve(
+    __dirname,
+    'tasks',
+    'hash',
+    'compare.worker.js',
+  ),
 };
 
 @Injectable()
 export class WorkerService implements OnModuleInit, OnModuleDestroy {
   private piscina: Piscina;
 
-  private readonly minThreads = 1;
-  private readonly maxThreads = availableParallelism();
+  private static readonly MIN_THREADS = 1;
+  private static readonly MAX_THREADS = availableParallelism();
 
   onModuleInit() {
     this.piscina = new Piscina({
-      minThreads: this.minThreads,
-      maxThreads: this.maxThreads,
+      minThreads: WorkerService.MIN_THREADS,
+      maxThreads: WorkerService.MAX_THREADS,
     });
   }
 

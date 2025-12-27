@@ -9,8 +9,8 @@ export class PrismaService
   implements OnModuleInit, OnModuleDestroy
 {
   constructor(private configService: ConfigService) {
-    const dbUrl = configService.get<string>('db.url', { infer: true });
-    const adapter = new PrismaPg({ url: dbUrl });
+    const dbUrl = configService.get<string>('url', { infer: true });
+    const adapter = new PrismaPg({ connectionString: dbUrl });
     super({ adapter });
   }
 

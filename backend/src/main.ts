@@ -1,10 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const port: number = Number(process.env.API_PORT) || 3000;
+  const configService = app.get(ConfigService);
+  const port = configService.get<number>('port', 3000);
 
   // CORS is in the NGINX
 
@@ -14,6 +17,8 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
+  app.use(cookieParser);
 
   await app.listen(port);
   console.log(`Server ready! Listening on: http://localhost:${port}`);

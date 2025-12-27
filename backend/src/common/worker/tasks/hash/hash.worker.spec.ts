@@ -1,10 +1,7 @@
 import * as hashWorker from './hash.worker';
 import { compare } from 'bcrypt';
 
-type HashWorkerFn = (data: {
-  value: string;
-  saltRounds: number;
-}) => Promise<string>;
+type HashWorkerFn = (data: { value: string; saltRounds: number }) => string;
 
 describe('HashWorker', () => {
   let hashFn: HashWorkerFn;
@@ -18,7 +15,7 @@ describe('HashWorker', () => {
     const password = 'test-password';
     const input = { value: password, saltRounds: 4 };
 
-    const result = await hashFn(input);
+    const result = hashFn(input);
 
     expect(result).toBeDefined();
     expect(typeof result).toBe('string');
@@ -27,7 +24,7 @@ describe('HashWorker', () => {
     expect(isCorrect).toBe(true);
   });
 
-  describe('Validation correct saltRound value range', () => {
+  describe('Validation of saltRound value range', () => {
     it.each([
       { salt: 1, shouldThrow: true },
       { salt: 33, shouldThrow: true },

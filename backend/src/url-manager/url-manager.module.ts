@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { PrismaModule } from '@prisma/prisma.module';
+import { PrismaModule } from '@app-prisma/prisma.module';
 import { UrlManagerService } from './service/url-manager.service';
 
 @Module({

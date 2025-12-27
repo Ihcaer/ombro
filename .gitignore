@@ -16,7 +16,7 @@ node_modules
 .env.local
 
 # Prisma
-**/src/prisma/client
+**/prisma-client
 
 # gateway
 **/nginx/ssl/certificates/
@@ -33,3 +33,6 @@ environment.prod.ts
 **/.github/instructions/nx.instructions.md
 vite.config.*.timestamp*
 vitest.config.*.timestamp*
+
+# tests
+coverage

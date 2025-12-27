@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common';
 import { WorkerService } from './worker.service';
-import { HashService } from './tasks/hash/hash.service';
 
 @Module({
-  providers: [WorkerService, HashService],
-  exports: [HashService],
+  providers: [WorkerService],
+  exports: [WorkerService],
 })
 export class WorkerModule {}
