@@ -1,14 +1,6 @@
-import { AuthVerification } from '@generated/prisma-client';
+import { AdminData } from '@auth/types/common.types';
 
 export class LoginResponseDto {
   readonly jwt: string;
-  readonly adminData: {
-    readonly id: number;
-    readonly displayName: string;
-    readonly handleName: string;
-    readonly avatarId: number;
-    readonly privileges: number;
-    readonly verification: AuthVerification;
-    readonly isActivated: boolean;
-  };
+  readonly adminData: AdminData;
 }
