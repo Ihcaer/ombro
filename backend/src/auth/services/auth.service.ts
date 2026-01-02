@@ -35,6 +35,8 @@ export class AuthService {
     );
     if (!admin || !admin.password) throwLoginError();
     if (!admin?.isActivated) throwLoginError('Account is inactive');
+    if (!admin?.handleName && admin?.verification !== 'VERIFIED')
+      throwLoginError('No handle name. Please contact with administrator');
 
     const { password, ...adminWithoutPassword } = admin!;
 

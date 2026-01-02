@@ -79,7 +79,7 @@ describe('AuthService', () => {
       it('should login successfully', async () => {
         const admin = { ...adminInDb } as AdminDto;
         loginCredentials = {
-          identifier: admin.handleName,
+          identifier: admin.handleName!,
           password: admin.password!,
         };
 
@@ -97,7 +97,7 @@ describe('AuthService', () => {
       it('should throw on invalid password', async () => {
         const admin = { ...adminInDb } as AdminDto;
         loginCredentials = {
-          identifier: admin.handleName,
+          identifier: admin.handleName!,
           password: 'wrong-password',
         };
 
@@ -115,7 +115,7 @@ describe('AuthService', () => {
         const admin = { ...adminInDb } as AdminDto;
         Object.assign(admin, { isActivated: false });
         loginCredentials = {
-          identifier: admin.handleName,
+          identifier: admin.handleName!,
           password: admin.password!,
         };
 

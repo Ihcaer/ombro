@@ -6,7 +6,7 @@ export type Identifier = 'email' | 'handleName';
 export type AdminData = {
   readonly id: number;
   readonly displayName: string;
-  readonly handleName: string;
+  readonly handleName: string | null;
   readonly avatarId: number | null;
   readonly privileges: number;
   readonly verification: AuthVerification;
