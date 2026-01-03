@@ -5,7 +5,8 @@ import { ConfigService } from '@nestjs/config';
 
 describe('HashService', () => {
   let service: HashService;
-  let workerService: WorkerService;
+  let workerService: jest.Mocked<WorkerService>;
+  // let configService: jest.Mocked<ConfigService>;
 
   beforeEach(async () => {
     jest.restoreAllMocks();
@@ -27,7 +28,8 @@ describe('HashService', () => {
     }).compile();
 
     service = module.get<HashService>(HashService);
-    workerService = module.get<WorkerService>(WorkerService);
+    workerService = module.get(WorkerService);
+    // configService = module.get(ConfigService);
   });
 
   describe('.hashBcrypt()', () => {
