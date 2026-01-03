@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { UrlManagerRedirectCode as PrismaRedirectCode } from '@prisma/client';
-import { PrismaService } from '@prisma/prisma.service';
+import { UrlManagerRedirectCode as PrismaRedirectCode } from '@generated/prisma-client';
+import { PrismaService } from '@app-prisma/prisma.service';
 import { CreateUrlRedirectDto } from '@url-manager/dto/create-redirect.dto';
 import { GetRedirectDto } from '@url-manager/dto/get-redirect.dto';
 import { RedirectCode } from '@url-manager/enums/redirect-code.enum';

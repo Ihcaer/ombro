@@ -1,0 +1,63 @@
+import { WorkerService, WorkerTask } from '@common/worker/worker.service';
+import { Injectable } from '@nestjs/common';
+import { CompareHashData, HashData } from './hash.types';
+import { createHmac, timingSafeEqual } from 'node:crypto';
+import { ConfigService } from '@nestjs/config';
+
+@Injectable()
+export class HashService {
+  static readonly DEFAULT_SALT_ROUNDS: number = 12;
+
+  constructor(
+    private readonly workerService: WorkerService,
+    private configService: ConfigService,
+  ) {}
+
+  /**
+   * Hashes string value in the working thread.
+   * @param value String value to be hashed.
+   * @param saltRounds Number of salt round that will be done.
+   * @returns Promise with string hashed value.
+   */
+  async hashBcrypt(
+    value: string,
+    saltRounds: number = HashService.DEFAULT_SALT_ROUNDS,
+  ): Promise<string> {
+    if (!(saltRounds >= 4 && saltRounds <= 32)) {
+      throw new Error('Salt rounds must be between 4 and 32');
+    }
+    const data: HashData = { value, saltRounds };
+
+    return this.workerService.runTask<string>(WorkerTask.HASH_DATA, data);
+  }
+
+  /**
+   * Compares given string values in the working thread.
+   * @param comparedValue String value from user to be compared.
+   * @param originalValue String value saved in app to be compared.
+   * @returns Promise with boolean result of comparing.
+   */
+  async compareBcrypt(
+    comparedValue: string,
+    originalValue: string,
+  ): Promise<boolean> {
+    const data: CompareHashData = { comparedValue, originalValue };
+
+    return this.workerService.runTask<boolean>(WorkerTask.COMPARE_HASH, data);
+  }
+
+  compareHash(input: string, hashedValue: string): boolean {
+    const inputHash = this.hash(input);
+
+    const inputBuffer = Buffer.from(inputHash);
+    const hashBuffer = Buffer.from(hashedValue);
+    if (inputBuffer.length !== hashBuffer.length) return false;
+
+    return timingSafeEqual(inputBuffer, hashBuffer);
+  }
+
+  hash(value: string): string {
+    const secret: string = this.configService.get<string>('hashSecret')!;
+    return createHmac('sha256', secret).update(value).digest('hex');
+  }
+}
