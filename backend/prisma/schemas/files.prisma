@@ -32,12 +32,12 @@ model FilesFile {
   createdAt  DateTime        @default(now()) @db.Timestamptz(3)
   updatedAt  DateTime        @updatedAt @db.Timestamptz(3)
 
-  folder                      FilesFolder      @relation(fields: [folderId], references: [id], onDelete: Cascade)
-  usage                       FilesFileUsage[]
-  author                      AuthAdmin?       @relation("AuthorToFile", fields: [authorId], references: [id], onDelete: SetNull)
-  editor                      AuthAdmin?       @relation("EditorToFile", fields: [editedById], references: [id], onDelete: SetNull)
-  usedAsAvatar                AuthAdmin?       @relation("AdminAvatar")
-  usedAsFeaturedBlogPostImage BlogPost[]       @relation("FeaturedImageToBlogPost")
+  folder                  FilesFolder      @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  usage                   FilesFileUsage[]
+  author                  AuthAdmin?       @relation("AuthorToFile", fields: [authorId], references: [id], onDelete: SetNull)
+  editor                  AuthAdmin?       @relation("EditorToFile", fields: [editedById], references: [id], onDelete: SetNull)
+  usedAsAvatar            AuthAdmin?       @relation("AdminAvatar")
+  usedAsHeroBlogPostImage BlogPost[]       @relation("HeroImageToBlogPost")
 
   @@unique([bucketName, objectKey, filename])
   @@index([folderId])
