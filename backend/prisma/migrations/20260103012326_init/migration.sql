@@ -23,7 +23,7 @@ CREATE TYPE "audit"."LogLevel" AS ENUM ('INFO', 'WARN', 'ERROR', 'CRITICAL');
 CREATE TYPE "audit"."Modules" AS ENUM ('URL_MANAGER', 'AUTH', 'AUDIT', 'TEAM', 'FILES', 'BLOG');
 
 -- CreateEnum
-CREATE TYPE "auth"."Verification" AS ENUM ('VERIFIED', 'WAITING', 'NONVERIFIED');
+CREATE TYPE "auth"."Verification" AS ENUM ('VERIFIED', 'WAITING', 'NON_VERIFIED');
 
 -- CreateEnum
 CREATE TYPE "auth"."TokenType" AS ENUM ('REGISTER', 'PASSWORD_RESET');
@@ -73,12 +73,12 @@ CREATE TABLE "audit"."admin_logs" (
 CREATE TABLE "auth"."admins" (
     "id" SERIAL NOT NULL,
     "displayName" TEXT NOT NULL,
-    "handleName" TEXT NOT NULL,
+    "handleName" TEXT,
     "avatarId" INTEGER,
     "email" TEXT NOT NULL,
     "password" TEXT,
     "privileges" INTEGER NOT NULL,
-    "lastLogged" TIMESTAMPTZ(3) NOT NULL,
+    "lastLogged" TIMESTAMPTZ(3),
     "verification" "auth"."Verification" NOT NULL DEFAULT 'WAITING',
     "isActivated" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -119,7 +119,7 @@ CREATE TABLE "blog"."posts" (
     "id" SERIAL NOT NULL,
     "title" TEXT NOT NULL,
     "content" TEXT NOT NULL,
-    "featuredImageId" INTEGER,
+    "heroImageId" INTEGER,
     "modifications" JSONB NOT NULL,
     "categoryId" INTEGER NOT NULL,
     "originalAuthorId" INTEGER,
@@ -355,7 +355,7 @@ ALTER TABLE "blog"."posts" ADD CONSTRAINT "posts_publicAuthorId_fkey" FOREIGN KE
 ALTER TABLE "blog"."posts" ADD CONSTRAINT "posts_editedById_fkey" FOREIGN KEY ("editedById") REFERENCES "auth"."admins"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "blog"."posts" ADD CONSTRAINT "posts_featuredImageId_fkey" FOREIGN KEY ("featuredImageId") REFERENCES "files"."files"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "blog"."posts" ADD CONSTRAINT "posts_heroImageId_fkey" FOREIGN KEY ("heroImageId") REFERENCES "files"."files"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "blog"."categories" ADD CONSTRAINT "categories_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "auth"."admins"("id") ON DELETE SET NULL ON UPDATE CASCADE;

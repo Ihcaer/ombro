@@ -16,7 +16,7 @@ model BlogPost {
   id               Int            @id @default(autoincrement())
   title            String
   content          String
-  featuredImageId  Int?
+  heroImageId      Int?
   modifications    Json
   categoryId       Int
   originalAuthorId Int?
@@ -33,7 +33,7 @@ model BlogPost {
   originalAuthor AuthAdmin?   @relation("OriginalAuthorToBlogPost", fields: [originalAuthorId], references: [id], onDelete: SetNull)
   publicAuthor   AuthAdmin?   @relation("PublicAuthorToBlogPost", fields: [publicAuthorId], references: [id], onDelete: SetNull)
   editor         AuthAdmin?   @relation("EditorToBlogPost", fields: [editedById], references: [id], onDelete: SetNull)
-  featuredImage  FilesFile?   @relation("FeaturedImageToBlogPost", fields: [featuredImageId], references: [id], onDelete: SetNull)
+  heroImage      FilesFile?   @relation("HeroImageToBlogPost", fields: [heroImageId], references: [id], onDelete: SetNull)
 
   @@unique([categoryId, slug])
   @@map("posts")

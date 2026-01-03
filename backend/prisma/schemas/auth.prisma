@@ -3,7 +3,7 @@
 enum AuthVerification {
   VERIFIED
   WAITING
-  NONVERIFIED
+  NON_VERIFIED
 
   @@map("Verification")
   @@schema("auth")
@@ -22,12 +22,12 @@ enum AuthTokenType {
 model AuthAdmin {
   id           Int              @id @default(autoincrement())
   displayName  String
-  handleName   String           @unique
+  handleName   String?          @unique
   avatarId     Int?             @unique
   email        String           @unique
   password     String?
   privileges   Int
-  lastLogged   DateTime         @db.Timestamptz(3)
+  lastLogged   DateTime?        @db.Timestamptz(3)
   verification AuthVerification @default(WAITING)
   isActivated  Boolean          @default(true)
   createdAt    DateTime         @default(now()) @db.Timestamptz(3)
