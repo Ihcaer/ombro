@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UrlManagerService } from './url-manager.service';
-import { PrismaService } from '@prisma/prisma.service';
-
-const mockPrismaService = {
-  urlManagerRedirect: {
-    upsert: jest.fn(),
-  },
-};
+import { PrismaService } from '@app-prisma/prisma.service';
 
 describe('UrlManagerService', () => {
   let service: UrlManagerService;
+
+  const mockPrismaService = {
+    urlManagerRedirect: {
+      upsert: jest.fn(),
+    },
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({

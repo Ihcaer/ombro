@@ -57,7 +57,7 @@ export class HashService {
   }
 
   hash(value: string): string {
-    const secret: string = this.configService.get<string>('hashSecret')!;
+    const secret: string = this.configService.get<string>('server.hashSecret')!;
     return createHmac('sha256', secret).update(value).digest('hex');
   }
 }
