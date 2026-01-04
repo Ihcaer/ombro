@@ -1,11 +1,18 @@
 import { registerAs } from '@nestjs/config';
+import { Expose } from 'class-transformer';
+import { IsNotEmpty, IsString } from 'class-validator';
+import { validateConfig } from './env-config.validator';
 
-export interface MetadataConfig {
+class MetadataConfig {
+  @Expose({ name: 'APP_MAIN_DOMAIN' })
+  @IsString()
+  @IsNotEmpty()
   mainDomain: string;
+
+  @Expose({ name: 'APP_MEDIA_DOMAIN' })
+  @IsString()
+  @IsNotEmpty()
   mediaDomain: string;
 }
 
-export default registerAs('metadata', () => ({
-  mainDomain: process.env.APP_MAIN_DOMAIN as string,
-  mediaDomain: process.env.APP_MEDIA_DOMAIN as string,
-}));
+export default registerAs('metadata', () => validateConfig(MetadataConfig));

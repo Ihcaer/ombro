@@ -1,19 +1,47 @@
 import { registerAs } from '@nestjs/config';
+import { Expose } from 'class-transformer';
+import {
+  IsBoolean,
+  IsEmail,
+  IsNotEmpty,
+  IsNumber,
+  IsPort,
+  IsString,
+} from 'class-validator';
+import { validateConfig } from './env-config.validator';
 
-export interface EmailConfig {
+class EmailConfig {
+  @Expose({ name: 'EMAIL_HOST' })
+  @IsString()
+  @IsNotEmpty()
   host: string;
+
+  @Expose({ name: 'EMAIL_PORT' })
+  @IsNumber()
+  @IsPort()
   port: number;
+
+  @Expose({ name: 'IS_SECURE' })
+  @IsBoolean()
+  @IsNotEmpty()
   isSecure: boolean;
+
+  @Expose({ name: 'EMAIL_SENDER' })
+  @IsString()
+  @IsNotEmpty()
+  @IsEmail()
   sender: string;
+
+  @Expose({ name: 'EMAIL_PASSWORD' })
+  @IsString()
+  @IsNotEmpty()
   password: string;
+
+  @Expose({ name: 'EMAIL_RECIPIENT' })
+  @IsString()
+  @IsNotEmpty()
+  @IsEmail()
   recipient: string;
 }
 
-export default registerAs('email', () => ({
-  host: process.env.EMAIL_HOST as string,
-  port: Number(process.env.EMAIL_PORT),
-  isSecure: process.env.IS_SECURE === 'true',
-  sender: process.env.EMAIL_SENDER as string,
-  password: process.env.EMAIL_PASSWORD as string,
-  recipient: process.env.EMAIL_RECIPIENT as string,
-}));
+export default registerAs('email', () => validateConfig(EmailConfig));

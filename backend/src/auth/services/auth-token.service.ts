@@ -1,15 +1,17 @@
 import { HashService } from '@common/hash/hash.service';
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Inject, Injectable } from '@nestjs/common';
+import type { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { AccessJwtPayload, RefreshJwtPayload } from '../types/jwt.types';
 import { TokenExpirationContext } from '../factories/token-expiration.factory';
+import serverConfig from '@config/server.config';
 
 @Injectable()
 export class AuthTokenService {
   constructor(
+    @Inject(serverConfig.KEY)
+    private readonly serverConf: ConfigType<typeof serverConfig>,
     private jwtService: JwtService,
-    private configService: ConfigService,
     private hashService: HashService,
   ) {}
 
@@ -18,15 +20,8 @@ export class AuthTokenService {
     refreshJwtPayload: RefreshJwtPayload,
     tokensExpiration: TokenExpirationContext,
   ): Promise<{ accessToken: string; refreshToken: string }> {
-    const accessSecret = this.configService.get<string>(
-      'server.jwtAccessSecret',
-    );
-    const refreshSecret = this.configService.get<string>(
-      'server.jwtRefreshSecret',
-    );
-    if (!accessSecret || !refreshSecret) {
-      throw new InternalServerErrorException('JWT secrets missing');
-    }
+    const accessSecret = this.serverConf.jwtAccessSecret;
+    const refreshSecret = this.serverConf.jwtRefreshSecret;
 
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(accessJwtPayload, {

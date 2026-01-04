@@ -1,35 +1,29 @@
-import { EmailConfig } from '@config/email.config';
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Inject, Injectable } from '@nestjs/common';
 import { createTransport, SendMailOptions, Transporter } from 'nodemailer';
 import { EmailOptions } from './templates/emailBase';
 import { OnEvent } from '@nestjs/event-emitter';
 import { AdminAccountActivationTemplate } from './templates/auth/adminCreation.template';
-import { MetadataConfig } from '@config/metadata.config';
+import metadataConfig from '@config/metadata.config';
+import emailConfig from '@config/email.config';
+import type { ConfigType } from '@nestjs/config';
 
 @Injectable()
 export class EmailService {
-  private emailConfig: EmailConfig;
-  private metadataConfig: MetadataConfig;
   private transporter: Transporter;
 
-  constructor(private configService: ConfigService) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    this.emailConfig = this.configService.get<EmailConfig>('email', {
-      infer: true,
-    });
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    this.metadataConfig = this.configService.get<MetadataConfig>('metadata', {
-      infer: true,
-    });
-
+  constructor(
+    @Inject(emailConfig.KEY)
+    private emailConf: ConfigType<typeof emailConfig>,
+    @Inject(metadataConfig.KEY)
+    private metadataConf: ConfigType<typeof metadataConfig>,
+  ) {
     this.transporter = createTransport({
-      host: this.emailConfig.host,
-      port: this.emailConfig.port,
-      secure: this.emailConfig.isSecure,
+      host: emailConf.host,
+      port: emailConf.port,
+      secure: emailConf.isSecure,
       auth: {
-        user: this.emailConfig.sender,
-        pass: this.emailConfig.password,
+        user: emailConf.sender,
+        pass: emailConf.password,
       },
     });
   }
@@ -42,8 +36,8 @@ export class EmailService {
     const adminCreationEmail = new AdminAccountActivationTemplate(
       newAdminData.name,
       slug,
-      this.metadataConfig.mainDomain,
-      this.metadataConfig.mediaDomain,
+      this.metadataConf.mainDomain,
+      this.metadataConf.mediaDomain,
       'https',
     );
     await this.sendEmail(
@@ -54,13 +48,13 @@ export class EmailService {
 
   private async sendEmail(
     template: EmailOptions & { html: string },
-    recipient: string = this.emailConfig.recipient,
+    recipient: string = this.emailConf.recipient,
   ): Promise<void> {
     const defaultFromName = 'Skema Admin Panel';
     const fromName: string = template.from ?? defaultFromName;
 
     const mailOptions: SendMailOptions = {
-      from: `"${fromName}" ${this.emailConfig.sender}`,
+      from: `"${fromName}" ${this.emailConf.sender}`,
       to: recipient,
       subject: template.subject,
       html: template.html,
