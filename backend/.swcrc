@@ -1,6 +1,10 @@
 {
   "$schema": "https://swc.rs/schema.json",
-  "exclude": [],
+  "exclude": [
+    ".*\\.spec\\.ts$",
+    ".*/__mocks__/.*",
+    ".*/generated/prisma-client/.*"
+  ],
   "sourceMaps": true,
   "jsc": {
     "parser": {
@@ -9,7 +13,16 @@
       "dynamicImport": true
     },
     "baseUrl": "./",
-    "transform": { "decoratorMetadata": true }
-  },
-  "minify": false
+    "transform": { "decoratorMetadata": true },
+    "minify": {
+      "compress": {
+        "dead_code": true,
+        "unused": true,
+        "conditionals": true,
+        "evaluate": true
+      },
+      "mangle": false
+    },
+    "target": "es2023"
+  }
 }

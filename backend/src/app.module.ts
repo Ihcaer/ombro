@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import enabledModules from './config/feature-flags.config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { Environment } from '@config/server.config';
+import { Environment } from '@core/config/server.config';
+import enabledModules from '@core/config/feature-flags.config';
 
 @Module({
   imports: [
