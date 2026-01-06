@@ -3,7 +3,7 @@ import { Expose } from 'class-transformer';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { validateConfig } from './env-config.validator';
 
-class MetadataConfig {
+export class MetadataConfig {
   @Expose({ name: 'APP_MAIN_DOMAIN' })
   @IsString()
   @IsNotEmpty()

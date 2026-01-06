@@ -10,7 +10,7 @@ import {
 } from 'class-validator';
 import { validateConfig } from './env-config.validator';
 
-class EmailConfig {
+export class EmailConfig {
   @Expose({ name: 'EMAIL_HOST' })
   @IsString()
   @IsNotEmpty()
@@ -21,7 +21,7 @@ class EmailConfig {
   @IsPort()
   port: number;
 
-  @Expose({ name: 'IS_SECURE' })
+  @Expose({ name: 'EMAIL_IS_SECURE' })
   @IsBoolean()
   @IsNotEmpty()
   isSecure: boolean;

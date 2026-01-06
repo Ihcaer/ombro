@@ -3,7 +3,7 @@ import { Expose } from 'class-transformer';
 import { IsNotEmpty, IsString, IsUrl } from 'class-validator';
 import { validateConfig } from './env-config.validator';
 
-class DbConfig {
+export class DatabaseConfig {
   @Expose({ name: 'POSTGRES_URL' })
   @IsString()
   @IsNotEmpty()
@@ -16,4 +16,4 @@ class DbConfig {
   url: string;
 }
 
-export default registerAs('db', () => validateConfig(DbConfig));
+export default registerAs('db', () => validateConfig(DatabaseConfig));

@@ -1,16 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthTokenService } from './auth-token.service';
 import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
 import { HashService } from '@common/hash/hash.service';
 import { AccessJwtPayload, RefreshJwtPayload } from '@auth/types/jwt.types';
 import { TokenExpirationContext } from '@auth/factories/token-expiration.factory';
-import { InternalServerErrorException } from '@nestjs/common';
+import securityConfig from '@config/security.config';
+import { createSecurityConfigMock } from 'test/mocks/config/security.config.mock';
 
 describe('AuthTokenService', () => {
   let service: AuthTokenService;
   let jwtService: jest.Mocked<JwtService>;
-  let configService: jest.Mocked<ConfigService>;
   // let hashService: jest.Mocked<HashService>;
 
   beforeEach(async () => {
@@ -20,14 +19,13 @@ describe('AuthTokenService', () => {
       providers: [
         AuthTokenService,
         { provide: JwtService, useValue: { signAsync: jest.fn() } },
-        { provide: ConfigService, useValue: { get: jest.fn() } },
+        { provide: securityConfig.KEY, useValue: createSecurityConfigMock() },
         { provide: HashService, useValue: { hash: jest.fn() } },
       ],
     }).compile();
 
     service = module.get<AuthTokenService>(AuthTokenService);
     jwtService = module.get(JwtService);
-    configService = module.get(ConfigService);
     // hashService = module.get(HashService);
   });
 
@@ -65,9 +63,6 @@ describe('AuthTokenService', () => {
     it('should generate tokens successfully', async () => {
       const tokens = { ...jwtTokens };
 
-      configService.get
-        .mockReturnValueOnce('access-secret')
-        .mockReturnValueOnce('refresh-secret');
       jwtService.signAsync
         .mockResolvedValueOnce(tokens.accessToken)
         .mockResolvedValueOnce(tokens.refreshToken);
@@ -79,16 +74,6 @@ describe('AuthTokenService', () => {
           methodPayload.tokensExpiration,
         ),
       ).resolves.toEqual(jwtTokens);
-    });
-
-    it('should throw if jwt secrets are undefined', async () => {
-      await expect(
-        service.generateTokens(
-          methodPayload.accessJwtPayload,
-          methodPayload.refreshJwtPayload,
-          methodPayload.tokensExpiration,
-        ),
-      ).rejects.toThrow(InternalServerErrorException);
     });
   });
 });

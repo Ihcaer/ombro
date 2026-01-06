@@ -4,13 +4,13 @@ import type { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { AccessJwtPayload, RefreshJwtPayload } from '../types/jwt.types';
 import { TokenExpirationContext } from '../factories/token-expiration.factory';
-import serverConfig from '@config/server.config';
+import securityConfig from '@config/security.config';
 
 @Injectable()
 export class AuthTokenService {
   constructor(
-    @Inject(serverConfig.KEY)
-    private readonly serverConf: ConfigType<typeof serverConfig>,
+    @Inject(securityConfig.KEY)
+    private readonly securityConf: ConfigType<typeof securityConfig>,
     private jwtService: JwtService,
     private hashService: HashService,
   ) {}
@@ -20,8 +20,8 @@ export class AuthTokenService {
     refreshJwtPayload: RefreshJwtPayload,
     tokensExpiration: TokenExpirationContext,
   ): Promise<{ accessToken: string; refreshToken: string }> {
-    const accessSecret = this.serverConf.jwtAccessSecret;
-    const refreshSecret = this.serverConf.jwtRefreshSecret;
+    const accessSecret = this.securityConf.jwtAccessSecret;
+    const refreshSecret = this.securityConf.jwtRefreshSecret;
 
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(accessJwtPayload, {

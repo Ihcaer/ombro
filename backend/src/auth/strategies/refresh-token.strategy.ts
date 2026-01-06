@@ -2,7 +2,7 @@ import {
   RefreshJwtPayload,
   RefreshTokenWithAdmin,
 } from '@auth/types/jwt.types';
-import serverConfig from '@config/server.config';
+import securityConfig from '@config/security.config';
 import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
 import type { ConfigType } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
@@ -15,15 +15,15 @@ export class RefreshTokenStrategy extends PassportStrategy(
   'jwt-refresh',
 ) {
   constructor(
-    @Inject(serverConfig.KEY)
-    private readonly serverConf: ConfigType<typeof serverConfig>,
+    @Inject(securityConfig.KEY)
+    private readonly securityConf: ConfigType<typeof securityConfig>,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         (req: Request) => req?.cookies?.['refresh_token'],
       ]),
-      secretOrKey: serverConf.jwtRefreshSecret,
+      secretOrKey: securityConf.jwtRefreshSecret,
       passReqToCallback: true,
     });
   }

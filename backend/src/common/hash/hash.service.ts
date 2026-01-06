@@ -2,8 +2,8 @@ import { WorkerService, WorkerTask } from '@common/worker/worker.service';
 import { Inject, Injectable } from '@nestjs/common';
 import { CompareHashData, HashData } from './hash.types';
 import { createHmac, timingSafeEqual } from 'node:crypto';
-import serverConfig from '@config/server.config';
 import type { ConfigType } from '@nestjs/config';
+import securityConfig from '@config/security.config';
 
 @Injectable()
 export class HashService {
@@ -11,8 +11,8 @@ export class HashService {
 
   constructor(
     private readonly workerService: WorkerService,
-    @Inject(serverConfig.KEY)
-    private readonly serverConf: ConfigType<typeof serverConfig>,
+    @Inject(securityConfig.KEY)
+    private readonly securityConf: ConfigType<typeof securityConfig>,
   ) {}
 
   /**
@@ -59,7 +59,7 @@ export class HashService {
   }
 
   hash(value: string): string {
-    const secret: string = this.serverConf.hashSecret;
+    const secret: string = this.securityConf.hashSecret;
     return createHmac('sha256', secret).update(value).digest('hex');
   }
 }

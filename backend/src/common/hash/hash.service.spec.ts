@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { HashService } from './hash.service';
 import { WorkerService, WorkerTask } from '@common/worker/worker.service';
-import { ConfigService } from '@nestjs/config';
+import securityConfig from '@config/security.config';
+import { createSecurityConfigMock } from 'test/mocks/config/security.config.mock';
 
 describe('HashService', () => {
   let service: HashService;
   let workerService: jest.Mocked<WorkerService>;
-  // let configService: jest.Mocked<ConfigService>;
 
   beforeEach(async () => {
     jest.restoreAllMocks();
@@ -15,21 +15,12 @@ describe('HashService', () => {
       providers: [
         HashService,
         { provide: WorkerService, useValue: { runTask: jest.fn() } },
-        {
-          provide: ConfigService,
-          useValue: {
-            get: jest.fn((key: string) => {
-              if (key === 'server.hashSecret') return 'test_secret';
-              return null;
-            }),
-          },
-        },
+        { provide: securityConfig.KEY, useValue: createSecurityConfigMock() },
       ],
     }).compile();
 
     service = module.get<HashService>(HashService);
     workerService = module.get(WorkerService);
-    // configService = module.get(ConfigService);
   });
 
   describe('.hashBcrypt()', () => {
