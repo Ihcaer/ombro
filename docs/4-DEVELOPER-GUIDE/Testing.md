@@ -14,11 +14,12 @@ We prioritize automated testing to ensure stability across our modular architect
 
 You must run tests within the specific component's repository.
 
-| Service              | Command to Run Tests | Notes                                                                    |
-| :------------------- | :------------------- | :----------------------------------------------------------------------- |
-| **Frontend (Main)**  | `npm run test`       | Uses `TBA` for unit tests on components.                                 |
-| **Frontend (Admin)** | `npm run test:watch` | Uses `Vitest` for unit tests. Use the watch mode for active development. |
-| **Backend**          | `npm run test`       | Uses `Jest` for unit tests.                                              |
+| Service              | Command to Run Tests          | Notes                                                                    |
+| :------------------- | :---------------------------- | :----------------------------------------------------------------------- |
+| **All services**     | `npm run test:all`            | Starts unit tests in all services.                                       |
+| **Frontend (Main)**  | `TBA`                         | Uses `TBA` for unit tests on components.                                 |
+| **Frontend (Admin)** | `npm run test:frontend:admin` | Uses `Vitest` for unit tests. Use the watch mode for active development. |
+| **Backend**          | `npm run test:backend`        | Uses `Jest` for unit tests.                                              |
 
 ## 4.3.3 Coverage Targets
 

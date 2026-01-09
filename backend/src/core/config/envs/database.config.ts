@@ -1,7 +1,7 @@
 import { registerAs } from '@nestjs/config';
 import { Expose } from 'class-transformer';
 import { IsNotEmpty, IsString, IsUrl } from 'class-validator';
-import { validateConfig } from './env-config.validator';
+import { validateConfig } from '../env-config.validator';
 
 export class DatabaseConfig {
   @Expose({ name: 'POSTGRES_URL' })

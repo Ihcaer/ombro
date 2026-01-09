@@ -1,4 +1,4 @@
-import { MetadataConfig } from '@core/config/metadata.config';
+import { MetadataConfig } from '@core/config/envs/metadata.config';
 import { plainToInstance } from 'class-transformer';
 
 type RawMetadataEnv = { APP_MAIN_DOMAIN: string; APP_MEDIA_DOMAIN: string };

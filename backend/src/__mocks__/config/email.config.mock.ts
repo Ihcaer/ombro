@@ -1,4 +1,4 @@
-import { EmailConfig } from '@core/config/email.config';
+import { EmailConfig } from '@core/config/envs/email.config';
 import { plainToInstance } from 'class-transformer';
 
 type RawEmailEnv = {

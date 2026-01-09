@@ -4,8 +4,8 @@ import { EmailOptions } from './templates/emailBase';
 import { OnEvent } from '@nestjs/event-emitter';
 import { AdminAccountActivationTemplate } from './templates/auth/adminCreation.template';
 import type { ConfigType } from '@nestjs/config';
-import emailConfig from '@core/config/email.config';
-import metadataConfig from '@core/config/metadata.config';
+import emailConfig from '@core/config/envs/email.config';
+import metadataConfig from '@core/config/envs/metadata.config';
 
 @Injectable()
 export class EmailService {
@@ -19,7 +19,7 @@ export class EmailService {
   ) {
     this.transporter = createTransport({
       host: emailConf.host,
-      port: emailConf.port,
+      port: Number(emailConf.port),
       secure: emailConf.isSecure,
       auth: {
         user: emailConf.sender,

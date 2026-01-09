@@ -1,7 +1,7 @@
 import { registerAs } from '@nestjs/config';
 import { Expose } from 'class-transformer';
 import { IsEnum, IsNumber, IsPort } from 'class-validator';
-import { validateConfig } from './env-config.validator';
+import { validateConfig } from '../env-config.validator';
 
 export enum Environment {
   Development = 'dev',

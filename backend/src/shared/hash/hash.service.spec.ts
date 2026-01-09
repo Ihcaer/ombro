@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { HashService } from './hash.service';
-import securityConfig from '@core/config/security.config';
 import { WorkerService, WorkerTask } from '@shared/worker/worker.service';
 import { createSecurityConfigMock } from '@mocks/config/security.config.mock';
+import securityConfig from '@core/config/envs/security.config';
 
 describe('HashService', () => {
   let service: HashService;

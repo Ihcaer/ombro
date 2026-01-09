@@ -8,9 +8,9 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { RefreshTokenStrategy } from './strategies/refresh-token.strategy';
 import { AuthTokenService } from './services/auth-token.service';
 import { AuthAdminRepository } from './auth-admin.repository';
-import securityConfig from '@core/config/security.config';
 import { PrismaModule } from '@core/database/prisma/prisma.module';
 import { HashModule } from '@shared/hash/hash.module';
+import securityConfig from '@core/config/envs/security.config';
 
 @Module({
   imports: [
