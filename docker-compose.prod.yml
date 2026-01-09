@@ -5,25 +5,25 @@ services:
 
   minio:
     environment:
-      - MINIO_SERVER_URL: "https://${MAIN_DOMAIN}/s3"
+      MINIO_SERVER_URL: "https://${MAIN_DOMAIN}/s3"
     volumes:
       - minio_data_prod:/data
 
   backend:
     env_file:
-      - ..env.prod
+      - .env
 
   nginx:
     ports:
       - "80:80"
       - "443:443"
     environment:
-      - NGINX_PORT: 443
-      - RATE_LIMIT_ENABLED: "true"
-      - SSL_ENABLED: "true"
-      - SSL_CERT_NAME: "example.crt"
-      - SSL_KEY_NAME: "example.key"
-      - HSTS_MAX_AGE: 31536000
+      NGINX_PORT: 443
+      RATE_LIMIT_ENABLED: "true"
+      SSL_ENABLED: "true"
+      SSL_CERT_NAME: "example.crt"
+      SSL_KEY_NAME: "example.key"
+      HSTS_MAX_AGE: 31536000
 
 volumes:
   postgres_data_prod:

@@ -2,5 +2,5 @@
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "cSpell.words": ["analogjs", "Ihcaer", "primeng", "primeui", "primeuix", "skema"]
+  "cSpell.words": ["analogjs", "Ihcaer", "primeng", "primeui", "primeuix", "skema", "swcrc"]
 }

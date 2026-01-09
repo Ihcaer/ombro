@@ -4,7 +4,6 @@ import {
   IsBoolean,
   IsEmail,
   IsNotEmpty,
-  IsNumber,
   IsPort,
   IsString,
 } from 'class-validator';
@@ -17,9 +16,9 @@ export class EmailConfig {
   host: string;
 
   @Expose({ name: 'EMAIL_PORT' })
-  @IsNumber()
+  @IsString()
   @IsPort()
-  port: number;
+  port: string;
 
   @Expose({ name: 'EMAIL_IS_SECURE' })
   @IsBoolean()

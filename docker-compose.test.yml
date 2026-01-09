@@ -1,13 +1,28 @@
 services:
+  db:
+    profiles: ["e2e", "backend-int"]
+    ports:
+      - "5432:5432"
+  minio:
+    profiles: ["e2e", "backend-int"]
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+
   backend:
     env_file:
-      - ..env.test
+      - ".env.test"
+    profiles: ["e2e"]
+
+  frontend_admin:
+    profiles: ["e2e"]
 
   nginx:
     ports:
       - "5000:80"
     environment:
-      - NGINX_PORT: 80
-      - SSL_ENABLED: "false"
-      - HSTS_MAX_AGE: 60
-      - RATE_LIMIT_ENABLED: "false"
+      NGINX_PORT: 80
+      SSL_ENABLED: "false"
+      HSTS_MAX_AGE: 60
+      RATE_LIMIT_ENABLED: "false"
+    profiles: ["e2e"]
