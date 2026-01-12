@@ -1,4 +1,4 @@
-import { SecurityConfig } from '@core/config/security.config';
+import { SecurityConfig } from '@core/config/envs/security.config';
 import { plainToInstance } from 'class-transformer';
 
 type RawSecurityEnv = {

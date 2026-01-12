@@ -12,7 +12,7 @@ This repository serves as the single source of truth for architecture, setup, AP
 | **2. Installation & Setup** | Step-by-step instructions for setting up the local development environment and dependencies | Developers, New Team Members  |
 | **3. API Reference**        | Detailed documentation for all REST endpoints exposed by the Backend.                       | Frontend Developers, Partners |
 | **4. Developer Guide**      | Guidelines for contribution, testing, and adhering to coding conventions.                   | Developers                    |
-| **5. Troubleshooting**      | Commmon issues, known bugs and solutions encountered during setup or development            | Developers, New Team Members  |
+| **5. Troubleshooting**      | Common issues, known bugs and solutions encountered during setup or development             | Developers, New Team Members  |
 
 ### Get Started
 

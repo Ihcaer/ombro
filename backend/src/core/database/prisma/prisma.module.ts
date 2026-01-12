@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
 import { ConfigModule } from '@nestjs/config';
-import databaseConfig from '@core/config/database.config';
+import databaseConfig from '@core/config/envs/database.config';
 
 @Module({
   imports: [ConfigModule.forFeature(databaseConfig)],

@@ -32,7 +32,7 @@ These issues usually occur during the initial setup phase (when running `docker 
 
 These issues relate to the Reverse Proxy failing to correctly direct traffic.
 
-### A. Symptom: Frontend Displays "404 Not Found" for API Calls
+### A. Error: Frontend Displays "404 Not Found" for API Calls
 
 **Symptom:** The Frontend loads correctly, but all API calls (e.g., to `/api/v1/admins`) fail with a `404 Not Found` error.
 
@@ -43,7 +43,7 @@ These issues relate to the Reverse Proxy failing to correctly direct traffic.
 1.  Check the **DevOps repository's NGINX config file**.
 2.  Ensure you have a `location /api/v1/` block that correctly proxies the request to the internal Docker service name of the backend (e.g., `proxy_pass http://backend:3000;`).
 
-### B. Symptom: Frontend Fails to Load Static Assets
+### B. Error: Frontend Fails to Load Static Assets
 
 **Symptom:** The Main Frontend or Admin Panel loads without CSS or images, and the console shows errors retrieving static files.
 
@@ -66,10 +66,10 @@ These are typical issues when the Backend is running but the logic is flawed.
 
 **Solution:**
 
-1.  Check the **`AUTH_SECRET`** or **`JWT_KEY`** environment variable in your local environment file (used by the Backend). It must exactly match the key used to sign the token.
+1.  Check the **`JWT_ACCESS_SECRET`**, **`JWT_REFRESH_SECRET`** or **`HASH_SECRET`** environment variable in your local environment file (used by the Backend). It must exactly match the key used to sign the token.
 2.  Verify the token format. The token must be preceded by the `Bearer` scheme: `Authorization: Bearer <token>`.
 
-### B. Symptom: Backend Internal Server Error (500)
+### B. Error: Backend Internal Server Error (500)
 
 **Symptom:** The API returns a generic `500 Internal Server Error` message.
 

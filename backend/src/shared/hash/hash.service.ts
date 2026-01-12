@@ -2,8 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CompareHashData, HashData } from './hash.types';
 import { createHmac, timingSafeEqual } from 'node:crypto';
 import type { ConfigType } from '@nestjs/config';
-import securityConfig from '@core/config/security.config';
 import { WorkerService, WorkerTask } from '@shared/worker/worker.service';
+import securityConfig from '@core/config/envs/security.config';
 
 @Injectable()
 export class HashService {

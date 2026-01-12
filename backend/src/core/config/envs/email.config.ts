@@ -7,7 +7,7 @@ import {
   IsPort,
   IsString,
 } from 'class-validator';
-import { validateConfig } from './env-config.validator';
+import { validateConfig } from '../env-config.validator';
 
 export class EmailConfig {
   @Expose({ name: 'EMAIL_HOST' })
@@ -16,7 +16,6 @@ export class EmailConfig {
   host: string;
 
   @Expose({ name: 'EMAIL_PORT' })
-  @IsString()
   @IsPort()
   port: string;
 

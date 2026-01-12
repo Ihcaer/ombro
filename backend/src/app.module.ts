@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { Environment } from '@core/config/server.config';
 import enabledModules from '@core/config/feature-flags.config';
-import { getEnvPath } from '@core/config/get-env-path.util';
+import { getEnvPath } from '@core/config/env-path.util';
+import { Environment } from '@core/config/envs/server.config';
 
 const nodeEnv =
   (process.env.NODE_ENV as Environment) || Environment.Development;

@@ -3,8 +3,8 @@ import type { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { AccessJwtPayload, RefreshJwtPayload } from '../types/jwt.types';
 import { TokenExpirationContext } from '../factories/token-expiration.factory';
-import securityConfig from '@core/config/security.config';
 import { HashService } from '@shared/hash/hash.service';
+import securityConfig from '@core/config/envs/security.config';
 
 @Injectable()
 export class AuthTokenService {

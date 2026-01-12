@@ -1,7 +1,7 @@
 import { registerAs } from '@nestjs/config';
 import { Expose } from 'class-transformer';
 import { IsString, IsNotEmpty } from 'class-validator';
-import { validateConfig } from './env-config.validator';
+import { validateConfig } from '../env-config.validator';
 
 export class SecurityConfig {
   @Expose({ name: 'JWT_ACCESS_SECRET' })

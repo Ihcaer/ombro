@@ -1,7 +1,7 @@
 import { registerAs } from '@nestjs/config';
 import { Expose } from 'class-transformer';
 import { IsNotEmpty, IsString } from 'class-validator';
-import { validateConfig } from './env-config.validator';
+import { validateConfig } from '../env-config.validator';
 
 export class MetadataConfig {
   @Expose({ name: 'APP_MAIN_DOMAIN' })
