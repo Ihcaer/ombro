@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
-import { LoginRequestDto } from '../dto/loginRequest.dto';
-import { AdminDto } from '../dto/admin.dto';
-import { AuthTokenService } from './auth-token.service';
+import { LoginRequestDto } from '../../dto/loginRequest.dto';
+import { AdminDto } from '../../dto/admin.dto';
+import { AuthTokenService } from '../auth-token/auth-token.service';
 import { UnauthorizedException } from '@nestjs/common';
 import { HashService } from '@shared/hash/hash.service';
-import { AuthAdminRepository } from '../auth-admin.repository';
+import { AuthAdminRepository } from '../../auth-admin.repository';
 
 describe('AuthService', () => {
   let service: AuthService;

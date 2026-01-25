@@ -2,8 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthTokenService } from './auth-token.service';
 import { JwtService } from '@nestjs/jwt';
 import { HashService } from '@shared/hash/hash.service';
-import { TokenExpirationContext } from '../factories/token-expiration.factory';
-import { AccessJwtPayload, RefreshJwtPayload } from '../types/jwt.types';
+import { TokenExpirationContext } from '../../factories/token-expiration.factory';
+import { AccessJwtPayload, RefreshJwtPayload } from '../../types/jwt.types';
 import securityConfig from '@core/config/envs/security.config';
 import { createSecurityConfigMock } from '@mocks/config/security.config.mock';
 

@@ -55,8 +55,9 @@ describe('HashService', () => {
     ])(
       'should return $expected for scenario: $desc',
       ({ input, originalValue, expected }) => {
+        const hashedInput = service.hash(input);
         const hashedOriginal = service.hash(originalValue);
-        expect(service.compareHash(input, hashedOriginal)).toBe(expected);
+        expect(service.compareHash(hashedInput, hashedOriginal)).toBe(expected);
       },
     );
 

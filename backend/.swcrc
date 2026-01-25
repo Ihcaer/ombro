@@ -2,6 +2,7 @@
   "$schema": "https://swc.rs/schema.json",
   "exclude": [
     ".*\\.spec\\.ts$",
+    ".*\\.mock\\.ts$",
     ".*/__mocks__/.*",
     ".*/generated/prisma-client/.*"
   ],
