@@ -92,10 +92,11 @@ export class AdminRegistrationService {
         this.prismaService.authAdmin.update({
           where: { id },
           data: { ...dataToUpdate, verification: wantedVerificationStatus },
+          select: { verification: true },
         }),
       ]);
     } catch (error) {
-      console.log('Transaction error:', error);
+      console.error('Transaction error:', error);
       throw new InternalServerErrorException(
         'Failed to update data. Please try again later.',
       );

@@ -8,7 +8,12 @@ import {
   GoneException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { AuthOneTimeToken, AuthVerification } from '@generated/prisma-client';
+import {
+  AuthAdmin,
+  AuthOneTimeToken,
+  AuthVerification,
+} from '@generated/prisma-client';
+import { ConfirmAdminRequestDto } from '@core/auth/dto';
 
 describe('AdminRegistrationService', () => {
   let service: AdminRegistrationService;
@@ -30,8 +35,10 @@ describe('AdminRegistrationService', () => {
             $transaction: jest.fn(),
             authOneTimeToken: {
               delete: jest.fn(),
-              update: jest.fn(),
               findUnique: jest.fn(),
+            },
+            authAdmin: {
+              update: jest.fn(),
             },
           },
         },
@@ -173,6 +180,69 @@ describe('AdminRegistrationService', () => {
         },
       );
     });
-    describe('.accountConfirmation()', () => {});
+    describe('.accountConfirmation()', () => {
+      const mockFindUnique = (value: OneTimeTokenContext | null): void => {
+        (
+          prismaService.authOneTimeToken.findUnique as jest.Mock
+        ).mockResolvedValue(value);
+      };
+      let hashedToken: string;
+      let hashedPassword: string;
+      let deleteValueMock: AuthOneTimeToken,
+        updateValueMock: Partial<AuthAdmin>;
+      let parameters: { inputToken: string; dto: ConfirmAdminRequestDto };
+
+      beforeEach(() => {
+        hashedToken = 'tokenHash';
+        hashService.hash.mockReturnValue(hashedToken);
+      });
+
+      it('should parse token and confirmation data, update admin status if data are correct', async () => {
+        tokenExpirationTime = new Date(
+          new Date(mockNow.getTime() + 24 * 60 * 60 * 1000).toISOString(),
+        );
+        tokenContext = {
+          adminId: 1,
+          hashedToken,
+          expiresAt: tokenExpirationTime,
+          admin: {
+            verification: 'WAITING',
+            password: null,
+            handleName: 'handle',
+          },
+        };
+        hashedPassword = 'hashedPassword';
+        deleteValueMock = {
+          adminId: tokenContext.adminId,
+          hashedToken: tokenContext.hashedToken,
+          type: 'REGISTER',
+          expiresAt: tokenContext.expiresAt,
+        };
+        updateValueMock = { verification: 'VERIFIED' };
+        parameters = { inputToken: token, dto: { password: 'password' } };
+
+        const mockDelete = (
+          prismaService.authOneTimeToken.delete as jest.Mock
+        ).mockReturnValue(deleteValueMock);
+        const mockUpdate = (
+          prismaService.authAdmin.update as jest.Mock
+        ).mockReturnValue(updateValueMock);
+
+        mockFindUnique(tokenContext);
+        hashService.hashBcrypt.mockResolvedValue(hashedPassword);
+        prismaService.$transaction.mockResolvedValue([mockDelete, mockUpdate]);
+
+        await expect(
+          service.accountConfirmation(parameters.inputToken, parameters.dto),
+        ).resolves.not.toThrow();
+        // eslint-disable-next-line @typescript-eslint/unbound-method
+        expect(prismaService.$transaction).toHaveBeenCalledTimes(1);
+        // eslint-disable-next-line @typescript-eslint/unbound-method
+        expect(prismaService.$transaction).toHaveBeenCalledWith([
+          deleteValueMock,
+          updateValueMock,
+        ]);
+      });
+    });
   });
 });
