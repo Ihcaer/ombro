@@ -12,5 +12,6 @@
     "skema",
     "swcrc",
     "Timestamptz"
-  ]
+  ],
+  "editor.rulers": [100]
 }
