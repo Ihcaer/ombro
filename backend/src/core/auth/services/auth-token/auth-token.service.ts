@@ -1,10 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { AccessJwtPayload, RefreshJwtPayload } from '../types/jwt.types';
-import { TokenExpirationContext } from '../factories/token-expiration.factory';
+import { AccessJwtPayload, RefreshJwtPayload } from '../../types/jwt.types';
+import { TokenExpirationContext } from '../../factories/token-expiration.factory';
 import { HashService } from '@shared/hash/hash.service';
 import securityConfig from '@core/config/envs/security.config';
+import { randomBytes } from 'node:crypto';
 
 @Injectable()
 export class AuthTokenService {
@@ -39,5 +40,22 @@ export class AuthTokenService {
 
   hashRefreshToken(token: string): string {
     return this.hashService.hash(token);
+  }
+
+  generateOneTimeTokenPair(): {
+    rawToken: Base64URLString;
+    hashedToken: string;
+  } {
+    const rawToken = randomBytes(32).toString('base64url');
+    const hashedToken = this.hashService.hash(rawToken);
+
+    return { rawToken, hashedToken };
+  }
+
+  compareOneTimeTokens(
+    inputToken: Base64URLString,
+    savedToken: string,
+  ): boolean {
+    return this.hashService.compareHash(inputToken, savedToken);
   }
 }

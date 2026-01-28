@@ -1,11 +1,15 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { LoginRequestDto } from '../dto/loginRequest.dto';
-import { AccessJwtPayload, RefreshJwtPayload } from '../types/jwt.types';
-import { AuthTokenService } from './auth-token.service';
+import { AccessJwtPayload, RefreshJwtPayload } from '../../types/jwt.types';
+import { AuthTokenService } from '../auth-token/auth-token.service';
 import { HashService } from '@shared/hash/hash.service';
-import { AuthAdminRepository } from '../auth-admin.repository';
-import { TokenExpirationFactory } from '../factories/token-expiration.factory';
-import { SignInResponse, AdminData, Identifier } from '../types/common.types';
+import { AuthAdminRepository } from '../../auth-admin.repository';
+import { TokenExpirationFactory } from '../../factories/token-expiration.factory';
+import {
+  SignInResponse,
+  AdminData,
+  Identifier,
+} from '../../types/common.types';
+import { LoginRequestDto } from '@core/auth/dto';
 
 const throwLoginError = (message?: string): never => {
   throw new UnauthorizedException(message || 'Invalid credentials');

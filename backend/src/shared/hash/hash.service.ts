@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CompareHashData, HashData } from './hash.types';
-import { createHmac, timingSafeEqual } from 'node:crypto';
+import { createHash, timingSafeEqual } from 'node:crypto';
 import type { ConfigType } from '@nestjs/config';
 import { WorkerService, WorkerTask } from '@shared/worker/worker.service';
 import securityConfig from '@core/config/envs/security.config';
@@ -48,18 +48,15 @@ export class HashService {
     return this.workerService.runTask<boolean>(WorkerTask.COMPARE_HASH, data);
   }
 
-  compareHash(input: string, hashedValue: string): boolean {
-    const inputHash = this.hash(input);
-
-    const inputBuffer = Buffer.from(inputHash);
-    const hashBuffer = Buffer.from(hashedValue);
+  compareHash(inputHashed: string, savedHash: string): boolean {
+    const inputBuffer = Buffer.from(inputHashed, 'hex');
+    const hashBuffer = Buffer.from(savedHash, 'hex');
     if (inputBuffer.length !== hashBuffer.length) return false;
 
     return timingSafeEqual(inputBuffer, hashBuffer);
   }
 
   hash(value: string): string {
-    const secret: string = this.securityConf.hashSecret;
-    return createHmac('sha256', secret).update(value).digest('hex');
+    return createHash('sha256').update(value).digest('hex');
   }
 }

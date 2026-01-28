@@ -2,5 +2,15 @@
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "cSpell.words": ["analogjs", "Ihcaer", "primeng", "primeui", "primeuix", "skema", "swcrc"]
+  "cSpell.words": [
+    "analogjs",
+    "autoincrement",
+    "Ihcaer",
+    "primeng",
+    "primeui",
+    "primeuix",
+    "skema",
+    "swcrc",
+    "Timestamptz"
+  ]
 }

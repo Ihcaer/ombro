@@ -1,15 +1,41 @@
-import { Body, Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
-import { LoginRequestDto } from './dto/loginRequest.dto';
-import { LoginResponseDto } from './dto/loginResponse.dto';
-import { AuthService } from './services/auth.service';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Headers,
+  HttpCode,
+  Param,
+  Patch,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
+import { AuthService } from './services/auth/auth.service';
 import type { Request, Response } from 'express';
 import { RefreshTokenGuard } from './guards/refresh-token.guard';
 import { RefreshTokenWithAdmin } from './types/jwt.types';
 import { SignInResponse } from './types/common.types';
+import { Auth } from './decorators/auth.decorator';
+import { AdminPrivileges } from './enums/admin-privileges';
+import { AdminRegistrationService } from './services/admin-registration/admin-registration.service';
+import {
+  ConfirmAdminAccountFormFieldDto,
+  ConfirmAdminRequestDto,
+  CreateAdminRequestDto,
+  CreateAdminResponseDto,
+  FieldsToConfirmAccountRequestDto,
+  LoginRequestDto,
+  LoginResponseDto,
+} from './dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly adminRegistrationService: AdminRegistrationService,
+  ) {}
 
   @Post('login')
   async login(
@@ -28,8 +54,8 @@ export class AuthController {
     return adminData;
   }
 
-  @UseGuards(RefreshTokenGuard)
   @Post('refresh')
+  @UseGuards(RefreshTokenGuard)
   async refreshTokens(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
@@ -49,5 +75,39 @@ export class AuthController {
       maxAge: fullResponse.refreshTokenData.maxAge,
     });
     return fullResponse.adminData;
+  }
+
+  @Post('create-admin')
+  @Auth(AdminPrivileges.ADMINS_MANAGE)
+  async createAdmin(
+    @Body() dto: CreateAdminRequestDto,
+  ): Promise<CreateAdminResponseDto> {
+    return await this.adminRegistrationService.createAdminAccount(dto);
+  }
+
+  @Get('confirm-account-form/:token')
+  async getFieldsToConfirmAccount(
+    @Param() params: FieldsToConfirmAccountRequestDto,
+  ): Promise<ConfirmAdminAccountFormFieldDto> {
+    return await this.adminRegistrationService.getFormFieldsToConfirm(
+      params.token,
+    );
+  }
+
+  @Patch('confirm-admin')
+  @HttpCode(204)
+  async confirmAdmin(
+    @Headers('authorization') authHeader: string,
+    @Body() requestDto: ConfirmAdminRequestDto,
+  ): Promise<void> {
+    if (authHeader.startsWith('Bearer ')) {
+      const token = authHeader.split(' ')[1];
+      await this.adminRegistrationService.accountConfirmation(
+        token,
+        requestDto,
+      );
+    } else {
+      throw new BadRequestException();
+    }
   }
 }
