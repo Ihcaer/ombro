@@ -4,7 +4,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './services/auth/auth.service';
 import { Response } from 'express';
 import { RefreshTokenWithAdmin } from './types/jwt.types';
-import { LoginRequestDto } from './dto/loginRequest.dto';
+import { LoginRequestDto } from './dto/login-request.dto';
 import { AdminRegistrationService } from './services/admin-registration/admin-registration.service';
 
 describe('AuthController', () => {

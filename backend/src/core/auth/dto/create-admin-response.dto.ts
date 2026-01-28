@@ -1,5 +1,5 @@
 export type CreateAdminResponseDto = {
-  readonly handle?: string;
+  readonly displayName: string;
   readonly email: string;
   readonly privileges: number;
 };

@@ -23,6 +23,8 @@ import { AdminRegistrationService } from './services/admin-registration/admin-re
 import {
   ConfirmAdminAccountFormFieldDto,
   ConfirmAdminRequestDto,
+  CreateAdminRequestDto,
+  CreateAdminResponseDto,
   FieldsToConfirmAccountRequestDto,
   LoginRequestDto,
   LoginResponseDto,
@@ -77,7 +79,11 @@ export class AuthController {
 
   @Post('create-admin')
   @Auth(AdminPrivileges.ADMINS_MANAGE)
-  async createAdmin() {}
+  async createAdmin(
+    @Body() dto: CreateAdminRequestDto,
+  ): Promise<CreateAdminResponseDto> {
+    return await this.adminRegistrationService.createAdminAccount(dto);
+  }
 
   @Get('confirm-account-form/:token')
   async getFieldsToConfirmAccount(

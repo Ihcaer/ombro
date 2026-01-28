@@ -15,7 +15,7 @@ const nodeEnv =
       envFilePath: getEnvPath(),
       cache: nodeEnv !== Environment.Test,
     }),
-    EventEmitterModule.forRoot({ maxListeners: 3 }),
+    EventEmitterModule.forRoot({ maxListeners: 3, delimiter: '.' }),
     ...enabledModules,
   ],
 })

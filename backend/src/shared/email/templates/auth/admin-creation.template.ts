@@ -5,6 +5,8 @@ export class AdminAccountActivationTemplate extends EmailBase {
   protected content: EmailTemplateContent;
   private readonly confirmAccountLink: string;
 
+  private adminCreationContent: string = ``;
+
   constructor(
     private name: string,
     private slug: string,
@@ -37,6 +39,4 @@ export class AdminAccountActivationTemplate extends EmailBase {
       cta: { href: ctaLink, content: 'Aktywuj konto' },
     };
   }
-
-  private adminCreationContent: string = ``;
 }

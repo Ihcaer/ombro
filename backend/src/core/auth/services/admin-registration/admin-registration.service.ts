@@ -1,6 +1,8 @@
 import {
   ConfirmAdminAccountFormFieldDto,
   ConfirmAdminRequestDto,
+  CreateAdminRequestDto,
+  CreateAdminResponseDto,
 } from '@core/auth/dto';
 import { AdminConfirmationData } from '@core/auth/interfaces/admin-registration.interfaces';
 import { OneTimeTokenContext } from '@core/auth/types/one-time-token.types';
@@ -9,6 +11,7 @@ import {
   AuthAdmin,
   AuthTokenType,
   AuthVerification,
+  Prisma,
 } from '@generated/prisma-client';
 import {
   BadRequestException,
@@ -18,22 +21,102 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { HashService } from '@shared/hash/hash.service';
+import { AuthTokenService } from '../auth-token/auth-token.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { AdminCreatedEvent } from '@core/auth/events/admin-created.event';
 
 @Injectable()
 export class AdminRegistrationService {
-  private static readonly POSSIBLE_FIELDS_TO_FILL_OUT: (keyof ConfirmAdminRequestDto)[] =
+  private static readonly REGISTER_TOKEN_EXPIRATION_MS = 24 * 60 * 60 * 1000;
+  private static readonly POSSIBLE_COLUMNS_TO_FILL_OUT: (keyof ConfirmAdminRequestDto)[] =
     ['password', 'handleName'];
 
   constructor(
     private readonly hashService: HashService,
     private readonly prismaService: PrismaService,
+    private readonly tokenService: AuthTokenService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
+
+  async createAdminAccount(
+    dto: CreateAdminRequestDto,
+  ): Promise<CreateAdminResponseDto> {
+    let attempts = 0;
+    const maxAttempts = 5;
+    let rawToken: Base64URLString | null = null;
+    let result: CreateAdminResponseDto | null = null;
+
+    while (attempts < maxAttempts) {
+      try {
+        const token = this.tokenService.generateOneTimeTokenPair();
+        const expiresAt = new Date(
+          Date.now() + AdminRegistrationService.REGISTER_TOKEN_EXPIRATION_MS,
+        );
+        rawToken = token.rawToken;
+
+        const createdAdmin = await this.prismaService.authOneTimeToken.create({
+          data: {
+            hashedToken: token.hashedToken,
+            type: 'REGISTER',
+            expiresAt,
+            admin: { create: dto },
+          },
+          select: {
+            admin: {
+              select: { displayName: true, email: true, privileges: true },
+            },
+          },
+        });
+
+        const { admin } = createdAdmin;
+        result = {
+          displayName: admin.displayName,
+          email: admin.email,
+          privileges: admin.privileges,
+        };
+
+        break;
+      } catch (error) {
+        if (
+          error instanceof Prisma.PrismaClientKnownRequestError &&
+          error.code === 'P2002'
+        ) {
+          attempts++;
+          continue;
+        }
+        throw error;
+      }
+    }
+
+    if (rawToken && result) {
+      const wasHandled: boolean = this.eventEmitter.emit(
+        'admin.created',
+        new AdminCreatedEvent(rawToken, {
+          name: result.displayName,
+          email: result.email,
+        }),
+      );
+
+      if (!wasHandled) {
+        console.warn(
+          'The admin.created event was emitted but no one received it!',
+        );
+      }
+
+      return result;
+    } else {
+      console.error('Failed to generate unique token.');
+      throw new InternalServerErrorException(
+        'We encountered an unexpected problem while creating account of new admin. Please try again later. If the issue persists, contact our support team.',
+      );
+    }
+  }
 
   async getFormFieldsToConfirm(
     inputToken: string,
   ): Promise<ConfirmAdminAccountFormFieldDto> {
     const possibleFieldsToFillOut = [
-      ...AdminRegistrationService.POSSIBLE_FIELDS_TO_FILL_OUT,
+      ...AdminRegistrationService.POSSIBLE_COLUMNS_TO_FILL_OUT,
     ];
 
     const tokenContext: OneTimeTokenContext = await this.fetchTokenContext(

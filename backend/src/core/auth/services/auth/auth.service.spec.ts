@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
-import { LoginRequestDto } from '../../dto/loginRequest.dto';
+import { LoginRequestDto } from '../../dto/login-request.dto';
 import { AdminDto } from '../../dto/admin.dto';
 import { AuthTokenService } from '../auth-token/auth-token.service';
 import { UnauthorizedException } from '@nestjs/common';

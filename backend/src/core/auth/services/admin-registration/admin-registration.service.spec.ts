@@ -13,12 +13,21 @@ import {
   AuthOneTimeToken,
   AuthVerification,
 } from '@generated/prisma-client';
-import { ConfirmAdminRequestDto } from '@core/auth/dto';
+import {
+  ConfirmAdminRequestDto,
+  CreateAdminRequestDto,
+  CreateAdminResponseDto,
+} from '@core/auth/dto';
+import { AuthTokenService } from '../auth-token/auth-token.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { plainToInstance } from 'class-transformer';
 
 describe('AdminRegistrationService', () => {
   let service: AdminRegistrationService;
   let hashService: jest.Mocked<HashService>;
   let prismaService: jest.Mocked<PrismaService>;
+  let tokenService: jest.Mocked<AuthTokenService>;
+  let eventEmitter: jest.Mocked<EventEmitter2>;
 
   beforeEach(async () => {
     jest.clearAllMocks();
@@ -36,11 +45,20 @@ describe('AdminRegistrationService', () => {
             authOneTimeToken: {
               delete: jest.fn(),
               findUnique: jest.fn(),
+              create: jest.fn(),
             },
             authAdmin: {
               update: jest.fn(),
             },
           },
+        },
+        {
+          provide: AuthTokenService,
+          useValue: { generateOneTimeTokenPair: jest.fn() },
+        },
+        {
+          provide: EventEmitter2,
+          useValue: { emit: jest.fn() },
         },
       ],
     }).compile();
@@ -48,6 +66,41 @@ describe('AdminRegistrationService', () => {
     service = module.get<AdminRegistrationService>(AdminRegistrationService);
     hashService = module.get(HashService);
     prismaService = module.get(PrismaService);
+    tokenService = module.get(AuthTokenService);
+    eventEmitter = module.get(EventEmitter2);
+  });
+
+  describe('.createAdminAccount()', () => {
+    let params: [CreateAdminRequestDto];
+
+    it('should return correct new admin data (DTO)', async () => {
+      params = [
+        plainToInstance(CreateAdminRequestDto, {
+          displayName: 'name',
+          email: 'test@email.com',
+          privileges: 1,
+        }),
+      ];
+      const requestDto: Readonly<CreateAdminRequestDto> = params[0];
+      const expectedResult: Readonly<CreateAdminResponseDto> = {
+        displayName: requestDto.displayName,
+        email: requestDto.email,
+        privileges: requestDto.privileges,
+      };
+      const tokenPair = { rawToken: 'token', hashedToken: 'tokenHash' };
+      const createdAdminMock = { admin: { ...requestDto } };
+
+      tokenService.generateOneTimeTokenPair.mockReturnValue(tokenPair);
+      (prismaService.authOneTimeToken.create as jest.Mock).mockResolvedValue(
+        createdAdminMock,
+      );
+      eventEmitter.emit.mockReturnValue(true);
+
+      expect(params[0]).toBeInstanceOf(CreateAdminRequestDto);
+      await expect(service.createAdminAccount(...params)).resolves.toEqual(
+        expectedResult,
+      );
+    });
   });
 
   describe('Account confirmation methods', () => {

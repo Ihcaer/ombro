@@ -1,5 +1,5 @@
 import { AuthVerification } from '@generated/prisma-client';
-import { LoginResponseDto } from '../dto/loginResponse.dto';
+import { LoginResponseDto } from '../dto/login-response.dto';
 
 export type Identifier = 'email' | 'handleName';
 

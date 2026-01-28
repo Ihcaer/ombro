@@ -15,7 +15,7 @@ export class CreateAdminRequestDto {
 
   @IsOptional()
   @IsString()
-  readonly handle?: string;
+  readonly handleName?: string;
 
   @IsString()
   @IsNotEmpty()
@@ -24,6 +24,8 @@ export class CreateAdminRequestDto {
 
   @IsDefined()
   @IsNumber()
-  @IsValidPrivilege({ message: 'Value of this privileges is not exists.' })
+  @IsValidPrivilege({
+    message: 'The value of these privileges does not exist.',
+  })
   readonly privileges: number;
 }
