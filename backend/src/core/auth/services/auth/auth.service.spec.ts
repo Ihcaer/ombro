@@ -84,9 +84,7 @@ describe('AuthService', () => {
         };
 
         adminRepository.findByIdentifier.mockResolvedValue(admin);
-        hashService.compareBcrypt.mockResolvedValue(
-          loginCredentials.password === admin.password,
-        );
+        hashService.compareBcrypt.mockResolvedValue(loginCredentials.password === admin.password);
 
         const result = await service.loginWithCredentials(loginCredentials);
 
@@ -102,13 +100,11 @@ describe('AuthService', () => {
         };
 
         adminRepository.findByIdentifier.mockResolvedValue(admin);
-        hashService.compareBcrypt.mockResolvedValue(
-          loginCredentials.password === admin.password,
-        );
+        hashService.compareBcrypt.mockResolvedValue(loginCredentials.password === admin.password);
 
-        await expect(
-          service.loginWithCredentials(loginCredentials),
-        ).rejects.toThrow(UnauthorizedException);
+        await expect(service.loginWithCredentials(loginCredentials)).rejects.toThrow(
+          UnauthorizedException,
+        );
       });
 
       it('should throw when admin account is disabled', async () => {
@@ -120,13 +116,11 @@ describe('AuthService', () => {
         };
 
         adminRepository.findByIdentifier.mockResolvedValue(admin);
-        hashService.compareBcrypt.mockResolvedValue(
-          loginCredentials.password === admin.password,
-        );
+        hashService.compareBcrypt.mockResolvedValue(loginCredentials.password === admin.password);
 
-        await expect(
-          service.loginWithCredentials(loginCredentials),
-        ).rejects.toThrow(UnauthorizedException);
+        await expect(service.loginWithCredentials(loginCredentials)).rejects.toThrow(
+          UnauthorizedException,
+        );
       });
     });
 
@@ -161,10 +155,7 @@ describe('AuthService', () => {
         adminRepository.findAdminAndRefreshTokenById.mockResolvedValue(null);
 
         await expect(
-          service.loginWithRefreshToken(
-            methodPayload.adminId,
-            methodPayload.refreshToken,
-          ),
+          service.loginWithRefreshToken(methodPayload.adminId, methodPayload.refreshToken),
         ).rejects.toThrow(UnauthorizedException);
       });
 
@@ -176,10 +167,7 @@ describe('AuthService', () => {
         hashService.compareHash.mockReturnValue(false);
 
         await expect(
-          service.loginWithRefreshToken(
-            methodPayload.adminId,
-            methodPayload.refreshToken,
-          ),
+          service.loginWithRefreshToken(methodPayload.adminId, methodPayload.refreshToken),
         ).rejects.toThrow(UnauthorizedException);
       });
     });

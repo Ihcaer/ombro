@@ -4,11 +4,7 @@ import { AuthTokenService } from '../auth-token/auth-token.service';
 import { HashService } from '@shared/hash/hash.service';
 import { AuthAdminRepository } from '../../auth-admin.repository';
 import { TokenExpirationFactory } from '../../factories/token-expiration.factory';
-import {
-  SignInResponse,
-  AdminData,
-  Identifier,
-} from '../../types/common.types';
+import { SignInResponse, AdminData, Identifier } from '../../types/common.types';
 import { LoginRequestDto } from '@core/auth/dto';
 
 const throwLoginError = (message?: string): never => {
@@ -29,10 +25,7 @@ export class AuthService {
   async loginWithCredentials(dto: LoginRequestDto): Promise<SignInResponse> {
     const identifierType = AuthService.classifyIdentifier(dto.identifier);
 
-    const admin = await this.adminRepository.findByIdentifier(
-      dto.identifier,
-      identifierType,
-    );
+    const admin = await this.adminRepository.findByIdentifier(dto.identifier, identifierType);
     if (!admin || !admin.password) throwLoginError();
     if (!admin?.isActivated) throwLoginError('Account is inactive');
     if (!admin?.handleName && admin?.verification !== 'VERIFIED')
@@ -40,21 +33,14 @@ export class AuthService {
 
     const { password, ...adminWithoutPassword } = admin!;
 
-    const isPasswordValid: boolean = await this.hashService.compareBcrypt(
-      dto.password,
-      password!,
-    );
+    const isPasswordValid: boolean = await this.hashService.compareBcrypt(dto.password, password!);
     if (!isPasswordValid) throwLoginError();
 
     return this.issueTokens(adminWithoutPassword);
   }
 
-  async loginWithRefreshToken(
-    adminId: number,
-    refreshToken: string,
-  ): Promise<SignInResponse> {
-    const data =
-      await this.adminRepository.findAdminAndRefreshTokenById(adminId);
+  async loginWithRefreshToken(adminId: number, refreshToken: string): Promise<SignInResponse> {
+    const data = await this.adminRepository.findAdminAndRefreshTokenById(adminId);
     if (!data) throwLoginError();
 
     const isTokenValid: boolean = this.hashService.compareHash(

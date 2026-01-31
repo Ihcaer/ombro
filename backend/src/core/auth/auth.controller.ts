@@ -42,8 +42,7 @@ export class AuthController {
     @Body() requestDto: LoginRequestDto,
     @Res({ passthrough: true }) response: Response,
   ): Promise<LoginResponseDto> {
-    const { adminData, refreshTokenData } =
-      await this.authService.loginWithCredentials(requestDto);
+    const { adminData, refreshTokenData } = await this.authService.loginWithCredentials(requestDto);
 
     response.cookie('refresh_token', refreshTokenData.token, {
       httpOnly: true,
@@ -55,6 +54,7 @@ export class AuthController {
   }
 
   @Post('refresh')
+  @HttpCode(200)
   @UseGuards(RefreshTokenGuard)
   async refreshTokens(
     @Req() req: Request,
@@ -62,11 +62,10 @@ export class AuthController {
   ): Promise<LoginResponseDto> {
     const admin = req.user as RefreshTokenWithAdmin;
 
-    const fullResponse: SignInResponse =
-      await this.authService.loginWithRefreshToken(
-        admin.id,
-        admin.refreshToken,
-      );
+    const fullResponse: SignInResponse = await this.authService.loginWithRefreshToken(
+      admin.id,
+      admin.refreshToken,
+    );
 
     res.cookie('refresh_token', fullResponse.refreshTokenData.token, {
       httpOnly: true,
@@ -79,9 +78,7 @@ export class AuthController {
 
   @Post('create-admin')
   @Auth(AdminPrivileges.ADMINS_MANAGE)
-  async createAdmin(
-    @Body() dto: CreateAdminRequestDto,
-  ): Promise<CreateAdminResponseDto> {
+  async createAdmin(@Body() dto: CreateAdminRequestDto): Promise<CreateAdminResponseDto> {
     return await this.adminRegistrationService.createAdminAccount(dto);
   }
 
@@ -89,9 +86,7 @@ export class AuthController {
   async getFieldsToConfirmAccount(
     @Param() params: FieldsToConfirmAccountRequestDto,
   ): Promise<ConfirmAdminAccountFormFieldDto> {
-    return await this.adminRegistrationService.getFormFieldsToConfirm(
-      params.token,
-    );
+    return await this.adminRegistrationService.getFormFieldsToConfirm(params.token);
   }
 
   @Patch('confirm-admin')
@@ -102,10 +97,7 @@ export class AuthController {
   ): Promise<void> {
     if (authHeader.startsWith('Bearer ')) {
       const token = authHeader.split(' ')[1];
-      await this.adminRegistrationService.accountConfirmation(
-        token,
-        requestDto,
-      );
+      await this.adminRegistrationService.accountConfirmation(token, requestDto);
     } else {
       throw new BadRequestException();
     }

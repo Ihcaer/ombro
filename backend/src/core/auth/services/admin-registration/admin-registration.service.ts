@@ -7,12 +7,7 @@ import {
 import { AdminConfirmationData } from '@core/auth/interfaces/admin-registration.interfaces';
 import { OneTimeTokenContext } from '@core/auth/types/one-time-token.types';
 import { PrismaService } from '@core/database/prisma/prisma.service';
-import {
-  AuthAdmin,
-  AuthTokenType,
-  AuthVerification,
-  Prisma,
-} from '@generated/prisma-client';
+import { AuthAdmin, AuthTokenType, AuthVerification, Prisma } from '@generated/prisma-client';
 import {
   BadRequestException,
   GoneException,
@@ -28,8 +23,10 @@ import { AdminCreatedEvent } from '@core/auth/events/admin-created.event';
 @Injectable()
 export class AdminRegistrationService {
   private static readonly REGISTER_TOKEN_EXPIRATION_MS = 24 * 60 * 60 * 1000;
-  private static readonly POSSIBLE_COLUMNS_TO_FILL_OUT: (keyof ConfirmAdminRequestDto)[] =
-    ['password', 'handleName'];
+  private static readonly POSSIBLE_COLUMNS_TO_FILL_OUT: (keyof ConfirmAdminRequestDto)[] = [
+    'password',
+    'handleName',
+  ];
 
   constructor(
     private readonly hashService: HashService,
@@ -38,9 +35,7 @@ export class AdminRegistrationService {
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
-  async createAdminAccount(
-    dto: CreateAdminRequestDto,
-  ): Promise<CreateAdminResponseDto> {
+  async createAdminAccount(dto: CreateAdminRequestDto): Promise<CreateAdminResponseDto> {
     let attempts = 0;
     const maxAttempts = 5;
     let rawToken: Base64URLString | null = null;
@@ -77,12 +72,19 @@ export class AdminRegistrationService {
 
         break;
       } catch (error) {
-        if (
-          error instanceof Prisma.PrismaClientKnownRequestError &&
-          error.code === 'P2002'
-        ) {
-          attempts++;
-          continue;
+        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+          const target = error.meta?.target;
+
+          if (typeof target === 'string' || Array.isArray(target)) {
+            switch (true) {
+              case target.includes('email'):
+                throw new BadRequestException('This email is already in use.');
+              case target.includes('hashedToken'):
+                attempts++;
+                continue;
+            }
+          }
+          throw error;
         }
         throw error;
       }
@@ -98,9 +100,7 @@ export class AdminRegistrationService {
       );
 
       if (!wasHandled) {
-        console.warn(
-          'The admin.created event was emitted but no one received it!',
-        );
+        console.warn('The admin.created event was emitted but no one received it!');
       }
 
       return result;
@@ -112,12 +112,8 @@ export class AdminRegistrationService {
     }
   }
 
-  async getFormFieldsToConfirm(
-    inputToken: string,
-  ): Promise<ConfirmAdminAccountFormFieldDto> {
-    const possibleFieldsToFillOut = [
-      ...AdminRegistrationService.POSSIBLE_COLUMNS_TO_FILL_OUT,
-    ];
+  async getFormFieldsToConfirm(inputToken: string): Promise<ConfirmAdminAccountFormFieldDto> {
+    const possibleFieldsToFillOut = [...AdminRegistrationService.POSSIBLE_COLUMNS_TO_FILL_OUT];
 
     const tokenContext: OneTimeTokenContext = await this.fetchTokenContext(
       inputToken,
@@ -141,14 +137,8 @@ export class AdminRegistrationService {
     return fieldsToFillOut;
   }
 
-  async accountConfirmation(
-    inputToken: string,
-    dto: ConfirmAdminRequestDto,
-  ): Promise<void> {
-    const tokenContext: OneTimeTokenContext = await this.fetchTokenContext(
-      inputToken,
-      'REGISTER',
-    );
+  async accountConfirmation(inputToken: string, dto: ConfirmAdminRequestDto): Promise<void> {
+    const tokenContext: OneTimeTokenContext = await this.fetchTokenContext(inputToken, 'REGISTER');
 
     await this.validateRegisterOneTimeToken(tokenContext);
 
@@ -180,15 +170,11 @@ export class AdminRegistrationService {
       ]);
     } catch (error) {
       console.error('Transaction error:', error);
-      throw new InternalServerErrorException(
-        'Failed to update data. Please try again later.',
-      );
+      throw new InternalServerErrorException('Failed to update data. Please try again later.');
     }
   }
 
-  private async validateRegisterOneTimeToken(
-    tokenContext: OneTimeTokenContext,
-  ): Promise<void> {
+  private async validateRegisterOneTimeToken(tokenContext: OneTimeTokenContext): Promise<void> {
     if (tokenContext.expiresAt < new Date()) {
       await this.deleteOneTimeTokenRecord(tokenContext.adminId);
       throw new GoneException('Token expired');
@@ -222,10 +208,7 @@ export class AdminRegistrationService {
 
     switch (type) {
       case 'REGISTER':
-        if (
-          !additionalAdminFields ||
-          !additionalAdminFields.includes('verification')
-        )
+        if (!additionalAdminFields || !additionalAdminFields.includes('verification'))
           adminFields.push('verification');
         break;
     }
@@ -246,16 +229,12 @@ export class AdminRegistrationService {
         hashedToken: true,
         expiresAt: true,
         adminId: true,
-        admin: areAdminColumnsSelected
-          ? { select: { ...adminColumns } }
-          : false,
+        admin: areAdminColumnsSelected ? { select: { ...adminColumns } } : false,
       },
     });
 
     if (!tokenContext)
-      throw new BadRequestException(
-        'The provided activation token is invalid or does not exist',
-      );
+      throw new BadRequestException('The provided activation token is invalid or does not exist');
 
     return tokenContext;
   }
