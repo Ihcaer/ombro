@@ -30,8 +30,7 @@ export class TestContext {
       context.app.use(cookieParser());
 
       context.prisma = moduleFixture.get<PrismaService>(PrismaService);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const adminFactory = new AdminFactory(context.prisma);
+      context.adminFactory = new AdminFactory(context.prisma);
 
       await context.app.init();
       return context;

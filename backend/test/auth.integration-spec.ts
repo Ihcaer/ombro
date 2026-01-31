@@ -10,6 +10,7 @@ import { AdminAccountActivationTemplate } from '@shared/email/templates/auth/adm
 import { HashService } from '@shared/hash/hash.service';
 import { compare, hash } from 'bcrypt';
 import { clearDatabase, mailpitConfig, TestContext, waitForEmail } from './helpers';
+import { AuthAdmin } from '@generated/prisma-client';
 
 describe('Auth Module', () => {
   jest.setTimeout(25000);
@@ -24,7 +25,22 @@ describe('Auth Module', () => {
     hashService = ctx.app.get(HashService);
   });
 
-  beforeEach(async () => {
+  beforeEach(() => {
+    jest
+      .spyOn(hashService, 'hashBcrypt')
+      .mockImplementation(
+        async (password: string, saltRounds: number = HashService.DEFAULT_SALT_ROUNDS) =>
+          await hash(password, saltRounds),
+      );
+    jest
+      .spyOn(hashService, 'compareBcrypt')
+      .mockImplementation(
+        async (comparedValue: string, originalValue: string) =>
+          await compare(comparedValue, originalValue),
+      );
+  });
+
+  afterEach(async () => {
     await clearDatabase(ctx.prisma);
     jest.restoreAllMocks();
   });
@@ -71,19 +87,6 @@ describe('Auth Module', () => {
         password: newPassword,
       };
 
-      jest
-        .spyOn(hashService, 'hashBcrypt')
-        .mockImplementation(
-          async (password: string, saltRounds: number = HashService.DEFAULT_SALT_ROUNDS) =>
-            await hash(password, saltRounds),
-        );
-      jest
-        .spyOn(hashService, 'compareBcrypt')
-        .mockImplementation(
-          async (comparedValue: string, originalValue: string) =>
-            await compare(comparedValue, originalValue),
-        );
-
       await request(ctx.app.getHttpServer())
         .patch(modulePrefix + '/confirm-admin')
         .set('Authorization', `Bearer ${token}`)
@@ -111,12 +114,57 @@ describe('Auth Module', () => {
         },
       };
 
+      const adminSavedPassword = await ctx.prisma.authAdmin.findUnique({
+        where: { handleName: newAdminData.handleName },
+        select: { password: true },
+      });
+
+      const isHashedPasswordIsValid: boolean = adminSavedPassword!.password!.startsWith('$2b$');
+
       expect(newAdmin).toBeDefined();
       expect(token).toBeDefined();
       expect(confirmAccountFormRes.body).toEqual(['password']);
       expect(loginResCookies).toBeDefined();
       expect(loginResCookies!.some((cookie) => cookie.includes('refresh_token'))).toBe(true);
       expect(loginResBody.adminData).toEqual(loginExpectedBody.adminData);
+      expect(adminSavedPassword!.password).not.toBe(newPassword);
+      expect(isHashedPasswordIsValid).toBe(true);
+    });
+  });
+  describe('Privilege protection verification', () => {
+    it.each([
+      { privilegeValue: 1, expected: 201, desc: 'correct privileges' },
+      { privilegeValue: 0, expected: 403, desc: 'wrong privileges' },
+      { privilegeValue: 3, expected: 201, desc: 'another correct privileges' },
+    ])('should return $expected for scenario: $desc', async ({ privilegeValue, expected }) => {
+      const admin: Partial<AuthAdmin> = {
+        handleName: 'handle',
+        password: 'password',
+        privileges: privilegeValue,
+      };
+      const loginCredentials: LoginRequestDto = {
+        identifier: admin.handleName!,
+        password: admin.password!,
+      };
+      const newAdmin: CreateAdminRequestDto = {
+        displayName: 'new-display-name',
+        email: 'new-test@email.com',
+        privileges: 1,
+      };
+
+      await ctx.adminFactory.create(admin);
+
+      const loginRes = await request(ctx.app.getHttpServer())
+        .post(modulePrefix + '/login')
+        .send(loginCredentials)
+        .expect(201);
+      const accessToken = (loginRes.body as LoginResponseDto).jwt;
+
+      await request(ctx.app.getHttpServer())
+        .post(modulePrefix + '/create-admin')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(newAdmin)
+        .expect(expected);
     });
   });
 });
