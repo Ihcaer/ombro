@@ -10,12 +10,7 @@ export enum WorkerTask {
 
 const TASK_PATHS: Record<WorkerTask, string> = {
   [WorkerTask.HASH_DATA]: resolve(__dirname, 'tasks', 'hash', 'hash.worker.js'),
-  [WorkerTask.COMPARE_HASH]: resolve(
-    __dirname,
-    'tasks',
-    'hash',
-    'compare.worker.js',
-  ),
+  [WorkerTask.COMPARE_HASH]: resolve(__dirname, 'tasks', 'hash', 'compare.worker.js'),
 };
 
 @Injectable()

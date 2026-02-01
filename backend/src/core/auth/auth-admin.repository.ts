@@ -8,10 +8,7 @@ import { AdminDto } from './dto/admin.dto';
 export class AuthAdminRepository {
   constructor(private prisma: PrismaService) {}
 
-  async findByIdentifier(
-    identifier: string,
-    identifierType: Identifier,
-  ): Promise<AdminDto | null> {
+  async findByIdentifier(identifier: string, identifierType: Identifier): Promise<AdminDto | null> {
     const whereClause = {
       [identifierType]: identifier,
     } as unknown as Prisma.AuthAdminWhereUniqueInput;
@@ -59,16 +56,11 @@ export class AuthAdminRepository {
       refreshToken: { refreshTokenHash },
       ...adminData
     } = result;
-    // const { refreshTokenHash } = refreshToken;
 
     return { admin: adminData, refreshTokenHash };
   }
 
-  async saveRefreshToken(
-    adminId: number,
-    hash: string,
-    expiresAt: Date,
-  ): Promise<void> {
+  async saveRefreshToken(adminId: number, hash: string, expiresAt: Date): Promise<void> {
     await this.prisma.authAdmin.update({
       where: { id: adminId },
       data: {

@@ -1,8 +1,8 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, InternalServerErrorException, OnModuleInit } from '@nestjs/common';
 import { createTransport, SendMailOptions, Transporter } from 'nodemailer';
 import { EmailOptions } from './templates/emailBase';
 import { OnEvent } from '@nestjs/event-emitter';
-import { AdminAccountActivationTemplate } from './templates/auth/admin-creation.template';
+import { AdminAccountActivationTemplate } from './templates/auth/admin-account-activation.template';
 import type { ConfigType } from '@nestjs/config';
 import emailConfig from '@core/config/envs/email.config';
 import metadataConfig from '@core/config/envs/metadata.config';
@@ -11,7 +11,7 @@ import serverConfig, { Environment } from '@core/config/envs/server.config';
 import { AdminCreatedEvent } from '@core/auth/events/admin-created.event';
 
 @Injectable()
-export class EmailService {
+export class EmailService implements OnModuleInit {
   private transporter: Transporter;
 
   constructor(
@@ -30,38 +30,45 @@ export class EmailService {
         user: emailConf.sender,
         pass: emailConf.password,
       },
+      tls: {
+        rejectUnauthorized: serverConf.nodeEnv === Environment.Production,
+      },
     });
   }
 
+  async onModuleInit() {
+    try {
+      await this.transporter.verify();
+      console.log('Connection to the SMTP server has been confirmed.');
+    } catch (error) {
+      console.error('SMTP connection error:', error);
+      throw new InternalServerErrorException();
+    }
+  }
+
   @OnEvent('admin.created', { async: true })
-  private async sendAdminCreationConfirmation(
-    payload: AdminCreatedEvent,
-  ): Promise<void> {
+  private async sendAdminCreationConfirmation(payload: AdminCreatedEvent): Promise<void> {
     const { accountConfirmationToken, newAdminData } = payload;
 
     const maxRetries = 3;
     const baseDelayMs = 1000;
     const protocol: 'http' | 'https' =
       this.serverConf.nodeEnv !== Environment.Production ? 'http' : 'https';
+    const registrationUrl: string = `${protocol}://${this.metadataConf.mainDomain}/${AdminAccountActivationTemplate.REGISTRATION_SLUG}/${accountConfirmationToken}`;
+    const mediaUrl = `${protocol}://${this.metadataConf.mediaDomain}`;
 
     const adminCreationEmail = new AdminAccountActivationTemplate(
       newAdminData.name,
-      accountConfirmationToken,
-      this.metadataConf.mainDomain,
-      this.metadataConf.mediaDomain,
-      protocol,
+      registrationUrl,
+      mediaUrl,
     );
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
-        await this.sendEmail(
-          adminCreationEmail.getEmailContent(),
-          newAdminData.email,
-        );
+        await this.sendEmail(adminCreationEmail.getEmailContent(), newAdminData.email);
         return;
       } catch (error) {
-        const errorMessage =
-          error instanceof Error ? error.message : 'Unknown error';
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
 
         if (attempt === maxRetries) {
           console.error('Email cannot be sended:', error);

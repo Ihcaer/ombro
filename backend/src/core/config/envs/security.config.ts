@@ -13,11 +13,6 @@ export class SecurityConfig {
   @IsString()
   @IsNotEmpty()
   jwtRefreshSecret: string;
-
-  @Expose({ name: 'HASH_SECRET' })
-  @IsString()
-  @IsNotEmpty()
-  hashSecret: string;
 }
 
 export default registerAs('security', () => validateConfig(SecurityConfig));

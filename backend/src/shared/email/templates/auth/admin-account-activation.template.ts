@@ -3,29 +3,23 @@ import { EmailBase, EmailOptions, EmailTemplateContent } from '../emailBase';
 export class AdminAccountActivationTemplate extends EmailBase {
   protected options: EmailOptions;
   protected content: EmailTemplateContent;
-  private readonly confirmAccountLink: string;
+  static REGISTRATION_SLUG = 'confirm-account';
 
   private adminCreationContent: string = ``;
 
   constructor(
     private name: string,
-    private slug: string,
-    private domain: string = 'localhost',
-    private mediaDomain: string = 'localhost',
-    private protocol: 'http' | 'https' = 'https',
+    private confirmAccountLink: string,
+    private mediaDomain: string,
   ) {
     super();
-    this.confirmAccountLink = `${protocol}://${domain}/${slug}`;
+
     this.setOptions();
-    this.setContent(
-      `${protocol}://${mediaDomain}`,
-      name,
-      this.confirmAccountLink,
-    );
+    this.setContent(mediaDomain, name, confirmAccountLink);
   }
 
   private setOptions(): void {
-    this.options = { subject: 'Potwierdzenie rejestracji w Skema Admin Panel' };
+    this.options = { subject: 'Potwierdź rejestrację w Skema Admin Panel' };
   }
 
   private setContent(mediaDomain: string, name: string, ctaLink: string): void {
