@@ -7,10 +7,9 @@ import {
 import { AdminConfirmationData } from '@core/auth/interfaces/admin-registration.interfaces';
 import { OneTimeTokenContext } from '@core/auth/types/one-time-token.types';
 import { PrismaService } from '@core/database/prisma/prisma.service';
-import { AuthAdmin, AuthTokenType, AuthVerification, Prisma } from '@generated/prisma-client';
+import { AuthVerification, Prisma } from '@generated/prisma-client';
 import {
   BadRequestException,
-  GoneException,
   Injectable,
   InternalServerErrorException,
   UnprocessableEntityException,
@@ -19,11 +18,13 @@ import { HashService } from '@shared/hash/hash.service';
 import { AuthTokenService } from '../auth-token/auth-token.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AdminCreatedEvent } from '@core/auth/events/admin-created.event';
+import { checkPasswordStrengthUtil } from '@core/auth/utils/check-password-strength/check-password-strength.util';
+import { PossibleFieldsToFill } from '@core/auth/types/common.types';
 
 @Injectable()
 export class AdminRegistrationService {
   private static readonly REGISTER_TOKEN_EXPIRATION_MS = 24 * 60 * 60 * 1000;
-  private static readonly POSSIBLE_COLUMNS_TO_FILL_OUT: (keyof ConfirmAdminRequestDto)[] = [
+  private static readonly POSSIBLE_COLUMNS_TO_FILL_OUT: (keyof PossibleFieldsToFill)[] = [
     'password',
     'handleName',
   ];
@@ -91,8 +92,9 @@ export class AdminRegistrationService {
     }
 
     if (rawToken && result) {
+      const { EVENT_NAME: eventName } = AdminCreatedEvent;
       const wasHandled: boolean = this.eventEmitter.emit(
-        'admin.created',
+        eventName,
         new AdminCreatedEvent(rawToken, {
           name: result.displayName,
           email: result.email,
@@ -100,7 +102,7 @@ export class AdminRegistrationService {
       );
 
       if (!wasHandled) {
-        console.warn('The admin.created event was emitted but no one received it!');
+        console.warn(`The ${eventName} event was emitted but no one received it!`);
       }
 
       return result;
@@ -115,13 +117,13 @@ export class AdminRegistrationService {
   async getFormFieldsToConfirm(inputToken: string): Promise<ConfirmAdminAccountFormFieldDto> {
     const possibleFieldsToFillOut = [...AdminRegistrationService.POSSIBLE_COLUMNS_TO_FILL_OUT];
 
-    const tokenContext: OneTimeTokenContext = await this.fetchTokenContext(
+    const tokenContext: OneTimeTokenContext = await this.tokenService.fetchTokenContext(
       inputToken,
       'REGISTER',
       possibleFieldsToFillOut,
     );
 
-    await this.validateRegisterOneTimeToken(tokenContext);
+    await this.tokenService.validateOneTimeToken(tokenContext, 'REGISTER');
 
     const fieldsToFillOut = possibleFieldsToFillOut.filter(
       (field) => tokenContext.admin![field] === null,
@@ -137,14 +139,33 @@ export class AdminRegistrationService {
     return fieldsToFillOut;
   }
 
-  async accountConfirmation(inputToken: string, dto: ConfirmAdminRequestDto): Promise<void> {
-    const tokenContext: OneTimeTokenContext = await this.fetchTokenContext(inputToken, 'REGISTER');
+  async accountConfirmation(dto: ConfirmAdminRequestDto): Promise<void> {
+    const { oneTimeToken, ...fieldsToFill } = dto;
 
-    await this.validateRegisterOneTimeToken(tokenContext);
+    const tokenContext: OneTimeTokenContext = await this.tokenService.fetchTokenContext(
+      oneTimeToken,
+      'REGISTER',
+      ['email', 'handleName'],
+    );
+    const handleName: string = (
+      dto.handleName ? dto.handleName : tokenContext.admin?.displayName
+    ) as string;
+
+    const isStrongPassword: boolean = checkPasswordStrengthUtil(dto.password, [
+      handleName,
+      tokenContext.admin?.email,
+    ]);
+    if (!isStrongPassword) {
+      throw new BadRequestException(
+        'The password is too weak or contains data from an email or handle.',
+      );
+    }
+
+    await this.tokenService.validateOneTimeToken(tokenContext, 'REGISTER');
 
     const hashedPassword = await this.hashService.hashBcrypt(dto.password);
     const adminData: AdminConfirmationData = {
-      ...dto,
+      ...fieldsToFill,
       password: hashedPassword,
       id: tokenContext.adminId,
     };
@@ -174,72 +195,9 @@ export class AdminRegistrationService {
     }
   }
 
-  private async validateRegisterOneTimeToken(tokenContext: OneTimeTokenContext): Promise<void> {
-    if (tokenContext.expiresAt < new Date()) {
-      await this.deleteOneTimeTokenRecord(tokenContext.adminId);
-      throw new GoneException('Token expired');
-    }
-
-    if (tokenContext.admin && tokenContext.admin.verification !== 'WAITING') {
-      await this.deleteOneTimeTokenRecord(tokenContext.adminId);
-      throw new UnprocessableEntityException({
-        message: 'Account is not waiting for verification',
-        reason: 'VERIFICATION_IS_NOT_CAPABLE',
-      });
-    }
-  }
-
   private async deleteOneTimeTokenRecord(adminId: number): Promise<void> {
     await this.prismaService.authOneTimeToken.delete({
       where: { adminId },
     });
-  }
-
-  private async fetchTokenContext(
-    token: string,
-    type: AuthTokenType,
-    additionalAdminFields?: readonly (keyof AuthAdmin)[],
-  ): Promise<OneTimeTokenContext> {
-    const hashedToken: string = this.hashToken(token);
-    const adminFields: (keyof AuthAdmin)[] = [];
-    let adminColumns: Partial<Record<keyof AuthAdmin, true>> = {};
-
-    if (additionalAdminFields) adminFields.push(...additionalAdminFields);
-
-    switch (type) {
-      case 'REGISTER':
-        if (!additionalAdminFields || !additionalAdminFields.includes('verification'))
-          adminFields.push('verification');
-        break;
-    }
-
-    const areAdminColumnsSelected: boolean = adminFields.length > 0;
-    if (areAdminColumnsSelected) {
-      adminColumns = adminFields.reduce(
-        (acc, key) => {
-          acc[key] = true;
-          return acc;
-        },
-        {} as Partial<Record<keyof AuthAdmin, true>>,
-      );
-    }
-    const tokenContext = await this.prismaService.authOneTimeToken.findUnique({
-      where: { hashedToken, type },
-      select: {
-        hashedToken: true,
-        expiresAt: true,
-        adminId: true,
-        admin: areAdminColumnsSelected ? { select: { ...adminColumns } } : false,
-      },
-    });
-
-    if (!tokenContext)
-      throw new BadRequestException('The provided activation token is invalid or does not exist');
-
-    return tokenContext;
-  }
-
-  private hashToken(token: string): string {
-    return this.hashService.hash(token);
   }
 }

@@ -1,5 +1,5 @@
-import { ConfirmAdminRequestDto } from '../dto';
+import { PossibleFieldsToFill } from '../types/common.types';
 
-export interface AdminConfirmationData extends ConfirmAdminRequestDto {
+export interface AdminConfirmationData extends PossibleFieldsToFill {
   id: number;
 }

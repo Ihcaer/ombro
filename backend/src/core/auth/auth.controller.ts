@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Get,
@@ -91,15 +90,7 @@ export class AuthController {
 
   @Patch('confirm-admin')
   @HttpCode(204)
-  async confirmAdmin(
-    @Headers('authorization') authHeader: string,
-    @Body() requestDto: ConfirmAdminRequestDto,
-  ): Promise<void> {
-    if (authHeader.startsWith('Bearer ')) {
-      const token = authHeader.split(' ')[1];
-      await this.adminRegistrationService.accountConfirmation(token, requestDto);
-    } else {
-      throw new BadRequestException();
-    }
+  async confirmAdmin(@Body() requestDto: ConfirmAdminRequestDto): Promise<void> {
+    await this.adminRegistrationService.accountConfirmation(requestDto);
   }
 }

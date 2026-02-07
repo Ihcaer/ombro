@@ -1,5 +1,5 @@
-export type CreateAdminResponseDto = {
-  readonly displayName: string;
-  readonly email: string;
-  readonly privileges: number;
-};
+import { AuthAdmin } from '@generated/prisma-client';
+
+export type CreateAdminResponseDto = Readonly<
+  NonNullable<Pick<AuthAdmin, 'displayName' | 'email' | 'privileges'>>
+>;

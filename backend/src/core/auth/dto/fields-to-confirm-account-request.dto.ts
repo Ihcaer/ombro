@@ -1,7 +1,9 @@
-import { IsBase64, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
+import { IsOneTimeToken } from '../decorators';
 
 export class FieldsToConfirmAccountRequestDto {
   @IsString()
-  @IsBase64({ urlSafe: true })
-  token: Base64URLString;
+  @IsNotEmpty()
+  @IsOneTimeToken()
+  readonly token: Base64URLString;
 }

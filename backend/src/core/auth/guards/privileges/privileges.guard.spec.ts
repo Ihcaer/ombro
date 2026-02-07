@@ -2,7 +2,7 @@ import { Reflector } from '@nestjs/core';
 import { PrivilegesGuard } from './privileges.guard';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AdminPrivileges } from '@core/auth/enums/admin-privileges';
-import { ExecutionContext } from '@nestjs/common';
+import { ExecutionContext, ForbiddenException } from '@nestjs/common';
 import { AuthVerification } from '@generated/prisma-client';
 import { createMockContext } from './privileges.guard.mock';
 
@@ -48,7 +48,7 @@ describe('PrivilegesGuard', () => {
           isActivated: true,
         },
       },
-      expected: false,
+      expected: 'ForbiddenException',
       desc: 'wrong privileges',
     },
   ])(
@@ -56,7 +56,11 @@ describe('PrivilegesGuard', () => {
     ({ requiredPrivileges, requestPayload, expected }) => {
       reflector.getAllAndOverride.mockReturnValue([...requiredPrivileges]);
       const mockContext: ExecutionContext = createMockContext(requestPayload);
-      expect(guard.canActivate(mockContext)).toBe(expected);
+      if (expected === 'ForbiddenException') {
+        expect(() => guard.canActivate(mockContext)).toThrow(ForbiddenException);
+      } else {
+        expect(guard.canActivate(mockContext)).toBe(expected);
+      }
     },
   );
 });

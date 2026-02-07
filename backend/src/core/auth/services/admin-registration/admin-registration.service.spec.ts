@@ -3,16 +3,8 @@ import { AdminRegistrationService } from './admin-registration.service';
 import { HashService } from '@shared/hash/hash.service';
 import { PrismaService } from '@core/database/prisma/prisma.service';
 import { OneTimeTokenContext } from '@core/auth/types/one-time-token.types';
-import {
-  BadRequestException,
-  GoneException,
-  UnprocessableEntityException,
-} from '@nestjs/common';
-import {
-  AuthAdmin,
-  AuthOneTimeToken,
-  AuthVerification,
-} from '@generated/prisma-client';
+import { BadRequestException } from '@nestjs/common';
+import { AuthAdmin, AuthOneTimeToken } from '@generated/prisma-client';
 import {
   ConfirmAdminRequestDto,
   CreateAdminRequestDto,
@@ -21,6 +13,9 @@ import {
 import { AuthTokenService } from '../auth-token/auth-token.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { plainToInstance } from 'class-transformer';
+import { checkPasswordStrengthUtil } from '@core/auth/utils/check-password-strength/check-password-strength.util';
+
+jest.mock('@core/auth/utils/check-password-strength/check-password-strength.util');
 
 describe('AdminRegistrationService', () => {
   let service: AdminRegistrationService;
@@ -29,8 +24,11 @@ describe('AdminRegistrationService', () => {
   let tokenService: jest.Mocked<AuthTokenService>;
   let eventEmitter: jest.Mocked<EventEmitter2>;
 
+  const mockedCheckPasswordStrengthUtil = checkPasswordStrengthUtil as jest.MockedFunction<
+    typeof checkPasswordStrengthUtil
+  >;
+
   beforeEach(async () => {
-    jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AdminRegistrationService,
@@ -44,7 +42,6 @@ describe('AdminRegistrationService', () => {
             $transaction: jest.fn(),
             authOneTimeToken: {
               delete: jest.fn(),
-              findUnique: jest.fn(),
               create: jest.fn(),
             },
             authAdmin: {
@@ -54,7 +51,11 @@ describe('AdminRegistrationService', () => {
         },
         {
           provide: AuthTokenService,
-          useValue: { generateOneTimeTokenPair: jest.fn() },
+          useValue: {
+            generateOneTimeTokenPair: jest.fn(),
+            fetchTokenContext: jest.fn(),
+            validateOneTimeToken: jest.fn(),
+          },
         },
         {
           provide: EventEmitter2,
@@ -68,6 +69,8 @@ describe('AdminRegistrationService', () => {
     prismaService = module.get(PrismaService);
     tokenService = module.get(AuthTokenService);
     eventEmitter = module.get(EventEmitter2);
+
+    jest.clearAllMocks();
   });
 
   describe('.createAdminAccount()', () => {
@@ -91,15 +94,11 @@ describe('AdminRegistrationService', () => {
       const createdAdminMock = { admin: { ...requestDto } };
 
       tokenService.generateOneTimeTokenPair.mockReturnValue(tokenPair);
-      (prismaService.authOneTimeToken.create as jest.Mock).mockResolvedValue(
-        createdAdminMock,
-      );
+      (prismaService.authOneTimeToken.create as jest.Mock).mockResolvedValue(createdAdminMock);
       eventEmitter.emit.mockReturnValue(true);
 
       expect(params[0]).toBeInstanceOf(CreateAdminRequestDto);
-      await expect(service.createAdminAccount(...params)).resolves.toEqual(
-        expectedResult,
-      );
+      await expect(service.createAdminAccount(...params)).resolves.toEqual(expectedResult);
     });
   });
 
@@ -108,21 +107,25 @@ describe('AdminRegistrationService', () => {
     let tokenContext: OneTimeTokenContext | null;
     let mockNow: Date;
     let tokenExpirationTime: Date;
+    let mockFindToken: (value: OneTimeTokenContext | null) => void;
 
     beforeEach(() => {
       mockNow = new Date();
       jest.useFakeTimers().setSystemTime(mockNow);
+
+      mockFindToken = (value): void => {
+        if (value === null) {
+          tokenService.fetchTokenContext.mockRejectedValue(new BadRequestException());
+        } else {
+          tokenService.fetchTokenContext.mockResolvedValue(value);
+        }
+      };
     });
 
     afterEach(() => jest.useRealTimers());
 
     describe('.getFormFieldsToConfirm()', () => {
       let hashedToken: Readonly<string>;
-      const mockFindUnique = (value: OneTimeTokenContext | null): void => {
-        (
-          prismaService.authOneTimeToken.findUnique as jest.Mock
-        ).mockResolvedValue(value);
-      };
 
       beforeEach(() => {
         hashedToken = 'tokenHash';
@@ -146,108 +149,21 @@ describe('AdminRegistrationService', () => {
         };
         const expectedResult = ['password'];
 
-        mockFindUnique(tokenContext);
+        mockFindToken(tokenContext);
 
-        await expect(service.getFormFieldsToConfirm(token)).resolves.toEqual(
-          expectedResult,
-        );
+        await expect(service.getFormFieldsToConfirm(token)).resolves.toEqual(expectedResult);
       });
-
-      it.each([
-        {
-          tokenData: null,
-          expected: BadRequestException,
-          errorName: 'BadRequestException',
-          desc: 'token not found',
-        },
-        {
-          tokenData: {
-            expirationOffset: -(24 * 60 * 60 * 1000),
-            admin: {
-              verification: AuthVerification.WAITING,
-              password: null,
-            },
-          },
-          expected: GoneException,
-          errorName: 'BadRequestException',
-          desc: 'token expired',
-        },
-        {
-          tokenData: {
-            expirationOffset: 24 * 60 * 60 * 1000,
-            admin: {
-              verification: AuthVerification.VERIFIED,
-              password: null,
-            },
-          },
-          expected: UnprocessableEntityException,
-          errorName: 'UnprocessableEntityException',
-          desc: 'admin is not waiting for verification',
-        },
-        {
-          tokenData: {
-            expirationOffset: 24 * 60 * 60 * 1000,
-            admin: {
-              verification: AuthVerification.WAITING,
-              password: 'password',
-            },
-          },
-          expected: UnprocessableEntityException,
-          errorName: 'UnprocessableEntityException',
-          desc: 'admin fields are not need confirmation (all are filled)',
-        },
-      ])(
-        'should throw $errorName error class for scenario: $desc',
-        async ({ tokenData, expected }) => {
-          const calculateExpirationTime = (offset: number): Date => {
-            return new Date(new Date(mockNow.getTime() + offset).toISOString());
-          };
-          const tokenContext: OneTimeTokenContext | null = tokenData
-            ? {
-                adminId: 1,
-                hashedToken,
-                expiresAt: calculateExpirationTime(tokenData.expirationOffset),
-                admin: {
-                  verification: tokenData.admin.verification,
-                  password: tokenData.admin.password,
-                },
-              }
-            : null;
-          const tokenRecord: AuthOneTimeToken | null = tokenContext
-            ? {
-                adminId: tokenContext.adminId,
-                hashedToken: tokenContext.hashedToken,
-                type: 'REGISTER',
-                expiresAt: tokenContext.expiresAt,
-              }
-            : null;
-
-          mockFindUnique(tokenContext);
-          (
-            prismaService.authOneTimeToken.delete as jest.Mock
-          ).mockResolvedValue(tokenRecord);
-
-          await expect(service.getFormFieldsToConfirm(token)).rejects.toThrow(
-            expected,
-          );
-        },
-      );
     });
     describe('.accountConfirmation()', () => {
-      const mockFindUnique = (value: OneTimeTokenContext | null): void => {
-        (
-          prismaService.authOneTimeToken.findUnique as jest.Mock
-        ).mockResolvedValue(value);
-      };
       let hashedToken: string;
       let hashedPassword: string;
-      let deleteValueMock: AuthOneTimeToken,
-        updateValueMock: Partial<AuthAdmin>;
-      let parameters: { inputToken: string; dto: ConfirmAdminRequestDto };
+      let deleteValueMock: AuthOneTimeToken, updateValueMock: Partial<AuthAdmin>;
+      let parameters: ConfirmAdminRequestDto;
 
       beforeEach(() => {
         hashedToken = 'tokenHash';
         hashService.hash.mockReturnValue(hashedToken);
+        mockedCheckPasswordStrengthUtil.mockReturnValue(true);
       });
 
       it('should parse token and confirmation data, update admin status if data are correct', async () => {
@@ -272,29 +188,24 @@ describe('AdminRegistrationService', () => {
           expiresAt: tokenContext.expiresAt,
         };
         updateValueMock = { verification: 'VERIFIED' };
-        parameters = { inputToken: token, dto: { password: 'password' } };
+        parameters = { oneTimeToken: 'token', password: 'password' };
 
-        const mockDelete = (
-          prismaService.authOneTimeToken.delete as jest.Mock
-        ).mockReturnValue(deleteValueMock);
-        const mockUpdate = (
-          prismaService.authAdmin.update as jest.Mock
-        ).mockReturnValue(updateValueMock);
+        const mockDelete = (prismaService.authOneTimeToken.delete as jest.Mock).mockReturnValue(
+          deleteValueMock,
+        );
+        const mockUpdate = (prismaService.authAdmin.update as jest.Mock).mockReturnValue(
+          updateValueMock,
+        );
 
-        mockFindUnique(tokenContext);
+        mockFindToken(tokenContext);
         hashService.hashBcrypt.mockResolvedValue(hashedPassword);
         prismaService.$transaction.mockResolvedValue([mockDelete, mockUpdate]);
 
-        await expect(
-          service.accountConfirmation(parameters.inputToken, parameters.dto),
-        ).resolves.not.toThrow();
+        await expect(service.accountConfirmation(parameters)).resolves.not.toThrow();
         // eslint-disable-next-line @typescript-eslint/unbound-method
         expect(prismaService.$transaction).toHaveBeenCalledTimes(1);
         // eslint-disable-next-line @typescript-eslint/unbound-method
-        expect(prismaService.$transaction).toHaveBeenCalledWith([
-          deleteValueMock,
-          updateValueMock,
-        ]);
+        expect(prismaService.$transaction).toHaveBeenCalledWith([deleteValueMock, updateValueMock]);
       });
     });
   });

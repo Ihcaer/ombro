@@ -1,8 +1,8 @@
-import { AuthAdmin } from '@generated/prisma-client';
+import { AuthAdmin, AuthOneTimeToken } from '@generated/prisma-client';
 
-export type OneTimeTokenContext = {
-  adminId: number;
-  hashedToken: string;
-  expiresAt: Date;
+export interface OneTimeTokenContext extends Pick<
+  AuthOneTimeToken,
+  'adminId' | 'hashedToken' | 'expiresAt'
+> {
   admin?: Partial<AuthAdmin>;
-};
+}

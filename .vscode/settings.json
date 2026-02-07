@@ -14,7 +14,8 @@
     "primeuix",
     "skema",
     "swcrc",
-    "Timestamptz"
+    "Timestamptz",
+    "zxcvbn"
   ],
   "editor.rulers": [100]
 }

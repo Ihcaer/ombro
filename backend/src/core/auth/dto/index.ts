@@ -6,3 +6,4 @@ export * from './create-admin-response.dto';
 export * from './login-request.dto';
 export * from './login-response.dto';
 export * from './fields-to-confirm-account-request.dto';
+export * from './reset-password-request.dto';

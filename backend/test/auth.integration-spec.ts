@@ -80,8 +80,11 @@ describe('Auth Module', () => {
         .get(modulePrefix + '/confirm-account-form/' + token)
         .expect(200);
 
-      const newPassword = 'testPassword';
-      const filledFields: ConfirmAdminRequestDto = { password: newPassword };
+      const newPassword = 'correct-horse-battery-staple-2026';
+      const confirmAccountBody: ConfirmAdminRequestDto = {
+        oneTimeToken: token,
+        password: newPassword,
+      };
       const loginCredentials: LoginRequestDto = {
         identifier: newAdminData.handleName!,
         password: newPassword,
@@ -89,8 +92,7 @@ describe('Auth Module', () => {
 
       await request(ctx.app.getHttpServer())
         .patch(modulePrefix + '/confirm-admin')
-        .set('Authorization', `Bearer ${token}`)
-        .send(filledFields)
+        .send(confirmAccountBody)
         .expect(204);
 
       const loginRes = await request(ctx.app.getHttpServer())
