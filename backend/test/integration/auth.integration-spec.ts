@@ -11,11 +11,12 @@ import { HashService } from '@shared/hash/hash.service';
 import { compare, hash } from 'bcrypt';
 import { clearDatabase, mailpitConfig, TestContext, waitForEmail } from './helpers';
 import { AuthAdmin } from '@generated/prisma-client';
+import { AUTH_ROUTE_PREFIX } from '@core/auth/auth.constants';
 
 describe('Auth Module', () => {
   jest.setTimeout(25000);
   let ctx: TestContext;
-  const modulePrefix = '/auth';
+  const modulePrefix = '/' + AUTH_ROUTE_PREFIX;
   let adminRegistrationService: AdminRegistrationService;
   let hashService: HashService;
 
@@ -77,7 +78,7 @@ describe('Auth Module', () => {
       const token = tokenMatch[0];
 
       const confirmAccountFormRes = await request(ctx.app.getHttpServer())
-        .get(modulePrefix + '/confirm-account-form/' + token)
+        .get(modulePrefix + '/register' + '/confirm-account-form/' + token)
         .expect(200);
 
       const newPassword = 'correct-horse-battery-staple-2026';
@@ -91,7 +92,7 @@ describe('Auth Module', () => {
       };
 
       await request(ctx.app.getHttpServer())
-        .patch(modulePrefix + '/confirm-admin')
+        .patch(modulePrefix + '/register' + '/confirm-admin')
         .send(confirmAccountBody)
         .expect(204);
 
@@ -163,7 +164,7 @@ describe('Auth Module', () => {
       const accessToken = (loginRes.body as LoginResponseDto).jwt;
 
       await request(ctx.app.getHttpServer())
-        .post(modulePrefix + '/create-admin')
+        .post(modulePrefix + '/register' + '/create-admin')
         .set('Authorization', `Bearer ${accessToken}`)
         .send(newAdmin)
         .expect(expected);

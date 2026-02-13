@@ -20,6 +20,7 @@ export interface EmailTemplateContent {
 export abstract class EmailBase {
   protected abstract options: EmailOptions;
   protected abstract content: EmailTemplateContent;
+  protected abstract mediaDomain: string;
 
   getEmailContent(): EmailOptions & { html: string } {
     return { ...this.options, html: this.getTemplate() };
@@ -27,12 +28,12 @@ export abstract class EmailBase {
 
   private getTemplate(): string {
     const img: string = `<tr><td style="text-align: center">
-         <img src="${this.content.image?.src}" alt="${this.content.image?.alt}" style="height: 144px; width: auto"/>
+         <img src="${this.content.image?.src}" alt="${this.content.image?.alt}" style="height: 144px; width: auto;"/>
       </td></tr>`;
     const image: string = this.content.image ? img : '';
 
-    const ctaButton: string = `<tr><td style="text-align: center">
-         <a href="${this.content.cta?.href}" style=" background-color: #5191dc; color: #dde6f9; border-radius: 8px; padding: 8px 16px;">${this.content.cta?.content}</a>
+    const ctaButton: string = `<tr><td style="text-align: center; margin-top: 16px;">
+         <a href="${this.content.cta?.href}" target="_blank" rel="noopener noreferrer" style="background-color: #5191dc; color: #dde6f9; border-radius: 8px; padding: 8px 16px; text-decoration: none;">${this.content.cta?.content}</a>
       </td></tr>`;
     const cta: string = this.content.cta ? ctaButton : '';
 
@@ -65,7 +66,7 @@ export abstract class EmailBase {
                         <tr>
                            <td style="background-color: #fff; padding: 16px">
                               <!-- content -->
-                              <table style="text-align: start; width: 100%">
+                              <table style="text-align: start; width: 100%; border-spacing: 0 24px">
                                  <!-- image -->
                                  ${image}
                                  <!-- text -->
@@ -92,7 +93,7 @@ export abstract class EmailBase {
                            </td>
                         </tr>
                         <tr>
-                           <td tyle="border-radius: 0 0 12px 12px; color: #dadbdd; background-color: #132943; padding: 12px 0;">
+                           <td style="border-radius: 0 0 12px 12px; color: #dadbdd; background-color: #15191D; padding: 12px 16px; text-align: start; font-size: 14px;">
                               Wiadomość wysłana automatycznie. Prosimy na nią nie odpowiadać.
                            </td>
                         </tr>

@@ -64,10 +64,14 @@ export class AuthTokenService {
     return { rawToken, hashedToken };
   }
 
+  static calculateOneTimeTokenExpirationDate(expirationMs: number): Date {
+    return new Date(Date.now() + expirationMs);
+  }
+
   async fetchTokenContext(
     token: string,
     type: AuthTokenType,
-    additionalAdminFields: readonly (keyof AuthAdmin)[],
+    additionalAdminFields?: readonly (keyof AuthAdmin)[],
   ): Promise<OneTimeTokenContext> {
     const hashedToken: string = this.hashOneTimeToken(token);
     const adminFields: (keyof AuthAdmin)[] = [];

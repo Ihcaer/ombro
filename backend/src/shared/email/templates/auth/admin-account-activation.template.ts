@@ -3,29 +3,30 @@ import { EmailBase, EmailOptions, EmailTemplateContent } from '../emailBase';
 export class AdminAccountActivationTemplate extends EmailBase {
   protected options: EmailOptions;
   protected content: EmailTemplateContent;
+  protected mediaDomain: string;
   static REGISTRATION_SLUG = 'confirm-account';
-
-  private adminCreationContent: string = ``;
+  private adminCreationContent: string = `Administrator systemu <b>Admin Panel</b> utworzył dla Ciebie konto. Możesz je teraz aktywować i ustawić swoje hasło poprzez kliknięcie przycisku poniżej. Link wygaśnie w ciągu 24 godzin.`;
 
   constructor(
     private name: string,
     private confirmAccountLink: string,
-    private mediaDomain: string,
+    private inputMediaDomain: string,
   ) {
     super();
 
+    this.mediaDomain = inputMediaDomain;
     this.setOptions();
-    this.setContent(mediaDomain, name, confirmAccountLink);
+    this.setContent(name, confirmAccountLink);
   }
 
   private setOptions(): void {
     this.options = { subject: 'Potwierdź rejestrację w Skema Admin Panel' };
   }
 
-  private setContent(mediaDomain: string, name: string, ctaLink: string): void {
+  private setContent(name: string, ctaLink: string): void {
     this.content = {
       image: {
-        src: mediaDomain + '/public-assets/email/welcome.jpg',
+        src: this.mediaDomain + '/public-assets/email/welcome.jpg',
         alt: 'Ilustracja przedstawiająca kobietę siedzącą na parapecie okna, obok kubka kawy i drzewa, symbolizująca powitanie.',
       },
       header: `Cześć ${name},`,

@@ -7,7 +7,7 @@ import {
 import { AdminConfirmationData } from '@core/auth/interfaces/admin-registration.interfaces';
 import { OneTimeTokenContext } from '@core/auth/types/one-time-token.types';
 import { PrismaService } from '@core/database/prisma/prisma.service';
-import { AuthVerification, Prisma } from '@generated/prisma-client';
+import { AuthAdmin, AuthVerification, Prisma } from '@generated/prisma-client';
 import {
   BadRequestException,
   Injectable,
@@ -20,6 +20,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AdminCreatedEvent } from '@core/auth/events/admin-created.event';
 import { checkPasswordStrengthUtil } from '@core/auth/utils/check-password-strength/check-password-strength.util';
 import { PossibleFieldsToFill } from '@core/auth/types/common.types';
+import { PasswordResetService } from '../password-reset/password-reset.service';
 
 @Injectable()
 export class AdminRegistrationService {
@@ -45,8 +46,8 @@ export class AdminRegistrationService {
     while (attempts < maxAttempts) {
       try {
         const token = this.tokenService.generateOneTimeTokenPair();
-        const expiresAt = new Date(
-          Date.now() + AdminRegistrationService.REGISTER_TOKEN_EXPIRATION_MS,
+        const expiresAt = AuthTokenService.calculateOneTimeTokenExpirationDate(
+          AdminRegistrationService.REGISTER_TOKEN_EXPIRATION_MS,
         );
         rawToken = token.rawToken;
 
@@ -142,28 +143,36 @@ export class AdminRegistrationService {
   async accountConfirmation(dto: ConfirmAdminRequestDto): Promise<void> {
     const { oneTimeToken, ...fieldsToFill } = dto;
 
+    const adminFields: Readonly<keyof AuthAdmin>[] = ['email', 'handleName', 'displayName'];
     const tokenContext: OneTimeTokenContext = await this.tokenService.fetchTokenContext(
       oneTimeToken,
       'REGISTER',
-      ['email', 'handleName'],
+      [...adminFields],
     );
     const handleName: string = (
       dto.handleName ? dto.handleName : tokenContext.admin?.displayName
     ) as string;
 
-    const isStrongPassword: boolean = checkPasswordStrengthUtil(dto.password, [
-      handleName,
-      tokenContext.admin?.email,
-    ]);
+    await this.tokenService.validateOneTimeToken(tokenContext, 'REGISTER');
+
+    const admin: Partial<AuthAdmin> = { ...tokenContext.admin, handleName };
+    const adminInfo: Readonly<string>[] = adminFields.map((key) => {
+      const value = admin[key];
+      if (typeof value === 'boolean' || value === null || typeof value === 'undefined') return '';
+      return String(value);
+    });
+
+    const isStrongPassword: boolean = checkPasswordStrengthUtil(dto.password, [...adminInfo]);
     if (!isStrongPassword) {
       throw new BadRequestException(
-        'The password is too weak or contains data from an email or handle.',
+        'The password is too weak or contains data from an email, handle or display name.',
       );
     }
 
-    await this.tokenService.validateOneTimeToken(tokenContext, 'REGISTER');
-
-    const hashedPassword = await this.hashService.hashBcrypt(dto.password);
+    const hashedPassword = await this.hashService.hashBcrypt(
+      dto.password,
+      PasswordResetService.PASSWORD_SALT_ROUNDS,
+    );
     const adminData: AdminConfirmationData = {
       ...fieldsToFill,
       password: hashedPassword,

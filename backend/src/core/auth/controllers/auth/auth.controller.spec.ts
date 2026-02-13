@@ -1,19 +1,16 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
-import { AuthService } from './services/auth/auth.service';
+import { LoginRequestDto } from '@core/auth/dto';
+import { AuthService } from '@core/auth/services/auth/auth.service';
+import { RefreshTokenWithAdmin } from '@core/auth/types/jwt.types';
 import { Response } from 'express';
-import { RefreshTokenWithAdmin } from './types/jwt.types';
-import { LoginRequestDto } from './dto/login-request.dto';
-import { AdminRegistrationService } from './services/admin-registration/admin-registration.service';
 
-describe('AuthController', () => {
+describe('LoginController', () => {
   let controller: AuthController;
   let authService: jest.Mocked<AuthService>;
-  // let adminManagementService: jest.Mocked<AdminManagementService>;
 
   beforeEach(async () => {
-    jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AuthController],
       providers: [
@@ -24,16 +21,13 @@ describe('AuthController', () => {
             loginWithRefreshToken: jest.fn(),
           },
         },
-        {
-          provide: AdminRegistrationService,
-          useValue: {},
-        },
       ],
     }).compile();
 
     controller = module.get<AuthController>(AuthController);
     authService = module.get(AuthService);
-    // adminManagementService = module.get(AdminManagementService);
+
+    jest.clearAllMocks();
   });
 
   describe('.login()', () => {
@@ -113,10 +107,7 @@ describe('AuthController', () => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       const result = await controller.refreshTokens(req, res);
 
-      expect(authService.loginWithRefreshToken).toHaveBeenCalledWith(
-        1,
-        'refresh-token',
-      );
+      expect(authService.loginWithRefreshToken).toHaveBeenCalledWith(1, 'refresh-token');
       expect(res.cookie).toHaveBeenCalledWith(
         'refresh_token',
         'new-refresh-token',
