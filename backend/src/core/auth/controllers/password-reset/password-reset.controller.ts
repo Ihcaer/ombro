@@ -1,22 +1,17 @@
 import { AUTH_ROUTE_PREFIX } from '@core/auth/auth.constants';
 import { ResetPasswordRequestDto } from '@core/auth/dto';
+import { ForgotPasswordRequestDto } from '@core/auth/dto/forgot-password-request.dto';
 import { PasswordResetService } from '@core/auth/services/password-reset/password-reset.service';
-import { BadRequestException, Body, Controller, HttpCode, Post } from '@nestjs/common';
-import { isEmail } from 'class-validator';
+import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 
-@Controller(AUTH_ROUTE_PREFIX + '/password-reset')
+@Controller(AUTH_ROUTE_PREFIX + '/recovery')
 export class PasswordResetController {
   constructor(private readonly passwordResetService: PasswordResetService) {}
 
   @Post('forgot')
   @HttpCode(202)
-  async requestPasswordReset(@Body() email: string): Promise<void> {
-    const isBodyEmail: boolean = isEmail(email);
-    if (!isBodyEmail) throw new BadRequestException('Sent value is not valid email.');
-
-    const emailTrimmed = email.trim();
-
-    await this.passwordResetService.requestPasswordReset(emailTrimmed);
+  async requestPasswordReset(@Body() dto: ForgotPasswordRequestDto): Promise<void> {
+    await this.passwordResetService.requestPasswordReset(dto.email);
   }
 
   @Post('reset')

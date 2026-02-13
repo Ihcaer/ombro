@@ -1,12 +1,12 @@
 import { EmailBase, EmailOptions, EmailTemplateContent } from '../emailBase';
 
-export class PasswordResetTemplate extends EmailBase {
+export class AdminPasswordResetTemplate extends EmailBase {
   protected options: EmailOptions;
   protected content: EmailTemplateContent;
   protected mediaDomain: string;
   static PASSWORD_RESET_SLUG = 'password-reset';
   private static EXPIRATION_TIME_PLACEHOLDER: string = '{{expiration-time}}';
-  private passwordResetContent: string = `Otrzymaliśmy prośbę o zresetowanie hasła do Twojego konta w Admin Panel. Możesz je teraz zmienić klikając poniższy przycisk. Link wygaśnie w ciągu ${PasswordResetTemplate.EXPIRATION_TIME_PLACEHOLDER}.`;
+  private passwordResetContent: string = `Otrzymaliśmy prośbę o zresetowanie hasła do Twojego konta w Admin Panel. Możesz je teraz zmienić klikając poniższy przycisk. Link wygaśnie w ciągu ${AdminPasswordResetTemplate.EXPIRATION_TIME_PLACEHOLDER}.`;
   private additionalContent: string =
     'Jeśli to nie Ty poprosiłeś/aś o zresetowanie hasła, zignoruj tę wiadomość. Twoje hasło pozostanie bez zmian.';
 
@@ -20,7 +20,7 @@ export class PasswordResetTemplate extends EmailBase {
 
     this.mediaDomain = inputMediaDomain;
     this.passwordResetContent.replace(
-      PasswordResetTemplate.EXPIRATION_TIME_PLACEHOLDER,
+      AdminPasswordResetTemplate.EXPIRATION_TIME_PLACEHOLDER,
       `${expirationTimeMinutes} minut`,
     );
 

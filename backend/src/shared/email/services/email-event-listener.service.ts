@@ -7,7 +7,7 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { AdminAccountActivationTemplate } from '../templates/auth/admin-account-activation.template';
 import { EmailService } from './email.service';
 import { PasswordResetRequestEvent } from '@core/auth/events/password-reset-request.event';
-import { PasswordResetTemplate } from '../templates/auth/password-reset.template';
+import { AdminPasswordResetTemplate } from '../templates/auth/admin-password-reset.template';
 
 @Injectable()
 export class EmailEventListenerService {
@@ -48,11 +48,11 @@ export class EmailEventListenerService {
   @OnEvent(PasswordResetRequestEvent.EVENT_NAME, { async: true })
   private async sendAdminPasswordReset(payload: PasswordResetRequestEvent): Promise<void> {
     const passwordResetLink = this.createCtaLink(
-      PasswordResetRequestEvent.EVENT_NAME,
+      AdminPasswordResetTemplate.PASSWORD_RESET_SLUG,
       payload.tokenData.token,
     );
 
-    const passwordResetEmail = new PasswordResetTemplate(
+    const passwordResetEmail = new AdminPasswordResetTemplate(
       payload.adminData.name,
       passwordResetLink,
       this.mediaDomain,
