@@ -5,8 +5,7 @@ import enabledModules from '@core/config/feature-flags.config';
 import { getEnvPath } from '@core/config/env-path.util';
 import { Environment } from '@core/config/envs/server.config';
 
-const nodeEnv =
-  (process.env.NODE_ENV as Environment) || Environment.Development;
+const nodeEnv = (process.env.NODE_ENV as Environment) || Environment.Development;
 
 @Module({
   imports: [

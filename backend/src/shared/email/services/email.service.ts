@@ -1,14 +1,10 @@
 import { Inject, Injectable, InternalServerErrorException, OnModuleInit } from '@nestjs/common';
 import { createTransport, SendMailOptions, Transporter } from 'nodemailer';
-import { EmailOptions } from './templates/emailBase';
-import { OnEvent } from '@nestjs/event-emitter';
-import { AdminAccountActivationTemplate } from './templates/auth/admin-account-activation.template';
+import { EmailOptions } from '../templates/emailBase';
 import type { ConfigType } from '@nestjs/config';
 import emailConfig from '@core/config/envs/email.config';
-import metadataConfig from '@core/config/envs/metadata.config';
 import { setTimeout } from 'node:timers/promises';
 import serverConfig, { Environment } from '@core/config/envs/server.config';
-import { AdminCreatedEvent } from '@core/auth/events/admin-created.event';
 
 @Injectable()
 export class EmailService implements OnModuleInit {
@@ -19,8 +15,6 @@ export class EmailService implements OnModuleInit {
     private serverConf: ConfigType<typeof serverConfig>,
     @Inject(emailConfig.KEY)
     private emailConf: ConfigType<typeof emailConfig>,
-    @Inject(metadataConfig.KEY)
-    private metadataConf: ConfigType<typeof metadataConfig>,
   ) {
     this.transporter = createTransport({
       host: emailConf.host,
@@ -46,26 +40,25 @@ export class EmailService implements OnModuleInit {
     }
   }
 
-  @OnEvent('admin.created', { async: true })
-  private async sendAdminCreationConfirmation(payload: AdminCreatedEvent): Promise<void> {
-    const { accountConfirmationToken, newAdminData } = payload;
-
+  async sendEmail(
+    template: EmailOptions & { html: string },
+    recipient: string = this.emailConf.recipient,
+  ): Promise<void> {
+    const defaultFromName = 'Skema Admin Panel';
+    const fromName: string = template.from ?? defaultFromName;
     const maxRetries = 3;
     const baseDelayMs = 1000;
-    const protocol: 'http' | 'https' =
-      this.serverConf.nodeEnv !== Environment.Production ? 'http' : 'https';
-    const registrationUrl: string = `${protocol}://${this.metadataConf.mainDomain}/${AdminAccountActivationTemplate.REGISTRATION_SLUG}/${accountConfirmationToken}`;
-    const mediaUrl = `${protocol}://${this.metadataConf.mediaDomain}`;
 
-    const adminCreationEmail = new AdminAccountActivationTemplate(
-      newAdminData.name,
-      registrationUrl,
-      mediaUrl,
-    );
+    const mailOptions: SendMailOptions = {
+      from: `"${fromName}" ${this.emailConf.sender}`,
+      to: recipient,
+      subject: template.subject,
+      html: template.html,
+    };
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
-        await this.sendEmail(adminCreationEmail.getEmailContent(), newAdminData.email);
+        await this.transporter.sendMail(mailOptions);
         return;
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
@@ -82,22 +75,5 @@ export class EmailService implements OnModuleInit {
         await setTimeout(delay);
       }
     }
-  }
-
-  private async sendEmail(
-    template: EmailOptions & { html: string },
-    recipient: string = this.emailConf.recipient,
-  ): Promise<void> {
-    const defaultFromName = 'Skema Admin Panel';
-    const fromName: string = template.from ?? defaultFromName;
-
-    const mailOptions: SendMailOptions = {
-      from: `"${fromName}" ${this.emailConf.sender}`,
-      to: recipient,
-      subject: template.subject,
-      html: template.html,
-    };
-
-    await this.transporter.sendMail(mailOptions);
   }
 }

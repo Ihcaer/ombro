@@ -4,7 +4,8 @@ import { plainToInstance } from 'class-transformer';
 type RawSecurityEnv = {
   JWT_ACCESS_SECRET: string;
   JWT_REFRESH_SECRET: string;
-  HASH_SECRET: string;
+  REQUEST_BASE_DELAY: number;
+  REQUEST_JITTER: number;
 };
 
 export const createSecurityConfigMock = (
@@ -13,7 +14,8 @@ export const createSecurityConfigMock = (
   const defaultValues: RawSecurityEnv = {
     JWT_ACCESS_SECRET: 'access-secret',
     JWT_REFRESH_SECRET: 'refresh-secret',
-    HASH_SECRET: 'hash-secret',
+    REQUEST_BASE_DELAY: 20,
+    REQUEST_JITTER: 0,
   };
 
   return plainToInstance(SecurityConfig, { ...defaultValues, ...overrides });

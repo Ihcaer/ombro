@@ -1,8 +1,10 @@
+import { Trim } from '@shared/decorators';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class LoginRequestDto {
   @IsNotEmpty({ message: 'Identifier (email or handle) is required.' })
   @IsString({ message: 'Identifier (email or handle) should be a string.' })
+  @Trim()
   readonly identifier: string;
 
   @IsNotEmpty({ message: 'Password is required.' })

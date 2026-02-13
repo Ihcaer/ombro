@@ -4,18 +4,22 @@ import {
   CreateAdminRequestDto,
   LoginRequestDto,
   LoginResponseDto,
+  ResetPasswordRequestDto,
 } from '@core/auth/dto';
 import { AdminRegistrationService } from '@core/auth/services/admin-registration/admin-registration.service';
 import { AdminAccountActivationTemplate } from '@shared/email/templates/auth/admin-account-activation.template';
 import { HashService } from '@shared/hash/hash.service';
 import { compare, hash } from 'bcrypt';
-import { clearDatabase, mailpitConfig, TestContext, waitForEmail } from './helpers';
+import { clearDatabase, TestContext, waitForEmail } from './helpers';
 import { AuthAdmin } from '@generated/prisma-client';
+import { AUTH_ROUTE_PREFIX } from '@core/auth/auth.constants';
+import { AdminPasswordResetTemplate } from '@shared/email/templates/auth/admin-password-reset.template';
+import { ForgotPasswordRequestDto } from '@core/auth/dto/forgot-password-request.dto';
 
 describe('Auth Module', () => {
   jest.setTimeout(25000);
   let ctx: TestContext;
-  const modulePrefix = '/auth';
+  const modulePrefix = '/' + AUTH_ROUTE_PREFIX;
   let adminRegistrationService: AdminRegistrationService;
   let hashService: HashService;
 
@@ -50,7 +54,7 @@ describe('Auth Module', () => {
   });
 
   describe('Admin activation flow', () => {
-    it('should allow user to log in after email confirmation', async () => {
+    it('should allow admin to log in after email confirmation', async () => {
       const newAdminData: Readonly<CreateAdminRequestDto> = {
         displayName: 'display name',
         handleName: 'handle',
@@ -65,32 +69,33 @@ describe('Auth Module', () => {
         subject: 'Potwierdź rejestrację',
       });
 
-      const mailRes = await fetch(`${mailpitConfig.mailpitApi}/message/${mail.ID}`);
-      const { HTML } = (await mailRes.json()) as { HTML: string };
+      const { HTML } = await ctx.email.getEmailContent(mail.ID);
 
       const tokenRegex = new RegExp(
         `(?<=${AdminAccountActivationTemplate.REGISTRATION_SLUG + '/'})[a-zA-Z0-9_-]+`,
       );
       const tokenMatch = HTML.match(tokenRegex);
-      if (!tokenMatch) throw new Error('Test failed: No token found in registration link');
+      if (!tokenMatch) throw new Error('Test failed: No token found in registration email');
 
       const token = tokenMatch[0];
 
       const confirmAccountFormRes = await request(ctx.app.getHttpServer())
-        .get(modulePrefix + '/confirm-account-form/' + token)
+        .get(modulePrefix + '/register' + '/confirm-account-form/' + token)
         .expect(200);
 
-      const newPassword = 'testPassword';
-      const filledFields: ConfirmAdminRequestDto = { password: newPassword };
+      const newPassword = 'correct-horse-battery-staple-2026';
+      const confirmAccountBody: ConfirmAdminRequestDto = {
+        oneTimeToken: token,
+        password: newPassword,
+      };
       const loginCredentials: LoginRequestDto = {
         identifier: newAdminData.handleName!,
         password: newPassword,
       };
 
       await request(ctx.app.getHttpServer())
-        .patch(modulePrefix + '/confirm-admin')
-        .set('Authorization', `Bearer ${token}`)
-        .send(filledFields)
+        .patch(modulePrefix + '/register' + '/confirm-admin')
+        .send(confirmAccountBody)
         .expect(204);
 
       const loginRes = await request(ctx.app.getHttpServer())
@@ -131,6 +136,7 @@ describe('Auth Module', () => {
       expect(isHashedPasswordIsValid).toBe(true);
     });
   });
+
   describe('Privilege protection verification', () => {
     it.each([
       { privilegeValue: 1, expected: 201, desc: 'correct privileges' },
@@ -161,10 +167,46 @@ describe('Auth Module', () => {
       const accessToken = (loginRes.body as LoginResponseDto).jwt;
 
       await request(ctx.app.getHttpServer())
-        .post(modulePrefix + '/create-admin')
+        .post(modulePrefix + '/register' + '/create-admin')
         .set('Authorization', `Bearer ${accessToken}`)
         .send(newAdmin)
         .expect(expected);
+    });
+  });
+
+  describe('password reset flow', () => {
+    it('should allow admin to reset password', async () => {
+      const adminEmail = 'reset-password-test@example.com';
+      const newPassword = 'correct-horse-battery-staple-2026';
+
+      await ctx.adminFactory.create({ email: adminEmail });
+
+      const forgotPasswordDto: ForgotPasswordRequestDto = { email: adminEmail };
+      await request(ctx.app.getHttpServer())
+        .post(modulePrefix + '/recovery' + '/forgot')
+        .send(forgotPasswordDto)
+        .expect(202);
+
+      const passwordResetEmail = await ctx.email.waitForEmail({
+        recipient: adminEmail,
+        subject: 'Resetowanie hasła w Skema Admin Panel',
+      });
+
+      const { HTML } = await ctx.email.getEmailContent(passwordResetEmail.ID);
+
+      const tokenRegex = new RegExp(
+        `(?<=${AdminPasswordResetTemplate.PASSWORD_RESET_SLUG + '/'})[a-zA-Z0-9_-]+`,
+      );
+      const tokenMatch = HTML.match(tokenRegex);
+      if (!tokenMatch) throw new Error('Test failed: No token found in password reset email');
+      const token = tokenMatch[0];
+
+      const passwordResetDto: ResetPasswordRequestDto = { token, password: newPassword };
+
+      await request(ctx.app.getHttpServer())
+        .post(modulePrefix + '/recovery' + '/reset')
+        .send(passwordResetDto)
+        .expect(204);
     });
   });
 });

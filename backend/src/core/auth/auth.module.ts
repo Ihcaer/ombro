@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './services/auth/auth.service';
-import { AuthController } from './auth.controller';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
@@ -11,7 +10,11 @@ import { AuthAdminRepository } from './auth-admin.repository';
 import { PrismaModule } from '@core/database/prisma/prisma.module';
 import { HashModule } from '@shared/hash/hash.module';
 import { AdminRegistrationService } from './services/admin-registration/admin-registration.service';
+import { PasswordResetService } from './services/password-reset/password-reset.service';
+import { RegistrationController } from './controllers/registration/registration.controller';
+import { PasswordResetController } from './controllers/password-reset/password-reset.controller';
 import securityConfig from '@core/config/envs/security.config';
+import { AuthController } from './controllers/auth/auth.controller';
 
 @Module({
   imports: [
@@ -28,8 +31,9 @@ import securityConfig from '@core/config/envs/security.config';
     AuthTokenService,
     AuthAdminRepository,
     AdminRegistrationService,
+    PasswordResetService,
   ],
-  controllers: [AuthController],
+  controllers: [AuthController, RegistrationController, PasswordResetController],
   exports: [],
 })
 export class AuthModule {}

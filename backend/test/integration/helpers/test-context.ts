@@ -6,11 +6,20 @@ import { AppModule } from 'src/app.module';
 import { clearDatabase } from './clear-database';
 import { App } from 'supertest/types';
 import { AdminFactory } from './factories';
+import { getEmailContent, MailpitDetail, MailpitSummary, waitForEmail } from './email';
 
 export class TestContext {
   app: INestApplication<App>;
   prisma: PrismaService;
   adminFactory: AdminFactory;
+  email: {
+    waitForEmail: (
+      emailData: { recipient: string; subject: string },
+      retries?: number,
+      delay?: number,
+    ) => Promise<MailpitSummary>;
+    getEmailContent: (emailId: string) => Promise<MailpitDetail>;
+  };
 
   static async init() {
     try {
@@ -31,6 +40,7 @@ export class TestContext {
 
       context.prisma = moduleFixture.get<PrismaService>(PrismaService);
       context.adminFactory = new AdminFactory(context.prisma);
+      context.email = { waitForEmail, getEmailContent };
 
       await context.app.init();
       return context;

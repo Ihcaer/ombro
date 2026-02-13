@@ -6,11 +6,13 @@ import { TokenExpirationContext } from '../../factories/token-expiration.factory
 import { AccessJwtPayload, RefreshJwtPayload } from '../../types/jwt.types';
 import securityConfig from '@core/config/envs/security.config';
 import { createSecurityConfigMock } from '@mocks/config/security.config.mock';
+import { PrismaService } from '@core/database/prisma/prisma.service';
 
 describe('AuthTokenService', () => {
   let service: AuthTokenService;
   let jwtService: jest.Mocked<JwtService>;
   // let hashService: jest.Mocked<HashService>;
+  // let prismaService: jest.Mocked<PrismaService>;
 
   beforeEach(async () => {
     jest.clearAllMocks();
@@ -21,12 +23,17 @@ describe('AuthTokenService', () => {
         { provide: JwtService, useValue: { signAsync: jest.fn() } },
         { provide: securityConfig.KEY, useValue: createSecurityConfigMock() },
         { provide: HashService, useValue: { hash: jest.fn() } },
+        {
+          provide: PrismaService,
+          useValue: { authOneTimeToken: { delete: jest.fn(), findUnique: jest.fn() } },
+        },
       ],
     }).compile();
 
     service = module.get<AuthTokenService>(AuthTokenService);
     jwtService = module.get(JwtService);
     // hashService = module.get(HashService);
+    // prismaService = module.get(PrismaService);
   });
 
   describe('.generateTokens()', () => {

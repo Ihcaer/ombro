@@ -1,6 +1,6 @@
 import { registerAs } from '@nestjs/config';
 import { Expose } from 'class-transformer';
-import { IsString, IsNotEmpty } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, Min, Max } from 'class-validator';
 import { validateConfig } from '../env-config.validator';
 
 export class SecurityConfig {
@@ -13,6 +13,18 @@ export class SecurityConfig {
   @IsString()
   @IsNotEmpty()
   jwtRefreshSecret: string;
+
+  @Expose({ name: 'REQUEST_BASE_DELAY' })
+  @IsNumber()
+  @Min(20)
+  @Max(2000)
+  requestBaseDelay: number;
+
+  @Expose({ name: 'REQUEST_JITTER' })
+  @IsNumber()
+  @Min(0)
+  @Max(500)
+  requestJitter: number;
 }
 
 export default registerAs('security', () => validateConfig(SecurityConfig));

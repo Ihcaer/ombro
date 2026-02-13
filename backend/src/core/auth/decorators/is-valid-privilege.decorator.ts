@@ -1,6 +1,5 @@
 import {
   registerDecorator,
-  ValidationArguments,
   ValidationOptions,
   ValidatorConstraint,
   ValidatorConstraintInterface,
@@ -13,8 +12,8 @@ export class IsValidPrivilegeConstraint implements ValidatorConstraintInterface 
     return typeof value === 'number' && PrivilegesUtils.isValid(value);
   }
 
-  defaultMessage(validationArguments: ValidationArguments): string {
-    return `The value ${validationArguments.value} is not a valid permission mask (it contains non-existent bits).`;
+  defaultMessage(): string {
+    return `The value of these privileges does not exist.`;
   }
 }
 

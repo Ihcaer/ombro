@@ -1,12 +1,15 @@
-import { AuthVerification } from '@generated/prisma-client';
+import { AuthAdmin } from '@generated/prisma-client';
 
-export class AdminDto {
-  readonly id: number;
-  readonly displayName: string;
-  readonly handleName: string | null;
-  readonly password: string | null;
-  readonly avatarId: number | null;
-  readonly privileges: number;
-  readonly verification: AuthVerification;
-  readonly isActivated: boolean;
-}
+export type AdminDto = Readonly<
+  Pick<
+    AuthAdmin,
+    | 'id'
+    | 'displayName'
+    | 'handleName'
+    | 'password'
+    | 'avatarId'
+    | 'privileges'
+    | 'verification'
+    | 'isActivated'
+  >
+>;
