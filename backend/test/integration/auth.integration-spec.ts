@@ -8,8 +8,6 @@ import {
 } from '@core/auth/dto';
 import { AdminRegistrationService } from '@core/auth/services/admin-registration/admin-registration.service';
 import { AdminAccountActivationTemplate } from '@shared/email/templates/auth/admin-account-activation.template';
-import { HashService } from '@shared/hash/hash.service';
-import { compare, hash } from 'bcrypt';
 import { TestContext } from './helpers';
 import { AuthAdmin } from '@generated/prisma-client';
 import { AUTH_ROUTE_PREFIX } from '@core/auth/auth.constants';
@@ -21,33 +19,15 @@ describe('Auth Module', () => {
   let ctx: TestContext;
   const modulePrefix = '/' + AUTH_ROUTE_PREFIX;
   let adminRegistrationService: AdminRegistrationService;
-  let hashService: HashService;
 
   beforeAll(async () => {
     ctx = new TestContext();
     await ctx.init();
     adminRegistrationService = ctx.app.get(AdminRegistrationService);
-    hashService = ctx.app.get(HashService);
-  });
-
-  beforeEach(() => {
-    jest
-      .spyOn(hashService, 'hashBcrypt')
-      .mockImplementation(
-        async (password: string, saltRounds: number = HashService.DEFAULT_SALT_ROUNDS) =>
-          await hash(password, saltRounds),
-      );
-    jest
-      .spyOn(hashService, 'compareBcrypt')
-      .mockImplementation(
-        async (comparedValue: string, originalValue: string) =>
-          await compare(comparedValue, originalValue),
-      );
   });
 
   afterEach(async () => {
     await ctx.clearDatabase();
-    jest.restoreAllMocks();
   });
 
   afterAll(async () => {
