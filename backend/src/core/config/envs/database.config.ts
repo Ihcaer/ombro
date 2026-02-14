@@ -8,7 +8,7 @@ export class DatabaseConfig {
   @IsString()
   @IsNotEmpty()
   @IsUrl({
-    protocols: ['postgresql'],
+    protocols: ['postgresql', 'postgres'],
     require_protocol: true,
     require_valid_protocol: true,
     require_tld: false,

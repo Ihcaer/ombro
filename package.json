@@ -1,5 +1,5 @@
 {
-  "name": "Skema",
+  "name": "skema",
   "version": "0.0.1",
   "private": true,
   "workspaces": [
@@ -20,9 +20,7 @@
     "install:frontend:main": "npm install --workspace=frontend/main",
     "test:all": "npm run test --workspaces",
     "test:backend": "npm run test --workspace=backend",
-    "pretest:int:backend": "docker compose -p skema-backend-int-test --env-file .env.test --profile backend-int -f docker-compose.yml -f docker-compose.test.yml up -d --wait",
     "test:int:backend": "npm run test:integration -w backend",
-    "posttest:int:backend": "docker compose -p skema-backend-int-test down -v",
     "test:frontend": "npm run test:frontend:admin && npm run test:frontend:main",
     "test:frontend:admin": "npm run test --workspace=frontend/admin",
     "test:frontend:main": "npm run test --workspace=frontend/main"

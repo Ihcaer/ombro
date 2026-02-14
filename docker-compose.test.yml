@@ -2,26 +2,23 @@ services:
   db:
     ports:
       - "5432:5432"
-    profiles: ["e2e", "backend-int"]
+
   minio:
     ports:
       - "9000:9000"
       - "9001:9001"
-    profiles: ["e2e", "backend-int"]
+      
   mailpit:
     image: axllent/mailpit:v1.28
     ports:
       - "1025:1025"
       - "8025:8025"
-    profiles: ["backend-int"]
     
   backend:
     env_file:
       - ".env.test"
-    profiles: ["e2e"]
 
   frontend_admin:
-    profiles: ["e2e"]
 
   nginx:
     ports:
@@ -31,4 +28,3 @@ services:
       SSL_ENABLED: "false"
       HSTS_MAX_AGE: 60
       RATE_LIMIT_ENABLED: "false"
-    profiles: ["e2e"]

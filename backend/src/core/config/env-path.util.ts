@@ -4,9 +4,7 @@ import { resolve } from 'node:path';
 import { argv } from 'node:process';
 
 export const getEnvPath = (): string[] => {
-  const isTest = argv.some(
-    (arg) => arg.includes('test') || arg.includes('jest'),
-  );
+  const isTest = argv.some((arg) => arg.includes('test') || arg.includes('jest'));
   const env = isTest
     ? Environment.Test
     : (process.env.NODE_ENV as Environment) || Environment.Development;

@@ -10,7 +10,7 @@ import { AdminRegistrationService } from '@core/auth/services/admin-registration
 import { AdminAccountActivationTemplate } from '@shared/email/templates/auth/admin-account-activation.template';
 import { HashService } from '@shared/hash/hash.service';
 import { compare, hash } from 'bcrypt';
-import { clearDatabase, TestContext, waitForEmail } from './helpers';
+import { TestContext } from './helpers';
 import { AuthAdmin } from '@generated/prisma-client';
 import { AUTH_ROUTE_PREFIX } from '@core/auth/auth.constants';
 import { AdminPasswordResetTemplate } from '@shared/email/templates/auth/admin-password-reset.template';
@@ -24,7 +24,8 @@ describe('Auth Module', () => {
   let hashService: HashService;
 
   beforeAll(async () => {
-    ctx = await TestContext.init();
+    ctx = new TestContext();
+    await ctx.init();
     adminRegistrationService = ctx.app.get(AdminRegistrationService);
     hashService = ctx.app.get(HashService);
   });
@@ -45,12 +46,12 @@ describe('Auth Module', () => {
   });
 
   afterEach(async () => {
-    await clearDatabase(ctx.prisma);
+    await ctx.clearDatabase();
     jest.restoreAllMocks();
   });
 
   afterAll(async () => {
-    await ctx.cleanup();
+    await ctx.close();
   });
 
   describe('Admin activation flow', () => {
@@ -64,7 +65,7 @@ describe('Auth Module', () => {
 
       const newAdmin = await adminRegistrationService.createAdminAccount(newAdminData);
 
-      const mail = await waitForEmail({
+      const mail = await ctx.email.waitForEmail({
         recipient: newAdminData.email,
         subject: 'Potwierdź rejestrację',
       });

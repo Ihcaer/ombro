@@ -60,14 +60,6 @@ After any change to `schema.prisma`, you must regenerate the Prisma Client:
 npm run prisma:generate
 ```
 
-### 2.3. Seeding
-
-To populate your database with initial data:
-
-```bash
-npm run prisma:seed
-```
-
 ## 3. Architecture Overview
 
 ### 3.1. NestJS Structure
