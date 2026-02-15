@@ -108,9 +108,11 @@ describe('PasswordService', () => {
 
     beforeEach(() => {
       tokenCtx = {
+        id: 1,
         adminId: 1,
         hashedToken: 'hashed-token',
         expiresAt: new Date(new Date(new Date().getTime() + 15 * 60 * 1000).toISOString()),
+        type: 'PASSWORD_RESET',
         admin: { email: 'test@example.com', handleName: 'handle', displayName: 'display-name' },
       };
 

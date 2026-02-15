@@ -4,11 +4,6 @@ import { UrlManagerModule } from '@modules/url-manager/url-manager.module';
 import { Type } from '@nestjs/common';
 import { EmailModule } from '@shared/email/email.module';
 
-const enabledModules: Type<any>[] = [
-  PrismaModule,
-  UrlManagerModule,
-  EmailModule,
-  AuthModule,
-];
+const enabledModules: Type<any>[] = [PrismaModule, UrlManagerModule, EmailModule, AuthModule];
 
 export default enabledModules;

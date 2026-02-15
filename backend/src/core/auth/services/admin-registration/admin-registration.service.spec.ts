@@ -14,6 +14,7 @@ import { AuthTokenService } from '../auth-token/auth-token.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { plainToInstance } from 'class-transformer';
 import { checkPasswordStrengthUtil } from '@core/auth/utils/check-password-strength/check-password-strength.util';
+import { AuthAdminRepository } from '@core/auth/auth-admin.repository';
 
 jest.mock('@core/auth/utils/check-password-strength/check-password-strength.util');
 
@@ -22,6 +23,7 @@ describe('AdminRegistrationService', () => {
   let hashService: jest.Mocked<HashService>;
   let prismaService: jest.Mocked<PrismaService>;
   let tokenService: jest.Mocked<AuthTokenService>;
+  // let authAdminRepository: jest.Mocked<AuthAdminRepository>;
   let eventEmitter: jest.Mocked<EventEmitter2>;
 
   const mockedCheckPasswordStrengthUtil = checkPasswordStrengthUtil as jest.MockedFunction<
@@ -57,6 +59,7 @@ describe('AdminRegistrationService', () => {
             validateOneTimeToken: jest.fn(),
           },
         },
+        { provide: AuthAdminRepository, useValue: { deleteOneTimeTokenById: jest.fn() } },
         {
           provide: EventEmitter2,
           useValue: { emit: jest.fn() },
@@ -68,6 +71,7 @@ describe('AdminRegistrationService', () => {
     hashService = module.get(HashService);
     prismaService = module.get(PrismaService);
     tokenService = module.get(AuthTokenService);
+    // authAdminRepository = module.get(AuthAdminRepository);
     eventEmitter = module.get(EventEmitter2);
 
     jest.clearAllMocks();
@@ -138,9 +142,11 @@ describe('AdminRegistrationService', () => {
         );
 
         tokenContext = {
+          id: 1,
           adminId: 1,
           hashedToken,
           expiresAt: tokenExpirationTime,
+          type: 'REGISTER',
           admin: {
             verification: 'WAITING',
             password: null,
@@ -171,9 +177,11 @@ describe('AdminRegistrationService', () => {
           new Date(mockNow.getTime() + 24 * 60 * 60 * 1000).toISOString(),
         );
         tokenContext = {
+          id: 1,
           adminId: 1,
           hashedToken,
           expiresAt: tokenExpirationTime,
+          type: 'REGISTER',
           admin: {
             verification: 'WAITING',
             password: null,
@@ -182,6 +190,7 @@ describe('AdminRegistrationService', () => {
         };
         hashedPassword = 'hashedPassword';
         deleteValueMock = {
+          id: 1,
           adminId: tokenContext.adminId,
           hashedToken: tokenContext.hashedToken,
           type: 'REGISTER',

@@ -1,4 +1,4 @@
-import { Prisma } from '@generated/prisma-client';
+import { AuthRefreshToken, Prisma } from '@generated/prisma-client';
 import { Injectable } from '@nestjs/common';
 import { AdminData, Identifier } from './types/common.types';
 import { PrismaService } from '@core/database/prisma/prisma.service';
@@ -8,7 +8,10 @@ import { AdminDto } from './dto/admin.dto';
 export class AuthAdminRepository {
   constructor(private prisma: PrismaService) {}
 
-  async findByIdentifier(identifier: string, identifierType: Identifier): Promise<AdminDto | null> {
+  async findAdminByIdentifier(
+    identifier: string,
+    identifierType: Identifier,
+  ): Promise<AdminDto | null> {
     const whereClause = {
       [identifierType]: identifier,
     } as unknown as Prisma.AuthAdminWhereUniqueInput;
@@ -28,9 +31,12 @@ export class AuthAdminRepository {
     });
   }
 
-  async findAdminAndRefreshTokenById(
+  async findAdminAndRefreshTokensById(
     id: number,
-  ): Promise<{ admin: AdminData; refreshTokenHash: string } | null> {
+  ): Promise<
+    | (AdminData & { refreshTokens: Pick<AuthRefreshToken, 'refreshTokenHash' | 'expiresAt'>[] })
+    | null
+  > {
     const result = await this.prisma.authAdmin.findUnique({
       where: { id },
       select: {
@@ -41,7 +47,7 @@ export class AuthAdminRepository {
         privileges: true,
         verification: true,
         isActivated: true,
-        refreshToken: {
+        refreshTokens: {
           select: {
             refreshTokenHash: true,
             expiresAt: true,
@@ -50,14 +56,9 @@ export class AuthAdminRepository {
       },
     });
 
-    if (!result?.refreshToken) return null;
+    if (!result?.refreshTokens) return null;
 
-    const {
-      refreshToken: { refreshTokenHash },
-      ...adminData
-    } = result;
-
-    return { admin: adminData, refreshTokenHash };
+    return result;
   }
 
   async saveRefreshToken(adminId: number, hash: string, expiresAt: Date): Promise<void> {
@@ -65,13 +66,14 @@ export class AuthAdminRepository {
       where: { id: adminId },
       data: {
         lastLogged: new Date(),
-        refreshToken: {
-          upsert: {
-            create: { refreshTokenHash: hash, expiresAt },
-            update: { refreshTokenHash: hash, expiresAt },
-          },
+        refreshTokens: {
+          create: { refreshTokenHash: hash, expiresAt },
         },
       },
     });
+  }
+
+  async deleteOneTimeTokenById(id: number): Promise<void> {
+    await this.prisma.authOneTimeToken.delete({ where: { id }, select: { id: true } });
   }
 }

@@ -20,7 +20,8 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AdminCreatedEvent } from '@core/auth/events/admin-created.event';
 import { checkPasswordStrengthUtil } from '@core/auth/utils/check-password-strength/check-password-strength.util';
 import { PossibleFieldsToFill } from '@core/auth/types/common.types';
-import { PasswordResetService } from '../password-reset/password-reset.service';
+import { PASSWORD_SALT_ROUNDS } from '@core/auth/auth.constants';
+import { AuthAdminRepository } from '@core/auth/auth-admin.repository';
 
 @Injectable()
 export class AdminRegistrationService {
@@ -34,6 +35,7 @@ export class AdminRegistrationService {
     private readonly hashService: HashService,
     private readonly prismaService: PrismaService,
     private readonly tokenService: AuthTokenService,
+    private readonly authAdminRepository: AuthAdminRepository,
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
@@ -130,7 +132,7 @@ export class AdminRegistrationService {
       (field) => tokenContext.admin![field] === null,
     );
     if (fieldsToFillOut.length === 0) {
-      await this.deleteOneTimeTokenRecord(tokenContext.adminId);
+      await this.authAdminRepository.deleteOneTimeTokenById(tokenContext.id);
       throw new UnprocessableEntityException({
         message: 'Account is not waiting for verification',
         reason: 'VERIFICATION_IS_NOT_CAPABLE',
@@ -149,9 +151,7 @@ export class AdminRegistrationService {
       'REGISTER',
       [...adminFields],
     );
-    const handleName: string = (
-      dto.handleName ? dto.handleName : tokenContext.admin?.displayName
-    ) as string;
+    const handleName: string = (dto.handleName || tokenContext.admin?.handleName) as string;
 
     await this.tokenService.validateOneTimeToken(tokenContext, 'REGISTER');
 
@@ -169,14 +169,12 @@ export class AdminRegistrationService {
       );
     }
 
-    const hashedPassword = await this.hashService.hashBcrypt(
-      dto.password,
-      PasswordResetService.PASSWORD_SALT_ROUNDS,
-    );
+    const hashedPassword = await this.hashService.hashBcrypt(dto.password, PASSWORD_SALT_ROUNDS);
     const adminData: AdminConfirmationData = {
       ...fieldsToFill,
       password: hashedPassword,
       id: tokenContext.adminId,
+      refreshTokenId: tokenContext.id,
     };
     await this.updateAdminVerification(adminData);
   }
@@ -185,12 +183,12 @@ export class AdminRegistrationService {
     adminData: AdminConfirmationData,
     wantedVerificationStatus: AuthVerification = AuthVerification.VERIFIED,
   ): Promise<void> {
-    const { id, ...dataToUpdate } = adminData;
+    const { id, refreshTokenId, ...dataToUpdate } = adminData;
 
     try {
       await this.prismaService.$transaction([
         this.prismaService.authOneTimeToken.delete({
-          where: { adminId: id },
+          where: { id: refreshTokenId },
         }),
         this.prismaService.authAdmin.update({
           where: { id },
@@ -202,11 +200,5 @@ export class AdminRegistrationService {
       console.error('Transaction error:', error);
       throw new InternalServerErrorException('Failed to update data. Please try again later.');
     }
-  }
-
-  private async deleteOneTimeTokenRecord(adminId: number): Promise<void> {
-    await this.prismaService.authOneTimeToken.delete({
-      where: { adminId },
-    });
   }
 }

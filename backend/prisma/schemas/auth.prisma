@@ -33,8 +33,8 @@ model AuthAdmin {
   createdAt    DateTime         @default(now()) @db.Timestamptz(3)
   updatedAt    DateTime         @updatedAt @db.Timestamptz(3)
 
-  token                     AuthOneTimeToken?
-  refreshToken              AuthRefreshToken?
+  oneTimeTokens             AuthOneTimeToken[]
+  refreshTokens             AuthRefreshToken[]
   preferences               AuthPreferences?
   actionLogs                AuditAdminLogs[]
   approvalRequests          TeamApprovalRequest[]
@@ -57,19 +57,22 @@ model AuthAdmin {
 }
 
 model AuthOneTimeToken {
-  adminId     Int           @id @unique
+  id          Int           @id @default(autoincrement())
+  adminId     Int
   hashedToken String        @unique
   type        AuthTokenType
   expiresAt   DateTime      @db.Timestamptz(3)
 
   admin AuthAdmin @relation(fields: [adminId], references: [id], onDelete: Cascade)
 
+  @@unique([adminId, type])
   @@map("one_time_tokens")
   @@schema("auth")
 }
 
 model AuthRefreshToken {
-  adminId          Int      @id @unique
+  id               Int      @id @default(autoincrement())
+  adminId          Int
   refreshTokenHash String   @unique
   expiresAt        DateTime @db.Timestamptz(3)
 

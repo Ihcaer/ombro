@@ -1,14 +1,14 @@
 import { setTimeout } from 'node:timers/promises';
 import { MailpitSummary, MailpitResponse } from './email.types';
-import { mailpitConfig } from './mailpit.config';
 
 export async function waitForEmail(
+  mailpitApi: string,
   emailData: { recipient: string; subject: string },
   retries: number = 5,
   delay: number = 1000,
 ): Promise<MailpitSummary> {
   for (let i = 0; i < retries; i++) {
-    const response = await fetch(mailpitConfig.mailpitApi + '/messages');
+    const response = await fetch(mailpitApi + '/messages');
     const data = (await response.json()) as MailpitResponse;
 
     const email = data.messages.find(

@@ -15,6 +15,7 @@ import { randomBytes } from 'node:crypto';
 import { OneTimeTokenContext } from '@core/auth/types/one-time-token.types';
 import { AuthAdmin, AuthTokenType } from '@generated/prisma-client';
 import { PrismaService } from '@core/database/prisma/prisma.service';
+import { AuthAdminRepository } from '@core/auth/auth-admin.repository';
 
 @Injectable()
 export class AuthTokenService {
@@ -25,6 +26,7 @@ export class AuthTokenService {
     private readonly securityConf: ConfigType<typeof securityConfig>,
     private readonly jwtService: JwtService,
     private readonly hashService: HashService,
+    private readonly authAdminRepository: AuthAdminRepository,
     private readonly prismaService: PrismaService,
   ) {}
 
@@ -98,12 +100,7 @@ export class AuthTokenService {
     }
     const tokenContext = await this.prismaService.authOneTimeToken.findUnique({
       where: { hashedToken, type },
-      select: {
-        hashedToken: true,
-        expiresAt: true,
-        adminId: true,
-        admin: areAdminColumnsSelected ? { select: { ...adminColumns } } : false,
-      },
+      include: { admin: areAdminColumnsSelected ? { select: { ...adminColumns } } : false },
     });
 
     if (!tokenContext)
@@ -117,11 +114,11 @@ export class AuthTokenService {
     tokenType: AuthTokenType,
   ): Promise<void> {
     if (tokenCtx.expiresAt < new Date()) {
-      await this.deleteOneTimeTokenRecord(tokenCtx.adminId);
+      await this.authAdminRepository.deleteOneTimeTokenById(tokenCtx.id);
       throw new GoneException('Token expired');
     }
     if (tokenType === 'REGISTER' && tokenCtx.admin && tokenCtx.admin.verification !== 'WAITING') {
-      await this.deleteOneTimeTokenRecord(tokenCtx.adminId);
+      await this.authAdminRepository.deleteOneTimeTokenById(tokenCtx.id);
       throw new UnprocessableEntityException({
         message: 'Account is not waiting for verification',
         reason: 'VERIFICATION_IS_NOT_CAPABLE',
@@ -133,7 +130,7 @@ export class AuthTokenService {
     return this.hashService.hash(token);
   }
 
-  private async deleteOneTimeTokenRecord(adminId: number): Promise<void> {
+  /* private async deleteOneTimeTokenRecord(adminId: number): Promise<void> {
     await this.prismaService.authOneTimeToken.delete({ where: { adminId } });
-  }
+  } */
 }

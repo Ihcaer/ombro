@@ -8,9 +8,7 @@ import {
 } from '@core/auth/dto';
 import { AdminRegistrationService } from '@core/auth/services/admin-registration/admin-registration.service';
 import { AdminAccountActivationTemplate } from '@shared/email/templates/auth/admin-account-activation.template';
-import { HashService } from '@shared/hash/hash.service';
-import { compare, hash } from 'bcrypt';
-import { clearDatabase, TestContext, waitForEmail } from './helpers';
+import { TestContext } from './helpers';
 import { AuthAdmin } from '@generated/prisma-client';
 import { AUTH_ROUTE_PREFIX } from '@core/auth/auth.constants';
 import { AdminPasswordResetTemplate } from '@shared/email/templates/auth/admin-password-reset.template';
@@ -21,36 +19,19 @@ describe('Auth Module', () => {
   let ctx: TestContext;
   const modulePrefix = '/' + AUTH_ROUTE_PREFIX;
   let adminRegistrationService: AdminRegistrationService;
-  let hashService: HashService;
 
   beforeAll(async () => {
-    ctx = await TestContext.init();
+    ctx = new TestContext();
+    await ctx.init();
     adminRegistrationService = ctx.app.get(AdminRegistrationService);
-    hashService = ctx.app.get(HashService);
-  });
-
-  beforeEach(() => {
-    jest
-      .spyOn(hashService, 'hashBcrypt')
-      .mockImplementation(
-        async (password: string, saltRounds: number = HashService.DEFAULT_SALT_ROUNDS) =>
-          await hash(password, saltRounds),
-      );
-    jest
-      .spyOn(hashService, 'compareBcrypt')
-      .mockImplementation(
-        async (comparedValue: string, originalValue: string) =>
-          await compare(comparedValue, originalValue),
-      );
   });
 
   afterEach(async () => {
-    await clearDatabase(ctx.prisma);
-    jest.restoreAllMocks();
+    await ctx.clearDatabase();
   });
 
   afterAll(async () => {
-    await ctx.cleanup();
+    await ctx.close();
   });
 
   describe('Admin activation flow', () => {
@@ -64,7 +45,7 @@ describe('Auth Module', () => {
 
       const newAdmin = await adminRegistrationService.createAdminAccount(newAdminData);
 
-      const mail = await waitForEmail({
+      const mail = await ctx.email.waitForEmail({
         recipient: newAdminData.email,
         subject: 'Potwierdź rejestrację',
       });

@@ -89,21 +89,23 @@ CREATE TABLE "auth"."admins" (
 
 -- CreateTable
 CREATE TABLE "auth"."one_time_tokens" (
+    "id" SERIAL NOT NULL,
     "adminId" INTEGER NOT NULL,
     "hashedToken" TEXT NOT NULL,
     "type" "auth"."TokenType" NOT NULL,
     "expiresAt" TIMESTAMPTZ(3) NOT NULL,
 
-    CONSTRAINT "one_time_tokens_pkey" PRIMARY KEY ("adminId")
+    CONSTRAINT "one_time_tokens_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "auth"."refresh_tokens" (
+    "id" SERIAL NOT NULL,
     "adminId" INTEGER NOT NULL,
     "refreshTokenHash" TEXT NOT NULL,
     "expiresAt" TIMESTAMPTZ(3) NOT NULL,
 
-    CONSTRAINT "refresh_tokens_pkey" PRIMARY KEY ("adminId")
+    CONSTRAINT "refresh_tokens_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -268,13 +270,10 @@ CREATE UNIQUE INDEX "admins_avatarId_key" ON "auth"."admins"("avatarId");
 CREATE UNIQUE INDEX "admins_email_key" ON "auth"."admins"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "one_time_tokens_adminId_key" ON "auth"."one_time_tokens"("adminId");
-
--- CreateIndex
 CREATE UNIQUE INDEX "one_time_tokens_hashedToken_key" ON "auth"."one_time_tokens"("hashedToken");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "refresh_tokens_adminId_key" ON "auth"."refresh_tokens"("adminId");
+CREATE UNIQUE INDEX "one_time_tokens_adminId_type_key" ON "auth"."one_time_tokens"("adminId", "type");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "refresh_tokens_refreshTokenHash_key" ON "auth"."refresh_tokens"("refreshTokenHash");

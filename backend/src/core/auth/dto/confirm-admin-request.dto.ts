@@ -1,5 +1,5 @@
 import { Trim } from '@shared/decorators';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 import { IsOneTimeToken } from '../decorators';
 import { PossibleFieldsToFill } from '../types/common.types';
 
@@ -17,5 +17,6 @@ export class ConfirmAdminRequestDto implements PossibleFieldsToFill {
   // password strength is checked in the service
   @IsString()
   @IsNotEmpty()
+  @MaxLength(256, { message: 'Password is too long. Maximum length is 128 characters.' })
   readonly password: string;
 }
