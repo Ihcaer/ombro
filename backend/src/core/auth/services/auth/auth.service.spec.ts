@@ -7,7 +7,7 @@ import { AuthTokenService } from '../auth-token/auth-token.service';
 import { ForbiddenException, UnauthorizedException } from '@nestjs/common';
 import { HashService } from '@shared/hash/hash.service';
 import { AuthAdminRepository } from '../../auth-admin.repository';
-import { AuthVerification } from '@generated/prisma-client';
+import { AuthRefreshToken, AuthVerification } from '@generated/prisma-client';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -16,15 +16,14 @@ describe('AuthService', () => {
   let hashService: jest.Mocked<HashService>;
 
   beforeEach(async () => {
-    jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
         {
           provide: AuthAdminRepository,
           useValue: {
-            findByIdentifier: jest.fn(),
-            findAdminAndRefreshTokenById: jest.fn(),
+            findAdminByIdentifier: jest.fn(),
+            findAdminAndRefreshTokensById: jest.fn(),
             saveRefreshToken: jest.fn(),
           },
         },
@@ -46,6 +45,8 @@ describe('AuthService', () => {
     adminRepository = module.get(AuthAdminRepository);
     tokenService = module.get(AuthTokenService);
     hashService = module.get(HashService);
+
+    jest.clearAllMocks();
   });
 
   describe('login methods', () => {
@@ -84,7 +85,7 @@ describe('AuthService', () => {
           password: admin.password!,
         };
 
-        adminRepository.findByIdentifier.mockResolvedValue(admin);
+        adminRepository.findAdminByIdentifier.mockResolvedValue(admin);
         hashService.compareBcrypt.mockResolvedValue(loginCredentials.password === admin.password);
 
         const result = await service.loginWithCredentials(loginCredentials);
@@ -100,7 +101,7 @@ describe('AuthService', () => {
           password: 'wrong-password',
         };
 
-        adminRepository.findByIdentifier.mockResolvedValue(admin);
+        adminRepository.findAdminByIdentifier.mockResolvedValue(admin);
         hashService.compareBcrypt.mockResolvedValue(loginCredentials.password === admin.password);
 
         await expect(service.loginWithCredentials(loginCredentials)).rejects.toThrow(
@@ -116,7 +117,7 @@ describe('AuthService', () => {
           password: 'password',
         };
 
-        adminRepository.findByIdentifier.mockResolvedValue(admin);
+        adminRepository.findAdminByIdentifier.mockResolvedValue(admin);
         hashService.compareBcrypt.mockResolvedValue(loginCredentials.password !== admin.password);
 
         await expect(service.loginWithCredentials(loginCredentials)).rejects.toThrow(
@@ -128,21 +129,29 @@ describe('AuthService', () => {
     describe('.loginWithRefreshToken()', () => {
       let methodPayload: { adminId: number; refreshToken: string };
       let admin: AdminDto;
+      let refreshTokens: Pick<AuthRefreshToken, 'refreshTokenHash' | 'expiresAt'>[];
 
       beforeEach(() => {
         admin = { ...adminInDb } as AdminDto;
+
         methodPayload = {
           adminId: admin.id,
           refreshToken: 'old-refresh-token',
         };
+        refreshTokens = [
+          {
+            refreshTokenHash: 'refresh-token-hash',
+            expiresAt: new Date(new Date(new Date().getTime() + 24 * 60 * 1000).toISOString()),
+          },
+        ];
       });
 
       it('should refresh tokens successfully', async () => {
-        adminRepository.findAdminAndRefreshTokenById.mockResolvedValue({
-          admin,
-          refreshTokenHash,
+        adminRepository.findAdminAndRefreshTokensById.mockResolvedValue({
+          ...admin,
+          refreshTokens,
         });
-        hashService.compareHash.mockReturnValue(true);
+        hashService.compareHash.mockReturnValueOnce(true).mockReturnValue(false);
 
         const result = await service.loginWithRefreshToken(
           methodPayload.adminId,
@@ -153,7 +162,7 @@ describe('AuthService', () => {
       });
 
       it('should throw when id is wrong', async () => {
-        adminRepository.findAdminAndRefreshTokenById.mockResolvedValue(null);
+        adminRepository.findAdminAndRefreshTokensById.mockResolvedValue(null);
 
         await expect(
           service.loginWithRefreshToken(methodPayload.adminId, methodPayload.refreshToken),
@@ -161,10 +170,13 @@ describe('AuthService', () => {
       });
 
       it('should throw on invalid refresh token', async () => {
-        adminRepository.findAdminAndRefreshTokenById.mockResolvedValue({
-          admin,
-          refreshTokenHash,
-        });
+        console.log({ ...admin, refreshTokens });
+        const adminAndRefreshTokenFromDb = {
+          ...admin,
+          refreshTokens: [...refreshTokens],
+        };
+        console.log(adminAndRefreshTokenFromDb);
+        adminRepository.findAdminAndRefreshTokensById.mockResolvedValue(adminAndRefreshTokenFromDb);
         hashService.compareHash.mockReturnValue(false);
 
         await expect(

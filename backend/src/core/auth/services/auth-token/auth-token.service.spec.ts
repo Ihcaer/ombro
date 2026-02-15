@@ -7,11 +7,13 @@ import { AccessJwtPayload, RefreshJwtPayload } from '../../types/jwt.types';
 import securityConfig from '@core/config/envs/security.config';
 import { createSecurityConfigMock } from '@mocks/config/security.config.mock';
 import { PrismaService } from '@core/database/prisma/prisma.service';
+import { AuthAdminRepository } from '@core/auth/auth-admin.repository';
 
 describe('AuthTokenService', () => {
   let service: AuthTokenService;
   let jwtService: jest.Mocked<JwtService>;
   // let hashService: jest.Mocked<HashService>;
+  // let authAdminRepository: jest.Mocked<AuthAdminRepository>;
   // let prismaService: jest.Mocked<PrismaService>;
 
   beforeEach(async () => {
@@ -23,6 +25,7 @@ describe('AuthTokenService', () => {
         { provide: JwtService, useValue: { signAsync: jest.fn() } },
         { provide: securityConfig.KEY, useValue: createSecurityConfigMock() },
         { provide: HashService, useValue: { hash: jest.fn() } },
+        { provide: AuthAdminRepository, useValue: { deleteOneTimeTokenById: jest.fn() } },
         {
           provide: PrismaService,
           useValue: { authOneTimeToken: { delete: jest.fn(), findUnique: jest.fn() } },
@@ -33,6 +36,7 @@ describe('AuthTokenService', () => {
     service = module.get<AuthTokenService>(AuthTokenService);
     jwtService = module.get(JwtService);
     // hashService = module.get(HashService);
+    // authAdminRepository = module.get(AuthAdminRepository);
     // prismaService = module.get(PrismaService);
   });
 

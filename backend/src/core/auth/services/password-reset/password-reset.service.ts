@@ -125,8 +125,8 @@ export class PasswordResetService {
           select: { id: true },
         }),
         this.prismaService.authOneTimeToken.delete({
-          where: { adminId: tokenContext.adminId },
-          select: { adminId: true },
+          where: { id: tokenContext.id },
+          select: { id: true },
         }),
       ]);
     } catch (error: unknown) {

@@ -40,7 +40,7 @@ export class AuthService implements OnModuleInit {
   async loginWithCredentials(dto: LoginRequestDto): Promise<SignInResponse> {
     const identifierType = AuthService.classifyIdentifier(dto.identifier);
 
-    const admin = await this.adminRepository.findByIdentifier(dto.identifier, identifierType);
+    const admin = await this.adminRepository.findAdminByIdentifier(dto.identifier, identifierType);
 
     const passwordToCompare: string = admin?.password || this.dummyHash;
     const isPasswordValid: boolean = await this.hashService.compareBcrypt(
@@ -63,16 +63,18 @@ export class AuthService implements OnModuleInit {
   }
 
   async loginWithRefreshToken(adminId: number, refreshToken: string): Promise<SignInResponse> {
-    const data = await this.adminRepository.findAdminAndRefreshTokenById(adminId);
-    if (!data) throwLoginError();
+    const now = new Date();
+    const data = await this.adminRepository.findAdminAndRefreshTokensById(adminId);
+    if (!data || data.refreshTokens.length === 0) throwLoginError();
 
-    const isTokenValid: boolean = this.hashService.compareHash(
-      refreshToken,
-      data!.refreshTokenHash,
-    );
+    const { refreshTokens, ...admin } = data!;
+
+    const isTokenValid: boolean = refreshTokens
+      .filter((token) => token.expiresAt > now)
+      .some((token) => this.hashService.compareHash(refreshToken, token.refreshTokenHash));
     if (!isTokenValid) throwLoginError();
 
-    return this.issueTokens(data!.admin);
+    return this.issueTokens(admin);
   }
 
   private async issueTokens(admin: AdminData): Promise<SignInResponse> {

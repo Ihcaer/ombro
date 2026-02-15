@@ -7,10 +7,7 @@ import { RefreshJwtPayload, RefreshTokenWithAdmin } from '../types/jwt.types';
 import securityConfig from '@core/config/envs/security.config';
 
 @Injectable()
-export class RefreshTokenStrategy extends PassportStrategy(
-  Strategy,
-  'jwt-refresh',
-) {
+export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
   constructor(
     @Inject(securityConfig.KEY)
     private readonly securityConf: ConfigType<typeof securityConfig>,
@@ -28,9 +25,7 @@ export class RefreshTokenStrategy extends PassportStrategy(
   validate(req: Request, payload: RefreshJwtPayload): RefreshTokenWithAdmin {
     const cookies = req.cookies as { refresh_token?: unknown };
     const refreshToken =
-      typeof cookies.refresh_token === 'string'
-        ? cookies.refresh_token
-        : undefined;
+      typeof cookies.refresh_token === 'string' ? cookies.refresh_token : undefined;
 
     if (!refreshToken) {
       throw new ForbiddenException('Refresh token missing');
