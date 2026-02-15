@@ -8,10 +8,10 @@ import { ResetPasswordRequestDto } from '@core/auth/dto';
 import { OneTimeTokenContext } from '@core/auth/types/one-time-token.types';
 import { checkPasswordStrengthUtil } from '@core/auth/utils/check-password-strength/check-password-strength.util';
 import { HashService } from '@shared/hash/hash.service';
+import { PASSWORD_SALT_ROUNDS } from '@core/auth/auth.constants';
 
 @Injectable()
 export class PasswordResetService {
-  static readonly PASSWORD_SALT_ROUNDS: number = 12;
   private static readonly RESET_PASSWORD_TOKEN_EXPIRATION_MS = 15 * 60 * 1000;
   private static readonly DEFAULT_RESET_PASSWORD_INTERNAL_ERR_MESSAGE: string =
     'We encountered an unexpected problem while resetting your password. Please try again later. If the issue persists, contact our support team.';
@@ -115,10 +115,7 @@ export class PasswordResetService {
       );
     }
 
-    const hashedPassword = await this.hashService.hashBcrypt(
-      dto.password,
-      PasswordResetService.PASSWORD_SALT_ROUNDS,
-    );
+    const hashedPassword = await this.hashService.hashBcrypt(dto.password, PASSWORD_SALT_ROUNDS);
 
     try {
       await this.prismaService.$transaction([

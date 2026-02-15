@@ -4,9 +4,10 @@ import { AuthService } from './auth.service';
 import { LoginRequestDto } from '../../dto/login-request.dto';
 import { AdminDto } from '../../dto/admin.dto';
 import { AuthTokenService } from '../auth-token/auth-token.service';
-import { UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, UnauthorizedException } from '@nestjs/common';
 import { HashService } from '@shared/hash/hash.service';
 import { AuthAdminRepository } from '../../auth-admin.repository';
+import { AuthVerification } from '@generated/prisma-client';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -107,19 +108,19 @@ describe('AuthService', () => {
         );
       });
 
-      it('should throw when admin account is disabled', async () => {
+      it('should throw when admin account is not verified', async () => {
         const admin = { ...adminInDb } as AdminDto;
-        Object.assign(admin, { isActivated: false });
+        Object.assign(admin, { password: null, verification: AuthVerification.WAITING });
         loginCredentials = {
           identifier: admin.handleName!,
-          password: admin.password!,
+          password: 'password',
         };
 
         adminRepository.findByIdentifier.mockResolvedValue(admin);
-        hashService.compareBcrypt.mockResolvedValue(loginCredentials.password === admin.password);
+        hashService.compareBcrypt.mockResolvedValue(loginCredentials.password !== admin.password);
 
         await expect(service.loginWithCredentials(loginCredentials)).rejects.toThrow(
-          UnauthorizedException,
+          ForbiddenException,
         );
       });
     });

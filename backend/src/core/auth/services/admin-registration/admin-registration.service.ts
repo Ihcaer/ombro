@@ -20,7 +20,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AdminCreatedEvent } from '@core/auth/events/admin-created.event';
 import { checkPasswordStrengthUtil } from '@core/auth/utils/check-password-strength/check-password-strength.util';
 import { PossibleFieldsToFill } from '@core/auth/types/common.types';
-import { PasswordResetService } from '../password-reset/password-reset.service';
+import { PASSWORD_SALT_ROUNDS } from '@core/auth/auth.constants';
 
 @Injectable()
 export class AdminRegistrationService {
@@ -169,10 +169,7 @@ export class AdminRegistrationService {
       );
     }
 
-    const hashedPassword = await this.hashService.hashBcrypt(
-      dto.password,
-      PasswordResetService.PASSWORD_SALT_ROUNDS,
-    );
+    const hashedPassword = await this.hashService.hashBcrypt(dto.password, PASSWORD_SALT_ROUNDS);
     const adminData: AdminConfirmationData = {
       ...fieldsToFill,
       password: hashedPassword,
