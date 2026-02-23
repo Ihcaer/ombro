@@ -17,7 +17,7 @@ node_modules
 .env.test
 
 # Prisma
-generated/
+**/prisma-client
 
 # gateway
 **/nginx/ssl/certificates/
@@ -30,7 +30,8 @@ environment.prod.ts
 # frontend admin
 **/.nx/cache
 **/.nx/workspace-data
-**/tools/ai-migrations/
+**/.cursor/rules/nx-rules.mdc
+**/.github/instructions/nx.instructions.md
 vite.config.*.timestamp*
 vitest.config.*.timestamp*
 

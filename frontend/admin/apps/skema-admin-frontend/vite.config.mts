@@ -23,7 +23,6 @@ export default defineConfig(() => ({
     coverage: {
       reportsDirectory: '../../coverage/apps/skema-admin-frontend',
       provider: 'v8' as const,
-      include: ['src/**/*.{ts,tsx}'],
     },
   },
 }));
