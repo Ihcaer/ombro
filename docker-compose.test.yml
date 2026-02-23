@@ -24,7 +24,7 @@ services:
     ports:
       - "5000:80"
     environment:
-      NGINX_PORT: 80
-      SSL_ENABLED: "false"
-      HSTS_MAX_AGE: 60
-      RATE_LIMIT_ENABLED: "false"
+      NGINX_PORT: ${NGINX_PORT}
+      RATE_LIMIT_ENABLED: ${RATE_LIMIT_ENABLED}
+      SSL_ENABLED: ${SSL_ENABLED}
+      HSTS_MAX_AGE: ${HSTS_MAX_AGE}

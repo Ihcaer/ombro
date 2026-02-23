@@ -18,12 +18,12 @@ services:
       - "80:80"
       - "443:443"
     environment:
-      NGINX_PORT: 443
-      RATE_LIMIT_ENABLED: "true"
-      SSL_ENABLED: "true"
-      SSL_CERT_NAME: "example.crt"
-      SSL_KEY_NAME: "example.key"
-      HSTS_MAX_AGE: 31536000
+      NGINX_PORT: ${NGINX_PORT}
+      RATE_LIMIT_ENABLED: ${RATE_LIMIT_ENABLED}
+      SSL_ENABLED: ${SSL_ENABLED}
+      SSL_CERT_NAME: ${SSL_CERT_NAME}
+      SSL_KEY_NAME: ${SSL_KEY_NAME}
+      HSTS_MAX_AGE: ${HSTS_MAX_AGE}
 
 volumes:
   postgres_data_prod:
