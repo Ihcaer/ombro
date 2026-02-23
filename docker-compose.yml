@@ -68,24 +68,24 @@ services:
     ports:
       - "5000:80"
     volumes:
-      - ./nginx/templates/variables.conf.template:/etc/nginx/templates/variables.conf.template:ro
-      - ./nginx/includes:/etc/nginx/includes:ro
-      - ./nginx/conf.d/default-http.conf:/etc/nginx/conf.d/default-http.conf:ro
-      - ./nginx/conf.d/default-https.conf:/etc/nginx/conf.d/default-https.conf:ro
-      - ./nginx/error-sites:/usr/share/nginx/html/errors:ro
-      - ./nginx/ssl/certificates:/etc/nginx/ssl:ro
-      - ./nginx/public-assets:/usr/share/nginx/html/public-assets:ro
+      - ./infrastructure/nginx/templates/variables.conf.template:/etc/nginx/templates/variables.conf.template:ro
+      - ./infrastructure/nginx/includes:/etc/nginx/includes:ro
+      - ./infrastructure/nginx/conf.d/default-http.conf:/etc/nginx/conf.d/default-http.conf:ro
+      - ./infrastructure/nginx/conf.d/default-https.conf:/etc/nginx/conf.d/default-https.conf:ro
+      - ./infrastructure/nginx/error-sites:/usr/share/nginx/html/errors:ro
+      - ./infrastructure/nginx/ssl/certificates:/etc/nginx/ssl:ro
+      - ./infrastructure/nginx/public-assets:/usr/share/nginx/html/public-assets:ro
     environment:
       # NGINX config
       NGINX_HOST: ${APP_MAIN_DOMAIN}
-      NGINX_PORT: 80
-      RATE_LIMIT_ENABLED: "false"
-      UPLOAD_FILE_MAX_SIZE: 50m
+      NGINX_PORT: ${NGINX_PORT}
+      RATE_LIMIT_ENABLED: ${RATE_LIMIT_ENABLED}
+      UPLOAD_FILE_MAX_SIZE: ${UPLOAD_FILE_MAX_SIZE}
       # SSL
-      SSL_ENABLED: "false"
-      SSL_CERT_NAME: "example.crt"
-      SSL_KEY_NAME: "example.key"
-      HSTS_MAX_AGE: 60
+      SSL_ENABLED: ${SSL_ENABLED}
+      SSL_CERT_NAME: ${SSL_CERT_NAME}
+      SSL_KEY_NAME: ${SSL_KEY_NAME}
+      HSTS_MAX_AGE: ${HSTS_MAX_AGE}
       # Services
       MINIO_HOST: "${MINIO_HOST}:${MINIO_PORT}"
       MINIO_CONSOLE_HOST: "${MINIO_HOST}:9001"
