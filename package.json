@@ -2,27 +2,22 @@
   "name": "skema",
   "version": "0.0.1",
   "private": true,
-  "workspaces": [
-    "backend",
-    "frontend/admin",
-    "frontend/main"
-  ],
   "scripts": {
     "start:dev": "docker compose --env-file .env.local -f docker-compose.yml -f docker-compose.dev.yml up --build",
     "start:prod": "docker compose --env-file .env -f docker-compose.yml -f docker-compose.prod.yml up -d --build",
     "stop": "docker compose down",
     "pretest:e2e": "docker compose -p skema-e2e-test --env-file .env.test --profile e2e -f docker-compose.yml -f docker-compose.test.yml up -d --wait",
-    "test:e2e": "npm run test:e2e -w backend",
+    "test:e2e": "npm run test:e2e --prefix backend",
     "posttest:e2e": "docker compose -p skema-e2e-test down -v",
-    "install:backend": "npm install --workspace=backend",
+    "install:backend": "npm install --prefix backend",
     "install:frontend": "npm run install:frontend:admin && npm run install:frontend:main",
-    "install:frontend:admin": "npm install --workspace=frontend/admin",
-    "install:frontend:main": "npm install --workspace=frontend/main",
-    "test:all": "npm run test --workspaces",
-    "test:backend": "npm run test --workspace=backend",
-    "test:int:backend": "npm run test:integration -w backend",
+    "install:frontend:admin": "npm install --prefix frontend/admin",
+    "install:frontend:main": "npm install --prefix frontend/main",
+    "test:all": "npm run test:backend && npm run test:frontend",
+    "test:backend": "npm run test --prefix backend",
+    "test:int:backend": "npm run test:integration --prefix backend",
     "test:frontend": "npm run test:frontend:admin && npm run test:frontend:main",
-    "test:frontend:admin": "npm run test --workspace=frontend/admin",
-    "test:frontend:main": "npm run test --workspace=frontend/main"
+    "test:frontend:admin": "npm run test --prefix frontend/admin",
+    "test:frontend:main": "npm run test --prefix frontend/main"
   }
 }
