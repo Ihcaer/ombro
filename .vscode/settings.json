@@ -9,6 +9,7 @@
     "HSTS",
     "Ihcaer",
     "mailpit",
+    "Ombro",
     "primeng",
     "primeui",
     "primeuix",
@@ -17,5 +18,6 @@
     "Timestamptz",
     "zxcvbn"
   ],
-  "editor.rulers": [100]
+  "editor.rulers": [100],
+  "nxConsole.nxWorkspacePath": "frontend\\admin"
 }

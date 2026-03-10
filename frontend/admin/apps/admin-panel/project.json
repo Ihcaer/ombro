@@ -1,9 +1,9 @@
 {
-  "name": "skema-admin-frontend",
+  "name": "admin-panel",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "prefix": "app",
-  "sourceRoot": "apps/skema-admin-frontend/src",
+  "sourceRoot": "apps/admin-panel/src",
   "tags": [],
   "targets": {
     "build": {
@@ -11,19 +11,19 @@
       "outputs": ["{options.outputPath}"],
       "options": {
         "baseHref": "/admin/",
-        "outputPath": "dist/apps/skema-admin-frontend",
-        "browser": "apps/skema-admin-frontend/src/main.ts",
+        "outputPath": "dist/apps/admin-panel",
+        "browser": "apps/admin-panel/src/main.ts",
         "polyfills": ["zone.js"],
-        "tsConfig": "apps/skema-admin-frontend/tsconfig.app.json",
+        "tsConfig": "apps/admin-panel/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
           {
             "glob": "**/*",
-            "input": "apps/skema-admin-frontend/public"
+            "input": "apps/admin-panel/public"
           },
           {
             "glob": "**/*",
-            "input": "apps/skema-admin-frontend/src/assets",
+            "input": "apps/admin-panel/src/assets",
             "output": "assets"
           },
           {
@@ -32,7 +32,7 @@
             "output": "assets"
           }
         ],
-        "styles": ["apps/skema-admin-frontend/src/styles.scss"]
+        "styles": ["apps/admin-panel/src/styles.scss"]
       },
       "configurations": {
         "production": {
@@ -51,8 +51,8 @@
           "outputHashing": "all",
           "fileReplacements": [
             {
-              "replace": "apps/skema-admin-frontend/src/environments/environment.dev.ts",
-              "with": "apps/skema-admin-frontend/src/environments/environment.prod.ts"
+              "replace": "apps/admin-panel/src/environments/environment.dev.ts",
+              "with": "apps/admin-panel/src/environments/environment.prod.ts"
             }
           ]
         },
@@ -69,10 +69,10 @@
       "executor": "@angular/build:dev-server",
       "configurations": {
         "production": {
-          "buildTarget": "skema-admin-frontend:build:production"
+          "buildTarget": "admin-panel:build:production"
         },
         "development": {
-          "buildTarget": "skema-admin-frontend:build:development"
+          "buildTarget": "admin-panel:build:development"
         }
       },
       "defaultConfiguration": "development"
@@ -80,7 +80,7 @@
     "extract-i18n": {
       "executor": "@angular/build:extract-i18n",
       "options": {
-        "buildTarget": "skema-admin-frontend:build"
+        "buildTarget": "admin-panel:build"
       }
     },
     "lint": {
@@ -90,16 +90,16 @@
       "executor": "@nx/vitest:test",
       "outputs": ["{options.reportsDirectory}"],
       "options": {
-        "reportsDirectory": "../../coverage/apps/skema-admin-frontend"
+        "reportsDirectory": "../../coverage/apps/admin-panel"
       }
     },
     "serve-static": {
       "continuous": true,
       "executor": "@nx/web:file-server",
       "options": {
-        "buildTarget": "skema-admin-frontend:build",
+        "buildTarget": "admin-panel:build",
         "port": 4200,
-        "staticFilePath": "dist/apps/skema-admin-frontend/browser",
+        "staticFilePath": "dist/apps/admin-panel/browser",
         "spa": true
       }
     }

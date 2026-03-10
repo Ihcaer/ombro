@@ -1,6 +1,7 @@
 {
-  "name": "skema",
-  "version": "0.0.1",
+  "name": "ombro",
+  "description": "Ombro monorepo providing infrastructure for Skema services",
+  "version": "0.0.0",
   "private": true,
   "scripts": {
     "start:dev": "docker compose --env-file .env.local -f docker-compose.yml -f docker-compose.dev.yml up --build",

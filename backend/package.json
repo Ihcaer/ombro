@@ -1,5 +1,6 @@
 {
-  "name": "skema-backend",
+  "name": "@ombro/api",
+  "description": "Ombro API - Core NestJS services and business logic",
   "version": "0.0.1",
   "author": "Ihcaer (https://github.com/Ihcaer)",
   "private": true,

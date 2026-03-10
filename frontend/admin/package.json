@@ -1,5 +1,6 @@
 {
-  "name": "admin",
+  "name": "@ombro/frontend-admin-panel",
+  "description": "Ombro Admin",
   "version": "0.0.1",
   "author": "Ihcaer (https://github.com/Ihcaer)",
   "license": "UNLICENSED",
