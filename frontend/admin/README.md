@@ -1,4 +1,6 @@
-# Skema Admin Panel Frontend
+# @ombro/admin-panel
+
+> **Skema Admin Panel** > Part of the **Skema** tech ecosystem.
 
 This repository hosts the **Admin Panel**, a specialized application built with **Angular** and used exclusively by authorized personnel to manage business data, configuration, and users via the Backend API.
 

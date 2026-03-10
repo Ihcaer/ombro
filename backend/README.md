@@ -1,4 +1,6 @@
-# Skema Backend API
+# @ombro/api
+
+> **Skema API** > Part of the **Skema** tech ecosystem.
 
 This repository contains the core business logic and API services for the application, built using **NestJS** and **Prisma** for database interaction.
 
