@@ -92,6 +92,7 @@ services:
       BACKEND_API_HOST: "backend:${API_PORT}"
       FRONTEND_MAIN_HOST: "frontend_main:80"
       FRONTEND_ADMIN_HOST: "frontend_admin:80"
+      FRONTEND_ADMIN_SLUG: "{ADMIN_PANEL_SLUG}"
     networks:
       - minio_public_net
       - backend_net
@@ -115,6 +116,7 @@ services:
           ${BACKEND_API_HOST}
           ${FRONTEND_MAIN_HOST}
           ${FRONTEND_ADMIN_HOST}
+          ${FRONTEND_ADMIN_SLUG}
         ' < /etc/nginx/templates/variables.conf.template \
           > /etc/nginx/includes/variables.conf &&
         if [ \"$SSL_ENABLED\" != \"true\" ]; then

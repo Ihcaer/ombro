@@ -16,6 +16,7 @@ set $minio_console_host ${MINIO_CONSOLE_HOST};
 set $backend_api_host ${BACKEND_API_HOST};
 set $frontend_main_host ${FRONTEND_MAIN_HOST};
 set $frontend_admin_host ${FRONTEND_ADMIN_HOST};
+set $frontend_admin_path /${FRONTEND_ADMIN_SLUG};
 
 # Maps
 map $ssl_enabled $protocol_scheme {
