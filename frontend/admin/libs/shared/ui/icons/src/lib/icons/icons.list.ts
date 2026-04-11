@@ -1,85 +1,92 @@
 // Material symbols
-const generalActionsIconsSet = [
-  'more_vert',
-  'close',
-  'settings',
-  'undo',
-  'cancel',
-  'menu',
-  'help',
-  'info',
-  'warning',
-  'refresh',
-  'check',
-  'check_circle',
-  'add_2',
+const navigationIconsSet = [
+  'home',
+  'dashboard',
+  'first_page',
+  'last_page',
+  'chevron_backward',
   'chevron_forward',
-  'gavel',
+  'keyboard_arrow_down',
+  'keyboard_arrow_up',
+  'left_panel_close',
+  'left_panel_open',
 ] as const;
-const fileManagementIconsSet = [
-  'folder',
-  'folder_open',
-  'draft',
-  'attach_file_add',
-  'upload_file',
-  'download',
+const actionIconsSet = [
+  'search',
+  'edit',
   'delete',
   'content_copy',
   'content_cut',
   'content_paste',
+  'download',
+  'upload_file',
+  'send',
+  'refresh',
+  'cached',
+  'mop',
+  'filter_alt',
+  'more_horiz',
+  'close',
 ] as const;
-const layoutAndViewingIconsSet = [
-  'grid_view',
-  'view_list',
-  'list_alt',
-  'toc',
-] as const;
-const navigationIconsSet = [
-  'open_in_browser',
-  'open_in_new',
-  'preview',
-] as const;
-const userAccountIconsSet = [
-  'login',
-  'logout',
-  'account_circle',
+const userAuthIconsSet = [
   'account_box',
-  'person_add',
-  'group',
+  'account_circle',
   'person_check',
   'person_off',
-  'add_moderator',
-  'remove_moderator',
-  'verified_user',
-  'crown',
-] as const;
-const securityIconsSet = [
-  'visibility',
-  'visibility_off',
-  'lock',
+  'groups',
+  'login',
+  'logout',
+  'exit_to_app',
+  'lock_person',
+  'lock_reset',
   'lock_open',
   'lock_open_right',
-  'lock_reset',
+  'user_attributes',
 ] as const;
-const contentEditingIconsSet = ['edit', 'article', 'link', 'label'] as const;
-const calendarTimeIconsSet = [
-  'calendar_today',
+const filesContentIconsSet = [
+  'folder',
+  'folder_eye',
+  'create_new_folder',
+  'drive_file_move',
+  'storage',
+  'inventory_2',
+  'article',
+  'draft',
+  'draft_orders',
+  'photo_library',
+  'history',
+] as const;
+const statusInfoIconsSet = [
+  'info',
+  'help',
+  'warning',
+  'check_circle',
+  'verified_user',
+  'shield_question',
+  'gpp_bad',
+  'visibility',
+  'preview',
+  'label_important',
+  'crown',
+  'gavel',
+  'rule',
+] as const;
+const systemIconsSet = [
+  'settings',
+  'link',
+  'open_in_browser',
+  'open_in_new',
   'event',
-  'calendar_add_on',
-  'edit_calendar',
+  'commit',
 ] as const;
-const miscellaneousIconsSet = ['discover_tune'] as const;
 
 export const MATERIAL_ICONS = [
-  ...generalActionsIconsSet,
-  ...fileManagementIconsSet,
-  ...layoutAndViewingIconsSet,
   ...navigationIconsSet,
-  ...userAccountIconsSet,
-  ...securityIconsSet,
-  ...contentEditingIconsSet,
-  ...calendarTimeIconsSet,
-  ...miscellaneousIconsSet,
+  ...actionIconsSet,
+  ...userAuthIconsSet,
+  ...filesContentIconsSet,
+  ...statusInfoIconsSet,
+  ...systemIconsSet,
 ] as const;
 export type MaterialIconName = (typeof MATERIAL_ICONS)[number];
 
