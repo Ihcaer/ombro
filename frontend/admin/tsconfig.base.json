@@ -13,10 +13,9 @@
     "lib": ["es2020", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
-    "baseUrl": ".",
     "paths": {
-      "@themes/default-theme": ["libs/themes/default-theme/src/index.ts"],
-      "@ui/icons": ["libs/shared/ui/icons/src/index.ts"]
+      "@ombro/ui/icons": ["./libs/shared/ui/icons/src/index.ts"],
+      "@ombro/themes": ["./libs/themes/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

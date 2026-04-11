@@ -1,0 +1,93 @@
+import { definePreset } from '@primeuix/themes';
+import Aura from '@primeuix/themes/aura';
+
+export const DefaultTheme = definePreset(Aura, {
+  primitive: {
+    brandBlue: {
+      50: '#F7F9FC',
+      100: '#EDF1F8',
+      200: '#C3D2EA',
+      300: '#8CACD9',
+      400: '#6287B5',
+      500: '#476285',
+      600: '#2D4059',
+      700: '#152130',
+      800: '#0D1621',
+      900: '#080D14',
+      950: '#04070A',
+    },
+    mutedBlue: {
+      100: '#ECF1F9',
+      200: '#C2D3EB',
+      300: '#88ADDA',
+      400: '#6188B2',
+      500: '#466384',
+      600: '#2D4158',
+      700: '#15222F',
+    },
+    grey: {
+      100: '#F0F1F1',
+      200: '#D0D1D3',
+      300: '#A8AAAE',
+      400: '#828489',
+      500: '#5F6164',
+      600: '#3E3F42',
+      700: '#202022',
+    },
+    amberEarth: {
+      100: '#F5E2CF',
+      200: '#ECC28C',
+      300: '#D2AA73',
+      400: '#B59262',
+      500: '#94774F',
+      600: '#775F3E',
+      700: '#58462D',
+    },
+    dustyRose: {
+      100: '#E9D9D9',
+      200: '#D6B3B3',
+      300: '#C68989',
+      400: '#B56262',
+      500: '#985151',
+      600: '#793F3F',
+      700: '#5E3030',
+    },
+    sageGreen: {
+      100: '#B2F8CC',
+      200: '#7EE6A9',
+      300: '#70CE97',
+      400: '#62B584',
+      500: '#4F946B',
+      600: '#3E7655',
+      700: '#2D593F',
+    },
+  },
+  semantic: {
+    colorScheme: {
+      dark: {
+        primary: {
+          50: '{brandBlue.50}',
+          100: '{brandBlue.100}',
+          200: '{brandBlue.200}',
+          300: '{brandBlue.300}',
+          400: '{brandBlue.400}',
+          500: '{brandBlue.500}',
+          600: '{brandBlue.600}',
+          700: '{brandBlue.700}',
+          800: '{brandBlue.800}',
+          900: '{brandBlue.900}',
+          950: '{brandBlue.950}',
+        },
+        surface: {
+          100: '{grey.100}',
+          200: '{grey.200}',
+          300: '{grey.300}',
+          400: '{grey.400}',
+          500: '{grey.500}',
+          600: '{grey.600}',
+          700: '{grey.700}',
+        },
+      },
+    },
+  },
+});

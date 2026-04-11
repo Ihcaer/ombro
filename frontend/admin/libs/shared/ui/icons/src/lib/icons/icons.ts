@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  input,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { IconName, isMaterialIcon } from './icons.list';
 import {
   AvailableFill,
@@ -14,7 +9,7 @@ import {
 } from './icons.properties';
 
 @Component({
-  selector: 'ui-icons',
+  selector: 'ui-icon',
   imports: [],
   templateUrl: './icons.html',
   styleUrl: './icons.scss',
