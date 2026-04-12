@@ -14,8 +14,8 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "paths": {
-      "@ombro/ui/icons": ["./libs/shared/ui/icons/src/index.ts"],
-      "@ombro/themes": ["./libs/themes/src/index.ts"]
+      "@ombro/themes": ["./libs/themes/src/index.ts"],
+      "@ombro/shared/ui-icons": ["libs/shared/ui-icons/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -37,9 +37,7 @@ describe('Icons', () => {
     fixture.componentRef.setInput('size', 24);
     fixture.detectChanges();
 
-    const span = hostElement.querySelector(
-      '.material-symbols-outlined'
-    ) as HTMLSpanElement;
+    const span = hostElement.querySelector('.material-symbols-outlined') as HTMLSpanElement;
 
     expect(span).toBeTruthy();
     expect(span.textContent.trim()).toBe('material-test');
@@ -76,9 +74,7 @@ describe('Icons', () => {
   });
 
   it('should use default values for size, weight, and fill', () => {
-    const span = hostElement.querySelector(
-      '.material-symbols-outlined'
-    ) as HTMLSpanElement;
+    const span = hostElement.querySelector('.material-symbols-outlined') as HTMLSpanElement;
 
     expect(span).toBeTruthy();
 

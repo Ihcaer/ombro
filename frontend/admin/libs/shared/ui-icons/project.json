@@ -1,7 +1,7 @@
 {
-  "name": "icons",
-  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/shared/ui/icons/src",
+  "name": "ui-icons",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/ui-icons/src",
   "prefix": "ui",
   "projectType": "library",
   "tags": [],
@@ -10,7 +10,7 @@
       "executor": "@nx/vitest:test",
       "outputs": ["{options.reportsDirectory}"],
       "options": {
-        "reportsDirectory": "../../../../coverage/libs/shared/ui/icons"
+        "reportsDirectory": "../../../coverage/libs/shared/ui-icons"
       }
     },
     "lint": {
