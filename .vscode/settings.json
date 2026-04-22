@@ -20,5 +20,6 @@
     "zxcvbn"
   ],
   "editor.rulers": [100],
-  "nxConsole.nxWorkspacePath": "frontend\\admin"
+  "nxConsole.nxWorkspacePath": "frontend\\admin",
+  "js/ts.tsdk.promptToUseWorkspaceVersion": true
 }

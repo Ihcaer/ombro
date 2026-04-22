@@ -6,12 +6,12 @@
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "target": "es2025",
+    "target": "es2024",
     "moduleResolution": "bundler",
     "isolatedModules": true,
     "emitDecoratorMetadata": false,
     "module": "preserve",
-    "lib": ["dom", "ES2025"]
+    "lib": ["dom", "ES2024"]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
