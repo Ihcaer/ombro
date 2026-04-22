@@ -1,0 +1,17 @@
+$textMutedColor: var(--p-text-muted-color);
+
+label {
+  color: $textMutedColor;
+  margin-bottom: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+}
+
+.p-disabled {
+  pointer-events: none;
+  cursor: default;
+}

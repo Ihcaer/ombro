@@ -1,1 +1,1 @@
-export * from './lib/themes/default/default-theme';
+export * from './lib/themes/default/default-preset';

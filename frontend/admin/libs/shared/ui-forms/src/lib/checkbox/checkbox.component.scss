@@ -1,0 +1,9 @@
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  ui-input-label ::ng-deep label {
+    margin: 0 !important;
+  }
+}

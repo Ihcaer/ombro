@@ -1,0 +1,32 @@
+<div class="container">
+  @if (label()) {
+    <ombro-input-label
+      [inputId]="''"
+      [id]="labelId"
+      [disabled]="isDisabled()"
+      [iconName]="labelIcon()"
+      [attr.inert]="isDisabled() ? '' : null"
+      (click)="onLabelClick()"
+      (mouseenter)="isLabelHovered.set(true)"
+      (mouseleave)="isLabelHovered.set(false)"
+      >{{ label() }}</ombro-input-label
+    >
+  }
+  <p-multiselect
+    #multiSelect
+    [ariaLabelledBy]="labelId"
+    [options]="options()"
+    [ngModel]="value()"
+    (ngModelChange)="handleMultiSelectChange($event)"
+    [placeholder]="placeholder()"
+    [disabled]="isDisabled()"
+    [showClear]="showClear()"
+    [virtualScroll]="virtualScroll()"
+    [virtualScrollItemSize]="virtualScrollItemSize()"
+    [class.force-hover]="isLabelHovered()"
+    (onBlur)="onTouched()"
+    [maxSelectedLabels]="maxSelectedLabels()"
+    [display]="useChips() ? 'chip' : 'comma'"
+    [filter]="search()"
+  />
+</div>

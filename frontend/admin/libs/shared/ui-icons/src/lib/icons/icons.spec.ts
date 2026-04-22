@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Icons } from './icons';
+import { IconComponent } from './icons';
 
 vi.mock('./icons.list', async (importOriginal) => {
   const original = await importOriginal<typeof import('./icons.list')>();
@@ -14,17 +14,17 @@ vi.mock('./icons.list', async (importOriginal) => {
   };
 });
 
-describe('Icons', () => {
-  let component: Icons;
-  let fixture: ComponentFixture<Icons>;
+describe('IconComponent', () => {
+  let component: IconComponent;
+  let fixture: ComponentFixture<IconComponent>;
   let hostElement: HTMLElement;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Icons],
+      imports: [IconComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(Icons);
+    fixture = TestBed.createComponent(IconComponent);
     component = fixture.componentInstance;
     hostElement = fixture.nativeElement;
     fixture.componentRef.setInput('name', 'material-test');

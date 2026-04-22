@@ -20,8 +20,8 @@ export const iconProperties = {
 type MapArrayToBoolean<T extends readonly number[]> = T extends readonly [0]
   ? false
   : T extends readonly [1]
-  ? true
-  : boolean;
+    ? true
+    : boolean;
 
 export type AvailableSize = (typeof iconProperties.size)[number];
 export type AvailableWeight = (typeof iconProperties.weight)[number];

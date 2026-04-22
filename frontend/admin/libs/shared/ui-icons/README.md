@@ -24,7 +24,7 @@ export const appConfig: ApplicationConfig = {
 Icons are provided as component. Here's how you can use a specific icon in minimal effort:
 
 ```html
-<ui-ui-icons name="close"></ui-ui-icons>
+<ui-icon name="close" />
 ```
 
 ### Available ui-icons

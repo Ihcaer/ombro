@@ -1,0 +1,6 @@
+<label [for]="inputId()" [class.p-disabled]="disabled()">
+  @if (iconName()) {
+    <ombro-icon class="label-icon" [name]="iconName()!" [size]="16" />
+  }
+  <ng-content />
+</label>

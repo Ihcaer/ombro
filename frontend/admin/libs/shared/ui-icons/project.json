@@ -2,9 +2,9 @@
   "name": "ui-icons",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/shared/ui-icons/src",
-  "prefix": "ui",
+  "prefix": "ombro",
   "projectType": "library",
-  "tags": [],
+  "tags": ["scope:shared", "type:ui"],
   "targets": {
     "test": {
       "executor": "@nx/vitest:test",

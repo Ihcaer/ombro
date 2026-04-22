@@ -9,15 +9,18 @@ import {
 } from './icons.properties';
 
 @Component({
-  selector: 'ui-icon',
+  selector: 'ombro-icon',
   imports: [],
   templateUrl: './icons.html',
   styleUrl: './icons.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Icons {
+export class IconComponent {
+  /**
+   * List of available icons: [ICONS.md](../../../ICONS.md)
+   */
   name = input.required<IconName>();
-  size = input<AvailableSize>(iconProperties.size[0]);
+  size = input<AvailableSize | number>(iconProperties.size[0]);
   weight = input<AvailableWeight>(iconProperties.weight[0]);
   fill = input<AvailableFill>(!!iconProperties.fill[0]);
   grade = input<AvailableGrade>(iconProperties.grade[0]);

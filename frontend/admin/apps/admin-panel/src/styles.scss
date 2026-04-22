@@ -1,7 +1,6 @@
 @use 'sass:map';
 @use './styles/variables';
 @use './styles/functions';
-@use '../../../libs/themes/src/lib/themes/default/default-theme.scss';
 
 @use 'tailwindcss';
 @plugin 'tailwindcss-primeui';
