@@ -1,0 +1,27 @@
+<p-breadcrumb [model]="references()">
+  <ng-template #item let-item>
+    @if (item.id === 'home' && item.current) {
+      <ng-container [ngTemplateOutlet]="homeIcon" />
+    } @else if (item.id === 'home') {
+      <a [routerLink]="item.url" class="p-breadcrumb-item-link">
+        <ng-container [ngTemplateOutlet]="homeIcon" />
+      </a>
+    } @else if (item.current) {
+      <span aria-current="page">
+        <ng-container [ngTemplateOutlet]="defaultItem" [ngTemplateOutletContext]="{ data: item }" />
+      </span>
+    } @else {
+      <a [routerLink]="item.url" class="p-breadcrumb-item-link">
+        <ng-container [ngTemplateOutlet]="defaultItem" [ngTemplateOutletContext]="{ data: item }" />
+      </a>
+    }
+  </ng-template>
+  <ng-template #separator>{{ separatorItem() }}</ng-template>
+</p-breadcrumb>
+
+<ng-template #homeIcon>
+  <span class="p-breadcrumb-item-label home-label"><ombro-icon name="home" /></span>
+</ng-template>
+<ng-template #defaultItem let-item="data">
+  <span class="p-breadcrumb-item-label">{{ item.label }}</span>
+</ng-template>

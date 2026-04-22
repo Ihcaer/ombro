@@ -1,0 +1,20 @@
+{
+  "name": "breadcrumb",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/breadcrumb/src",
+  "prefix": "ombro",
+  "projectType": "library",
+  "tags": ["scope:shared", "type:feature"],
+  "targets": {
+    "test": {
+      "executor": "@nx/vitest:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "reportsDirectory": "../../../coverage/libs/shared/breadcrumb"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

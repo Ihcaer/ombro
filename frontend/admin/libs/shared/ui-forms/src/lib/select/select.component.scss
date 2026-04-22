@@ -1,0 +1,5 @@
+@use '../../styles/common.scss';
+
+.force-hover:not(.p-disabled):not(.p-focus) {
+  border-color: var(--p-select-hover-border-color);
+}

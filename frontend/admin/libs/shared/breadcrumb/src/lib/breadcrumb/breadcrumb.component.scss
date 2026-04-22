@@ -1,0 +1,31 @@
+$border: var(--p-custom-variables-default-border-width)
+  var(--p-custom-variables-default-border-style) var(--p-custom-variables-default-border-color);
+
+:host ::ng-deep .p-breadcrumb {
+  display: inline-block;
+  border: $border;
+  border-radius: var(--p-custom-variables-default-border-radius);
+}
+
+a {
+  display: inline-block;
+}
+
+.p-breadcrumb-item-link {
+  color: var(--p-breadcrumb-item-color);
+
+  &:hover {
+    color: var(--p-breadcrumb-item-hover-color);
+  }
+  .p-breadcrumb-item-label {
+    color: inherit;
+  }
+}
+
+.p-breadcrumb-item-label {
+  color: var(--p-breadcrumb-item-color-current);
+}
+
+.home-label {
+  display: inline-block;
+}

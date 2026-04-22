@@ -1,0 +1,14 @@
+<div class="checkbox-container">
+  <p-checkbox
+    [inputId]="inputId"
+    [disabled]="isDisabled()"
+    [ngModel]="value()"
+    (ngModelChange)="handleCheckboxChange($event)"
+    [binary]="binary()"
+    [disabled]="isDisabled()"
+    (onBlur)="onTouched()"
+  />
+  @if (label()) {
+    <ombro-input-label [inputId]="inputId">{{ label() }}</ombro-input-label>
+  }
+</div>

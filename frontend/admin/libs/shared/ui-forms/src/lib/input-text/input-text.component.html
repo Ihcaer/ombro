@@ -1,0 +1,35 @@
+<div class="container">
+  @if (label()) {
+    <ombro-input-label [inputId]="inputId" [disabled]="isDisabled()" [iconName]="labelIcon()">{{
+      label()
+    }}</ombro-input-label>
+  }
+  @if (type() === 'password') {
+    <p-password
+      [id]="inputId"
+      [ngModel]="value()"
+      (ngModelChange)="handleInputChange($event)"
+      [feedback]="false"
+      [disabled]="isDisabled()"
+      [toggleMask]="true"
+      [autocomplete]="autocomplete()"
+      [placeholder]="placeholder() ? placeholder() : ''"
+      [invalid]="invalid()"
+      (onBlur)="onTouched()"
+      fluid
+    />
+  } @else {
+    <input
+      type="text"
+      pInputText
+      [id]="inputId"
+      [ngModel]="value()"
+      (ngModelChange)="handleInputChange($event)"
+      [disabled]="isDisabled()"
+      (blur)="onTouched()"
+      [autocomplete]="autocomplete()"
+      [placeholder]="placeholder() ? placeholder() : ''"
+      [invalid]="invalid()"
+    />
+  }
+</div>
