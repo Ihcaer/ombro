@@ -8,6 +8,7 @@
     "axllent",
     "HSTS",
     "Ihcaer",
+    "lettermark",
     "mailpit",
     "Ombro",
     "Onest",
@@ -17,6 +18,7 @@
     "skema",
     "swcrc",
     "Timestamptz",
+    "wordmark",
     "zxcvbn"
   ],
   "editor.rulers": [100],
