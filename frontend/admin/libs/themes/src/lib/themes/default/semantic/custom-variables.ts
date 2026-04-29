@@ -1,6 +1,7 @@
 export const customVariables = {
   default: {
     bg: {
+      main: '{brandBlue.700}',
       surfaceSubtle: 'ffffff0a',
     },
     border: {
@@ -8,6 +9,9 @@ export const customVariables = {
       radius: '{radius.2xl}',
       width: '{borderWidth.sm}',
       style: '{borderStyle.solid}',
+    },
+    other: {
+      vibrantColor: '#67A0E5',
     },
   },
 };

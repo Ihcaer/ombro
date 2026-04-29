@@ -1,11 +1,10 @@
-import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
 export type logoTypes = 'wordmark' | 'lettermark';
 
 @Component({
   selector: 'app-logo',
-  imports: [NgOptimizedImage],
+  imports: [],
   templateUrl: './logo.component.html',
   styleUrl: './logo.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,9 +17,9 @@ export class LogoComponent {
   };
 
   /** @see {@link LogoComponent} */
-  readonly type = input.required<logoTypes>();
+  readonly variant = input.required<logoTypes>();
 
   protected readonly imageSrc = computed(
-    () => LogoComponent.LOGO_PATH + LogoComponent.LOGO_MAP[this.type()],
+    () => LogoComponent.LOGO_PATH + LogoComponent.LOGO_MAP[this.variant()],
   );
 }

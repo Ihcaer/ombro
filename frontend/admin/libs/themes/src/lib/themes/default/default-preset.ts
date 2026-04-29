@@ -1,9 +1,9 @@
 import { definePreset } from '@primeuix/themes';
 import Aura from '@primeuix/themes/aura';
-import { severities } from './severities';
-import { formField } from './components/formField';
-import { text } from './text';
-import { customVariables } from './custom-variables';
+import { button } from './components/button';
+import { formField } from './semantic/formField';
+import { text } from './semantic/text';
+import { customVariables } from './semantic/custom-variables';
 import { breadcrumb } from './components/breadcrumb';
 import { primitives } from './primitive/primitives';
 
@@ -35,7 +35,6 @@ export const DefaultPreset = definePreset(Aura, {
           700: '{grey.700}',
         },
         text,
-        severities,
         customVariables,
         formField,
       },
@@ -43,5 +42,6 @@ export const DefaultPreset = definePreset(Aura, {
   },
   components: {
     breadcrumb: breadcrumb,
+    button: button,
   },
 });

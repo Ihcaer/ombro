@@ -32,3 +32,12 @@ p {
   margin: 0;
   line-height: 1.5;
 }
+
+a {
+  color: var(--p-primary-200);
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

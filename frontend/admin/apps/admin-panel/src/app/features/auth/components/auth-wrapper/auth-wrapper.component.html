@@ -1,0 +1,21 @@
+<div
+  class="bg-(--p-custom-variables-default-bg-main) flex h-screen flex-col items-center justify-center"
+>
+  <app-logo variant="wordmark" class="mb-auto mt-[24px] h-[25px]" />
+  <div
+    class="bg-primary-600 rounded-(--p-radius-lg) border-(length:--p-border-width-md) border-surface-400 mb-auto p-[32px] shadow-[0_8px_30px_rgba(0,0,0,0.4)]"
+  >
+    <div class="heading flex flex-col justify-center gap-[6px] text-center">
+      @if (icon()) {
+        <ombro-icon
+          [name]="icon()!"
+          [weight]="600"
+          [size]="24"
+          class="text-(--p-custom-variables-default-other-vibrant-color)"
+        />
+      }
+      <h1><ng-content select="[heading]" /></h1>
+    </div>
+    <div class="w-full"><ng-content /></div>
+  </div>
+</div>
