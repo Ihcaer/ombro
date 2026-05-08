@@ -1,13 +1,17 @@
+@use '../../styles/common.scss';
+
 :host {
   display: block;
 }
 
 .checkbox-container {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  .checkbox-input {
+    display: flex;
+    align-items: center;
+    gap: 6px;
 
-  ui-input-label ::ng-deep label {
-    margin: 0 !important;
+    ombro-input-label ::ng-deep label {
+      margin: 0 !important;
+    }
   }
 }

@@ -1,6 +1,7 @@
 <p-toggleswitch
   [inputId]="inputId"
   [disabled]="isDisabled()"
-  [ngModel]="isChecked()"
+  [ngModel]="value()"
   (ngModelChange)="handleToggleChange($event)"
+  [class.p-invalid]="!!errorState()"
 />

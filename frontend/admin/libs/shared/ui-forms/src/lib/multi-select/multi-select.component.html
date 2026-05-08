@@ -17,16 +17,19 @@
     [ariaLabelledBy]="labelId"
     [options]="options()"
     [ngModel]="value()"
-    (ngModelChange)="handleMultiSelectChange($event)"
+    (onChange)="handleMultiSelectChange($event)"
     [placeholder]="placeholder()"
     [disabled]="isDisabled()"
     [showClear]="showClear()"
     [virtualScroll]="virtualScroll()"
     [virtualScrollItemSize]="virtualScrollItemSize()"
     [class.force-hover]="isLabelHovered()"
-    (onBlur)="onTouched()"
+    (onHide)="handleBlur()"
     [maxSelectedLabels]="maxSelectedLabels()"
     [display]="useChips() ? 'chip' : 'comma'"
     [filter]="search()"
   />
+  @if (errorState(); as message) {
+    <small>{{ message }}</small>
+  }
 </div>

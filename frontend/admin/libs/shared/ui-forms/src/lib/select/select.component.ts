@@ -3,7 +3,6 @@ import {
   Component,
   effect,
   ElementRef,
-  forwardRef,
   inject,
   input,
   Renderer2,
@@ -12,37 +11,22 @@ import {
 } from '@angular/core';
 import { LabelComponent } from '../label/label.component';
 import { IdGeneratorService } from '@ombro/shared/util-ui';
-import { FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { SelectChangeEvent, SelectModule } from 'primeng/select';
-import { OnChangeFn, OnTouchedFn } from '../../types';
 import { IconName } from '@ombro/shared/ui-icons';
+import { BaseCvaComponent } from '../base-cva-component';
 
 @Component({
   selector: 'ombro-select',
   imports: [LabelComponent, SelectModule, FormsModule],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => SelectComponent),
-      multi: true,
-    },
-  ],
   templateUrl: './select.component.html',
   styleUrl: './select.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SelectComponent {
+export class SelectComponent extends BaseCvaComponent<unknown> {
   private idGeneratorService = inject(IdGeneratorService);
   private renderer = inject(Renderer2);
   private labelComponent = viewChild(LabelComponent, { read: ElementRef });
-
-  private deleteForEl = effect(() => {
-    const wrapper = this.labelComponent()?.nativeElement;
-    if (wrapper) {
-      const label = wrapper.querySelector('label');
-      if (label) this.renderer.removeAttribute(label, 'for');
-    }
-  });
 
   label = input<string>();
   labelIcon = input<IconName>();
@@ -53,36 +37,30 @@ export class SelectComponent {
   virtualScrollItemSize = input<number>();
 
   protected labelId = this.idGeneratorService.generate('select-label');
-  protected value = signal<unknown>(null);
-  protected isDisabled = signal(false);
   protected isLabelHovered = signal<boolean>(false);
 
-  onChange: OnChangeFn<unknown> = () => {
-    /* empty */
-  };
-  onTouched: OnTouchedFn = () => {
-    /* empty */
-  };
+  constructor() {
+    super();
 
-  writeValue(val: unknown): void {
-    this.value.set(val);
-  }
-  registerOnChange(fn: OnChangeFn<unknown>): void {
-    this.onChange = fn;
-  }
-  registerOnTouched(fn: OnTouchedFn): void {
-    this.onTouched = fn;
-  }
-  setDisabledState(isDisabled: boolean): void {
-    this.isDisabled.set(isDisabled);
+    effect(() => {
+      const wrapper = this.labelComponent()?.nativeElement;
+      const label = wrapper?.querySelector('label');
+
+      if (label) {
+        this.renderer.removeAttribute(label, 'for');
+      }
+    });
   }
 
-  handleSelectChange(event: SelectChangeEvent): void {
+  protected handleSelectChange(event: SelectChangeEvent): void {
     const newValue = event.value !== undefined ? event.value : event;
 
     if (this.value() !== newValue) {
-      this.value.set(newValue);
-      this.onChange(newValue);
+      this.setValue(newValue);
     }
+  }
+
+  protected handleBlur(): void {
+    this.markAsTouched();
   }
 }

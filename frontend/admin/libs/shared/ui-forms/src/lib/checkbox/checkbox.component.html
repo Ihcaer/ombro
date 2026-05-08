@@ -1,14 +1,20 @@
 <div class="checkbox-container">
-  <p-checkbox
-    [inputId]="inputId"
-    [disabled]="isDisabled()"
-    [ngModel]="value()"
-    (ngModelChange)="handleCheckboxChange($event)"
-    [binary]="binary()"
-    [disabled]="isDisabled()"
-    (onBlur)="onTouched()"
-  />
-  @if (label()) {
-    <ombro-input-label [inputId]="inputId">{{ label() }}</ombro-input-label>
+  <div class="checkbox-input">
+    <p-checkbox
+      [inputId]="inputId"
+      [disabled]="isDisabled()"
+      [ngModel]="value()"
+      (ngModelChange)="handleCheckboxChange($event)"
+      [binary]="binary()"
+      [disabled]="isDisabled()"
+      (onBlur)="handleBlur()"
+      [class.p-invalid]="!!errorState()"
+    />
+    @if (label()) {
+      <ombro-input-label [inputId]="inputId">{{ label() }}</ombro-input-label>
+    }
+  </div>
+  @if (errorState(); as message) {
+    <small>{{ message }}</small>
   }
 </div>

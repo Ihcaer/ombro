@@ -1,5 +1,11 @@
+$errorTextColor: var(--p-form-field-invalid-border-color);
+
 :host {
   display: inline-block;
+}
+
+small {
+  color: $errorTextColor;
 }
 
 .container {

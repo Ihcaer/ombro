@@ -7,29 +7,32 @@
   @if (type() === 'password') {
     <p-password
       [id]="inputId"
-      [ngModel]="value()"
-      (ngModelChange)="handleInputChange($event)"
       [feedback]="false"
       [disabled]="isDisabled()"
       [toggleMask]="true"
       [autocomplete]="autocomplete()"
-      [placeholder]="placeholder() ? placeholder() : ''"
-      [invalid]="invalid()"
-      (onBlur)="onTouched()"
+      [placeholder]="placeholder()"
+      [invalid]="!!errorState()"
+      [ngModel]="value()"
+      (ngModelChange)="onInput($event)"
+      (onBlur)="handleBlur()"
       fluid
     />
   } @else {
     <input
-      type="text"
       pInputText
       [id]="inputId"
-      [ngModel]="value()"
-      (ngModelChange)="handleInputChange($event)"
+      [type]="type()"
+      [value]="value()"
       [disabled]="isDisabled()"
-      (blur)="onTouched()"
+      (input)="onInputFromEvent($event)"
+      (blur)="handleBlur()"
       [autocomplete]="autocomplete()"
-      [placeholder]="placeholder() ? placeholder() : ''"
-      [invalid]="invalid()"
+      [placeholder]="placeholder()"
+      [invalid]="!!errorState()"
     />
+  }
+  @if (errorState(); as message) {
+    <small>{{ message }}</small>
   }
 </div>

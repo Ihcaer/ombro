@@ -17,13 +17,16 @@
     [ariaLabelledBy]="labelId"
     [options]="options()"
     [ngModel]="value()"
-    (ngModelChange)="handleSelectChange($event)"
+    (onChange)="handleSelectChange($event)"
     [placeholder]="placeholder()"
     [disabled]="isDisabled()"
     [showClear]="showClear()"
     [virtualScroll]="virtualScroll()"
     [virtualScrollItemSize]="virtualScrollItemSize()"
     [class.force-hover]="isLabelHovered()"
-    (onBlur)="onTouched()"
+    (onHide)="handleBlur()"
   />
+  @if (errorState(); as message) {
+    <small>{{ message }}</small>
+  }
 </div>
