@@ -9,4 +9,4 @@ export const basics = {
     dashed: 'dashed',
     none: 'none',
   },
-};
+} as const;

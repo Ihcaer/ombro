@@ -14,4 +14,4 @@ export const customVariables = {
       vibrantColor: '#67A0E5',
     },
   },
-};
+} as const;

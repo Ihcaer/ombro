@@ -57,4 +57,4 @@ export const colors = {
     600: '#3E7655',
     700: '#2D593F',
   },
-};
+} as const;

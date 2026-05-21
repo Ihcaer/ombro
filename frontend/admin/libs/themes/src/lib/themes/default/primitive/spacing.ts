@@ -9,4 +9,4 @@ export const spacing = {
   '5': '20px',
   '6': '24px',
   '8': '32px',
-};
+} as const;

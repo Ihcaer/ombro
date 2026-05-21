@@ -1,4 +1,8 @@
-export const breadcrumb = {
+import { BreadcrumbDesignTokens } from '@primeuix/themes/types/breadcrumb';
+
+export const breadcrumb: BreadcrumbDesignTokens & {
+  colorScheme: { dark: { item: { colorCurrent: string } } };
+} = {
   colorScheme: {
     dark: {
       root: { background: '{customVariables.default.bgSurfaceSubtle}' },
@@ -10,4 +14,4 @@ export const breadcrumb = {
       separator: { color: '{grey.400}' },
     },
   },
-};
+} as const;

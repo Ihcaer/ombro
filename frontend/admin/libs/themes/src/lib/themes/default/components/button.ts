@@ -72,4 +72,4 @@ export const button = {
       text: { secondary: { color: '{grey.300}' } },
     },
   },
-};
+} as const;
