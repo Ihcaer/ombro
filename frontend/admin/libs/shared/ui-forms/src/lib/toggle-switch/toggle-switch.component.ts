@@ -8,7 +8,9 @@ import { BaseCvaComponent } from '../base-cva-component';
   selector: 'ombro-toggle-switch',
   imports: [ToggleSwitchModule, FormsModule],
   templateUrl: './toggle-switch.component.html',
-  styleUrl: './toggle-switch.component.scss',
+  styles: `
+    @use '../../styles/common.scss';
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ToggleSwitchComponent extends BaseCvaComponent<boolean> {

@@ -6,14 +6,17 @@ import { InputMaskModule } from 'primeng/inputmask';
 import { LabelComponent } from '../label/label.component';
 import { IconName } from '@ombro/shared/ui-icons';
 import { BaseCvaComponent } from '../base-cva-component';
+import { ErrorMessageComponent } from '../error-message/error-message.component';
 
 type DatepickerSelectionMode = DatePicker['selectionMode'];
 
 @Component({
   selector: 'ombro-datepicker',
-  imports: [DatePickerModule, FormsModule, LabelComponent, InputMaskModule],
+  imports: [DatePickerModule, FormsModule, LabelComponent, InputMaskModule, ErrorMessageComponent],
   templateUrl: './datepicker.component.html',
-  styleUrl: './datepicker.component.scss',
+  styles: `
+    @use '../../styles/common.scss';
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DatepickerComponent extends BaseCvaComponent<Date | Date[] | null> {

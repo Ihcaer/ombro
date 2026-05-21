@@ -15,12 +15,18 @@ import { LabelComponent } from '../label/label.component';
 import { IdGeneratorService } from '@ombro/shared/util-ui';
 import { IconName } from '@ombro/shared/ui-icons';
 import { BaseCvaComponent } from '../base-cva-component';
+import { ErrorMessageComponent } from '../error-message/error-message.component';
 
 @Component({
   selector: 'ombro-multi-select',
-  imports: [LabelComponent, MultiSelectModule, FormsModule],
+  imports: [LabelComponent, MultiSelectModule, FormsModule, ErrorMessageComponent],
   templateUrl: './multi-select.component.html',
-  styleUrl: './multi-select.component.scss',
+  styles: `
+    @use '../../styles/common.scss';
+    .force-hover:not(.p-disabled):not(.p-focus) {
+      border-color: var(--p-select-hover-border-color);
+    }
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MultiSelectComponent extends BaseCvaComponent<unknown[]> {

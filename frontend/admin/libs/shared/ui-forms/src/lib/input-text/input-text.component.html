@@ -1,11 +1,19 @@
 <div class="container">
   @if (label()) {
-    <ombro-input-label [inputId]="inputId" [disabled]="isDisabled()" [iconName]="labelIcon()">{{
-      label()
-    }}</ombro-input-label>
+    <ombro-input-label
+      [inputId]="inputId"
+      [disabled]="isDisabled()"
+      [iconName]="labelIcon()"
+      [attr.inert]="isDisabled() ? '' : null"
+      (click)="onLabelClick()"
+      (mouseenter)="isLabelHovered.set(true)"
+      (mouseleave)="isLabelHovered.set(false)"
+      >{{ label() }}</ombro-input-label
+    >
   }
   @if (type() === 'password') {
     <p-password
+      #passwordInput
       [id]="inputId"
       [feedback]="false"
       [disabled]="isDisabled()"
@@ -16,6 +24,7 @@
       [ngModel]="value()"
       (ngModelChange)="onInput($event)"
       (onBlur)="handleBlur()"
+      [class.force-hover]="isLabelHovered()"
       fluid
     />
   } @else {
@@ -32,7 +41,21 @@
       [invalid]="!!errorState()"
     />
   }
-  @if (errorState(); as message) {
-    <small>{{ message }}</small>
+  <ombro-input-error-message [errorMessage]="errorState()" />
+  @if (type() === 'password' && showPasswordStrength()) {
+    <div class="mb-[1rem]">
+      <div class="flex justify-between">
+        <span class="text-(--p-text-color-emphasis)">Siła hasła</span>
+        <span [ngClass]="'strength-message-' + actualPasswordStrengthScore()">
+          {{ passwordStrengthMessage() }}
+        </span>
+      </div>
+      <p-progressbar
+        class="h-[0.5rem]"
+        [ngClass]="'strength-bar-' + actualPasswordStrengthScore()"
+        [value]="actualPasswordPercentageStrength()"
+        [showValue]="false"
+      />
+    </div>
   }
 </div>

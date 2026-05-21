@@ -15,12 +15,18 @@ import { FormsModule } from '@angular/forms';
 import { SelectChangeEvent, SelectModule } from 'primeng/select';
 import { IconName } from '@ombro/shared/ui-icons';
 import { BaseCvaComponent } from '../base-cva-component';
+import { ErrorMessageComponent } from '../error-message/error-message.component';
 
 @Component({
   selector: 'ombro-select',
-  imports: [LabelComponent, SelectModule, FormsModule],
+  imports: [LabelComponent, SelectModule, FormsModule, ErrorMessageComponent],
   templateUrl: './select.component.html',
-  styleUrl: './select.component.scss',
+  styles: `
+    @use '../../styles/common.scss';
+    .force-hover:not(.p-disabled):not(.p-focus) {
+      border-color: var(--p-select-hover-border-color);
+    }
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelectComponent extends BaseCvaComponent<unknown> {

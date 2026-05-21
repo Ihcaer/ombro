@@ -1,9 +1,10 @@
 $textMutedColor: var(--p-text-muted-color);
+$textSize: var(--p-font-size-label-md);
 
 label {
   color: $textMutedColor;
   margin-bottom: 6px;
-  font-size: 12px;
+  font-size: $textSize;
   font-weight: 500;
   display: flex;
   align-items: center;

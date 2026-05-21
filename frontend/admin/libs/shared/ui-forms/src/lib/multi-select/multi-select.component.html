@@ -29,7 +29,5 @@
     [display]="useChips() ? 'chip' : 'comma'"
     [filter]="search()"
   />
-  @if (errorState(); as message) {
-    <small>{{ message }}</small>
-  }
+  <ombro-input-error-message [errorMessage]="errorState()" />
 </div>

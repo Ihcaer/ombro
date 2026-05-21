@@ -4,10 +4,11 @@ import { IdGeneratorService } from '@ombro/shared/util-ui';
 import { CheckboxChangeEvent, CheckboxModule } from 'primeng/checkbox';
 import { LabelComponent } from '../label/label.component';
 import { BaseCvaComponent } from '../base-cva-component';
+import { ErrorMessageComponent } from '../error-message/error-message.component';
 
 @Component({
   selector: 'ombro-checkbox',
-  imports: [CheckboxModule, FormsModule, LabelComponent],
+  imports: [CheckboxModule, FormsModule, LabelComponent, ErrorMessageComponent],
   templateUrl: './checkbox.component.html',
   styleUrl: './checkbox.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
