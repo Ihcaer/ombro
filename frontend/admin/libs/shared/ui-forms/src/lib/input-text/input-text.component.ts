@@ -1,72 +1,108 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  forwardRef,
+  computed,
   inject,
   input,
+  output,
   signal,
+  viewChild,
 } from '@angular/core';
-import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { IconName } from '@ombro/shared/ui-icons';
 import { IdGeneratorService } from '@ombro/shared/util-ui';
 import { InputTextModule } from 'primeng/inputtext';
-import { PasswordModule } from 'primeng/password';
+import { Password, PasswordModule } from 'primeng/password';
 import { LabelComponent } from '../label/label.component';
-import { OnChangeFn, OnTouchedFn } from '../../types';
+import { BaseCvaComponent } from '../base-cva-component';
+import { ProgressBarModule } from 'primeng/progressbar';
+import {
+  PasswordStrengthScore,
+  PasswordStrengthService,
+} from '@ombro/shared/utils/password-strength';
+import { NgClass } from '@angular/common';
+import { ErrorMessageComponent } from '../error-message/error-message.component';
+import { passwordStrengthErrorMessage } from './password-strength-error-message';
 
 @Component({
   selector: 'ombro-input-text',
-  imports: [FormsModule, InputTextModule, PasswordModule, LabelComponent],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => InputTextComponent),
-      multi: true,
-    },
+  imports: [
+    FormsModule,
+    InputTextModule,
+    PasswordModule,
+    LabelComponent,
+    ProgressBarModule,
+    NgClass,
+    ErrorMessageComponent,
   ],
+  providers: [PasswordStrengthService],
   templateUrl: './input-text.component.html',
   styleUrl: './input-text.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class InputTextComponent implements ControlValueAccessor {
-  private idGeneratorService = inject(IdGeneratorService);
+export class InputTextComponent extends BaseCvaComponent<string> {
+  private readonly idGeneratorService = inject(IdGeneratorService);
+  private readonly passwordStrengthService = inject(PasswordStrengthService);
+  private readonly passwordComponent = viewChild<Password>('passwordInput');
 
-  type = input<'text' | 'email' | 'password'>('text');
-  autocomplete = input<string>('on');
-  placeholder = input<string>();
-  label = input<string>();
+  readonly type = input<'text' | 'email' | 'password'>('text');
+  readonly autocomplete = input<string>('on');
+  readonly placeholder = input<string>('');
+  readonly label = input<string>();
   /**
    * Description: {@link IconComponent}
    */
-  labelIcon = input<IconName>();
-  invalid = input<boolean>(false);
+  readonly labelIcon = input<IconName>();
+  readonly showPasswordStrength = input<boolean>(false);
+  readonly allowedPasswordScore = input<PasswordStrengthScore>(2);
+  sendPasswordStrengthScore = output<PasswordStrengthScore>({ alias: 'passwordStrengthScore' });
 
-  protected value = signal<string>('');
-  protected isDisabled = signal(false);
-  protected inputId = this.idGeneratorService.generate('inputText');
+  protected isLabelHovered = signal<boolean>(false);
+  protected readonly actualPasswordStrengthScore = signal<PasswordStrengthScore>(0);
+  protected readonly actualPasswordPercentageStrength = signal<number>(0);
 
-  onChange: OnChangeFn<string> = () => {
-    /* empty */
-  };
-  onTouched: OnTouchedFn = () => {
-    /* empty */
-  };
+  protected readonly inputId = this.idGeneratorService.generate('inputText');
 
-  writeValue(val: string): void {
-    this.value.set(val || '');
-  }
-  registerOnChange(fn: OnChangeFn<string>): void {
-    this.onChange = fn;
-  }
-  registerOnTouched(fn: OnTouchedFn): void {
-    this.onTouched = fn;
-  }
-  setDisabledState(isDisabled: boolean): void {
-    this.isDisabled.set(isDisabled);
+  protected readonly passwordStrengthMessage = computed<string | undefined>(() => {
+    const passwordScore: PasswordStrengthScore = this.actualPasswordStrengthScore();
+    const message = passwordStrengthErrorMessage;
+
+    return message[passwordScore] || undefined;
+  });
+
+  protected onLabelClick(): void {
+    const passwordInput = this.passwordComponent();
+    if (passwordInput) {
+      const input = passwordInput.el.nativeElement.querySelector('input');
+      input.focus();
+    }
   }
 
-  handleInputChange(value: string): void {
-    this.value.set(value);
-    this.onChange(value);
+  protected onInputFromEvent(event: Event): void {
+    this.onInput((event.target as HTMLInputElement).value);
+  }
+
+  protected onInput(value: string): void {
+    if (this.type() === 'password') this.onPasswordInput(value);
+    this.setValue(value ?? '');
+  }
+
+  protected handleBlur(): void {
+    this.markAsTouched();
+  }
+
+  private async onPasswordInput(password: string): Promise<void> {
+    const zxcvbn = await this.passwordStrengthService.getValidator();
+    const result = zxcvbn(password);
+    const score = result.score;
+
+    this.sendPasswordStrengthScore.emit(score);
+
+    if (this.showPasswordStrength()) {
+      this.actualPasswordStrengthScore.set(score);
+      this.actualPasswordPercentageStrength.set(
+        this.passwordStrengthService.getStrengthPercent(score, result.guessesLog10),
+      );
+    }
   }
 }

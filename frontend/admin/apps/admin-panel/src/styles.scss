@@ -1,6 +1,5 @@
 @use 'sass:map';
 @use './styles/variables';
-@use './styles/functions';
 
 @use 'tailwindcss';
 @plugin 'tailwindcss-primeui';
@@ -13,12 +12,12 @@ body {
   font-weight: 400;
   font-style: normal;
   margin: 0;
-  font-size: functions.rem(variables.$body-font-size);
+  font-size: variables.$body-font-size;
 }
 
 @each $tag, $styles in variables.$headings-config {
   #{$tag} {
-    font-size: functions.rem(map.get($styles, 'size'));
+    font-size: map.get($styles, 'size');
     font-weight: map.get($styles, 'weight');
     line-height: map.get($styles, 'line-height');
     @if map.has-key($styles, 'letter-spacing') {
@@ -31,4 +30,13 @@ body {
 p {
   margin: 0;
   line-height: 1.5;
+}
+
+a {
+  color: var(--p-primary-200);
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }

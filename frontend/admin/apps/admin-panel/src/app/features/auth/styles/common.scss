@@ -1,0 +1,8 @@
+$elementsGap: 24px;
+$formFieldsGap: 8px;
+
+.form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: $formFieldsGap;
+}

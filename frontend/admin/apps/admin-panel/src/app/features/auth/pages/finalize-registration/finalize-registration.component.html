@@ -1,0 +1,36 @@
+<app-auth-wrapper icon="verified_user">
+  <ng-container heading>Potwierdź swoje konto</ng-container>
+  <ng-container>
+    @if (neededFormFields.length > 0) {
+      <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+        <div class="form-fields">
+          @for (field of neededFormFields; track field) {
+            @switch (field) {
+              @case ('handleName') {
+                <ombro-input-text label="Nowa nazwa użytkownika" [formControlName]="field" />
+              }
+              @case ('password') {
+                <ombro-input-text
+                  type="password"
+                  label="Nowe hasło"
+                  [showPasswordStrength]="true"
+                  [allowedPasswordScore]="minPasswordStrength"
+                  (passwordStrengthScore)="handlePasswordStrength($event)"
+                  [formControlName]="field"
+                />
+                <ombro-input-text
+                  type="password"
+                  label="Potwierdź nowe hasło"
+                  [formControlName]="CONFIRM_PASSWORD_FIELD_NAME"
+                />
+              }
+            }
+          }
+        </div>
+        <app-auth-form-buttons>Zatwierdź</app-auth-form-buttons>
+      </form>
+    } @else {
+      <div class="flex justify-center"><p-progress-spinner ariaLabel="Ładowanie" /></div>
+    }
+  </ng-container>
+</app-auth-wrapper>

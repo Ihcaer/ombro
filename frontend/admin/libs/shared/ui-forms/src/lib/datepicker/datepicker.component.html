@@ -7,12 +7,12 @@
   <p-datepicker
     [inputId]="inputId"
     [ngModel]="value()"
-    (ngModelChange)="handleDateChange($event)"
+    (onSelect)="handleDateChange($event)"
+    (onHide)="handleBlur()"
     [disabled]="isDisabled()"
     [dateFormat]="dateFormat()"
     [showIcon]="showIcon()"
     [iconDisplay]="'input'"
-    (onBlur)="onTouched()"
     [placeholder]="placeholder()"
     [pInputMask]="mask()"
     [minDate]="minDate()"
@@ -21,4 +21,5 @@
     [showTime]="showTime()"
     [timeOnly]="onlyTime()"
   />
+  <ombro-input-error-message [errorMessage]="errorState()" />
 </div>

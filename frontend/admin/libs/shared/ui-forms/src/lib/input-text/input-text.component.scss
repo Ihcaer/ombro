@@ -1,1 +1,23 @@
 @use '../../styles/common.scss';
+
+$statusColors: (
+  '0': var(--p-meter-color-fill-low),
+  '1': var(--p-meter-color-fill-low),
+  '2': var(--p-meter-color-fill-medium),
+  '3': var(--p-meter-color-fill-high),
+  '4': var(--p-meter-color-fill-very-high),
+);
+
+@each $name, $color in $statusColors {
+  .strength-message-#{$name} {
+    color: $color;
+    transition: color 100ms;
+  }
+  ::ng-deep .strength-bar-#{$name} > .p-progressbar-value {
+    background-color: $color;
+  }
+}
+
+::ng-deep .force-hover:not(.p-disabled):not(.p-focus) input {
+  border-color: var(--p-inputtext-hover-border-color);
+}

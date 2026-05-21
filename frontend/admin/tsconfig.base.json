@@ -8,17 +8,22 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
+    "noImplicitOverride": true,
     "target": "es2024",
     "module": "esnext",
     "lib": ["ES2024", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "paths": {
+      "@ombro/admin-panel/*": ["./apps/admin-panel/src/*"],
       "@ombro/themes": ["./libs/themes/src/index.ts"],
       "@ombro/shared/ui-icons": ["./libs/shared/ui-icons/src/index.ts"],
       "@ombro/shared/ui-forms": ["./libs/shared/ui-forms/src/index.ts"],
       "@ombro/shared/util-ui": ["./libs/shared/util-id/src/index.ts"],
-      "@ombro/shared/breadcrumb": ["./libs/shared/breadcrumb/src/index.ts"]
+      "@ombro/shared/breadcrumb": ["./libs/shared/breadcrumb/src/index.ts"],
+      "@ombro/shared/utils/password-strength": [
+        "./libs/shared/utils/password-strength/src/index.ts"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]
