@@ -1,8 +1,8 @@
 import { Mocked } from 'vitest';
 import { AuthStore, AuthStoreInstance } from './auth.store';
-import { AuthService } from './auth.service';
+import { AuthService } from '../auth.service';
 import { TestBed } from '@angular/core/testing';
-import { LoginResponse } from './dto/login.dto';
+import { LoginResponseDto } from '../dto/login.dto';
 import { of } from 'rxjs';
 import * as jwtDecoder from 'jwt-decode';
 
@@ -25,7 +25,7 @@ describe('AuthStore', () => {
   });
 
   it('should update status after successful login', () => {
-    const mockResponse: LoginResponse = {
+    const mockResponse: LoginResponseDto = {
       jwt: 'accessToken',
       adminData: {
         id: 1,

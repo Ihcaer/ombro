@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { LoginComponent } from './login.component';
+import { FinalizeRegistrationComponent } from './finalize-registration.component';
 import { COMMON_TESTING_PROVIDERS } from '@ombro/admin-panel/app/shared/testing/common-testing-providers';
 
-describe('LoginComponent', () => {
-  let component: LoginComponent;
-  let fixture: ComponentFixture<LoginComponent>;
+describe('FinalizeRegistrationComponent', () => {
+  let component: FinalizeRegistrationComponent;
+  let fixture: ComponentFixture<FinalizeRegistrationComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LoginComponent],
+      imports: [FinalizeRegistrationComponent],
       providers: [...COMMON_TESTING_PROVIDERS],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(LoginComponent);
+    fixture = TestBed.createComponent(FinalizeRegistrationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

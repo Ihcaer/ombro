@@ -2,15 +2,6 @@
   <ng-container heading>Logowanie</ng-container>
   <ng-container>
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      @if (getErrorMessage(); as message) {
-        <div class="mb-(--p-spacing-4) flex items-center justify-center">
-          <p-message severity="error" styleClass="min-w-0">
-            <span class="text-wrap">
-              {{ message }}
-            </span>
-          </p-message>
-        </div>
-      }
       <div>
         <div class="form-fields">
           <ombro-input-text
@@ -26,7 +17,9 @@
             formControlName="password"
           />
         </div>
-        <!-- <div class="mt-(--p-spacing-2) text-right"><a>Nie pamiętasz hasła?</a></div> -->
+        <div class="mt-(--p-spacing-2) text-right">
+          <a [routerLink]="passwordResetLink">Nie pamiętasz hasła?</a>
+        </div>
       </div>
       <app-auth-form-buttons>Zaloguj się</app-auth-form-buttons>
     </form>

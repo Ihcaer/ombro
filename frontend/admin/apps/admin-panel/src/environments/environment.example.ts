@@ -1,6 +1,9 @@
-export const environment = {
+import { EnvConfig } from '../app/core/config/interfaces/env-config.interface';
+
+export const environment: EnvConfig = {
   production: false,
-  API_BASE_URL: '/api/v1',
+  apiDomain: 'localhost:3000',
+  apiSlug: '/api/v1',
   coreFeatures: {},
   addonFeatures: {},
 };

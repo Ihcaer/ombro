@@ -1,10 +1,12 @@
+import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 export type logoTypes = 'wordmark' | 'lettermark';
 
 @Component({
   selector: 'app-logo',
-  imports: [],
+  imports: [RouterLink, NgTemplateOutlet],
   templateUrl: './logo.component.html',
   styleUrl: './logo.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -17,7 +19,8 @@ export class LogoComponent {
   };
 
   /** @see {@link LogoComponent} */
-  readonly variant = input.required<logoTypes>();
+  readonly variant = input<logoTypes>('lettermark');
+  readonly enableReference = input<boolean>(true);
 
   protected readonly imageSrc = computed(
     () => LogoComponent.LOGO_PATH + LogoComponent.LOGO_MAP[this.variant()],

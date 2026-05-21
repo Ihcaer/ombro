@@ -27,7 +27,7 @@ import { ButtonModule } from 'primeng/button';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormButtonsComponent {
-  hasSecondaryButton = contentChild<ElementRef>('[secondary]');
+  hasSecondaryButton = contentChild<ElementRef>('secondaryBtn');
 
   isDisabled = input<boolean>(false);
   secondaryClick = output<void>();

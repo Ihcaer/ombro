@@ -1,1 +1,9 @@
-<img [src]="imageSrc()" alt="Logo" />
+@if (enableReference()) {
+  <a routerLink="/" aria-label="Strona główna panelu">
+    <ng-container [ngTemplateOutlet]="logo" />
+  </a>
+} @else {
+  <ng-container [ngTemplateOutlet]="logo" />
+}
+
+<ng-template #logo><img [src]="imageSrc()" alt="Logo" /></ng-template>

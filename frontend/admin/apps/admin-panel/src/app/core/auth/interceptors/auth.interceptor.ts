@@ -6,12 +6,12 @@ import {
   HttpRequest,
 } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { AuthStore, AuthStoreInstance } from '../auth.store';
+import { AuthStore, AuthStoreInstance } from '../store/auth.store';
 import { BehaviorSubject, catchError, filter, Observable, switchMap, take, throwError } from 'rxjs';
 import { AUTH_ENDPOINTS } from '../auth.constants';
-import { LoginResponse } from '../dto/login.dto';
+import { LoginResponseDto } from '../dto/login.dtos';
 import { Router } from '@angular/router';
-import { LOGIN_PAGE_SLUG } from '../../../features/auth/auth.routes';
+import { AUTH_PAGE_PATHS } from '@ombro/admin-panel/app/features/auth/auth-paths';
 
 const refreshTokenSubject = new BehaviorSubject<string | null>(null);
 
@@ -45,13 +45,13 @@ function handle401Error(
     refreshTokenSubject.next(null);
 
     return store.refreshTokens().pipe(
-      switchMap((res: LoginResponse) => {
+      switchMap((res: LoginResponseDto) => {
         const newToken = res.jwt;
         refreshTokenSubject.next(newToken);
         return next(addTokenHeader(request, newToken));
       }),
       catchError((error: unknown) => {
-        const loginPageUrl = `/${LOGIN_PAGE_SLUG}`;
+        const loginPageUrl = `/${AUTH_PAGE_PATHS.LOGIN}`;
         router.navigate([loginPageUrl]);
         return throwError(() => error);
       }),

@@ -1,4 +1,5 @@
 import nx from '@nx/eslint-plugin';
+import ngrx from '@ngrx/eslint-plugin/v9';
 
 export default [
   ...nx.configs['flat/base'],
@@ -9,6 +10,11 @@ export default [
   },
   {
     files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
+    extends: [
+      ...ngrx.configs.signals,
+      ...ngrx.configs.signalsTypeChecked,
+      ...ngrx.configs.operators,
+    ],
     rules: {
       '@nx/enforce-module-boundaries': [
         'error',
@@ -46,6 +52,10 @@ export default [
         },
       ],
       '@typescript-eslint/no-inferrable-types': 'warn',
+      '@typescript-eslint/no-explicit-any': 'error',
+      '@typescript-eslint/no-unsafe-argument': 'warn',
+      '@ngrx/with-state-no-arrays-at-root-level': 'warn',
+      '@ngrx/no-state-in-signal-store': 'error',
     },
   },
   {

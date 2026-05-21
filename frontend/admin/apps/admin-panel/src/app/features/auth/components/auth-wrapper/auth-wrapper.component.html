@@ -16,6 +16,15 @@
       }
       <h1><ng-content select="[heading]" /></h1>
     </div>
-    <div class="w-full"><ng-content /></div>
+    <div class="w-full">
+      @if (errorMessage(); as message) {
+        <div class="mb-(--p-spacing-4) flex items-center justify-center">
+          <p-message severity="error" styleClass="min-w-0">
+            {{ message }}
+          </p-message>
+        </div>
+      }
+      <ng-content />
+    </div>
   </div>
 </div>

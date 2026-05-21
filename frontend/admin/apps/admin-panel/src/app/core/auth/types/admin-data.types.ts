@@ -8,4 +8,6 @@ export type Admin = {
   privileges: number;
   verification: AdminVerification;
   isActivated: boolean;
+  email?: string;
+  password?: string;
 };

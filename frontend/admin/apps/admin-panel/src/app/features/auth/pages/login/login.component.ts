@@ -1,11 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AuthWrapperComponent } from '../../components/auth-wrapper/auth-wrapper.component';
 import { FormButtonsComponent } from '../../components/form-buttons/form-buttons.component';
 import { InputTextComponent } from '@ombro/shared/ui-forms';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AuthStore } from '@ombro/admin-panel/app/core/auth/auth.store';
 import { MessageModule } from 'primeng/message';
-import { ErrorResponseBody } from '@ombro/admin-panel/app/core/config/types/error-response-body.type';
+import { RouterLink } from '@angular/router';
+import { AUTH_PAGE_PATHS, AUTH_PATH_SLUG } from '../../auth-paths';
+import { AuthPageBase } from '../auth-page-base';
 
 type LoginForm = { login: FormControl<string>; password: FormControl<string> };
 
@@ -17,22 +18,16 @@ type LoginForm = { login: FormControl<string>; password: FormControl<string> };
     InputTextComponent,
     ReactiveFormsModule,
     MessageModule,
+    RouterLink,
   ],
   templateUrl: './login.component.html',
   styles: `
     @use '../../styles/common.scss';
-    .form-fields {
-      display: flex;
-      flex-direction: column;
-      gap: common.$formFieldsGap;
-    }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoginComponent {
-  private readonly authStore = inject(AuthStore);
-
-  protected errorMessage = signal<string | null>(null);
+export class LoginComponent extends AuthPageBase {
+  protected readonly passwordResetLink = `/${AUTH_PATH_SLUG}/${AUTH_PAGE_PATHS.REQUEST_PASSWORD_RESET}`;
 
   protected loginForm = new FormGroup<LoginForm>({
     login: new FormControl('', {
@@ -42,28 +37,7 @@ export class LoginComponent {
     password: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
   });
 
-  protected readonly getErrorMessage = computed<string | null>(() => {
-    const errorBody = this.authStore.lastError()?.error as ErrorResponseBody | undefined;
-    if (!errorBody) return null;
-    const errorCode = errorBody.errorCode;
-    let errorMessage: string;
-
-    switch (errorCode) {
-      case 'INVALID_CREDENTIALS':
-        errorMessage = 'Nieprawidłowe dane uwierzytelniające.';
-        break;
-      case 'EMAIL_NOT_VERIFIED':
-        errorMessage =
-          'E-mail niezweryfikowany. W celu weryfikacji postępuj zgodnie z instrukcjami przesłanymi na e-mail.';
-        break;
-      default:
-        errorMessage = 'Wystąpił nieoczekiwany błąd. Spróbuj ponownie za chwilę.';
-    }
-
-    return errorMessage;
-  });
-
-  protected onSubmit() {
+  protected override onSubmit(): void {
     if (this.loginForm.valid) {
       const rawValues = this.loginForm.getRawValue();
 

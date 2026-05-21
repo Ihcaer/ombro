@@ -1,10 +1,14 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { IconComponent, IconName } from '@ombro/shared/ui-icons';
-import { LogoComponent } from '../../../../shared/components/logo/logo.component';
+import { LogoComponent } from '@ombro/admin-panel/app/shared/components/logo/logo.component';
+import { MessageModule } from 'primeng/message';
+import { AuthStore } from '@ombro/admin-panel/app/core/auth/store/auth.store';
+import { mapAuthHttpErrorToMessage } from '../../utils/mapAuthHttpErrorToMessage.util';
+import { ErrorResponseBody } from '@ombro/admin-panel/app/core/config/types/error-response-body.type';
 
 @Component({
   selector: 'app-auth-wrapper',
-  imports: [IconComponent, LogoComponent],
+  imports: [IconComponent, LogoComponent, MessageModule],
   templateUrl: './auth-wrapper.component.html',
   styles: `
     @use '../../styles/common.scss';
@@ -15,6 +19,16 @@ import { LogoComponent } from '../../../../shared/components/logo/logo.component
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthWrapperComponent {
+  private readonly authStore = inject(AuthStore);
+
   /**  @see {@link IconComponent} */
   readonly icon = input<IconName>();
+
+  protected readonly errorMessage = computed<string | null>(() => {
+    const errorBody = this.authStore.lastErrorResponse()?.error as ErrorResponseBody | undefined;
+    if (!errorBody) return null;
+    const errorCode = errorBody.errorCode;
+
+    return mapAuthHttpErrorToMessage(errorCode);
+  });
 }

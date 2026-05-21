@@ -8,13 +8,13 @@ import {
 } from '@angular/common/http';
 
 import { authInterceptor } from './auth.interceptor';
-import { AuthStore, AuthStoreInstance } from '../auth.store';
 import { signal, WritableSignal } from '@angular/core';
 import { RxMethod } from '@ngrx/signals/rxjs-interop';
-import { LoginRequest, LoginResponse } from '../dto/login.dto';
 import { Router } from '@angular/router';
 import { firstValueFrom, of, throwError } from 'rxjs';
-import { LOGIN_PAGE_SLUG } from '../../../features/auth/auth.routes';
+import { AuthStoreInstance, AuthStore } from '../store';
+import { LoginRequestDto, LoginResponseDto } from '../dto/login.dtos';
+import { AUTH_PAGE_PATHS } from '@ombro/admin-panel/app/features/auth/auth-paths';
 
 describe('authInterceptor', () => {
   const interceptor: HttpInterceptorFn = (req, next) =>
@@ -22,6 +22,7 @@ describe('authInterceptor', () => {
 
   let authStore: AuthStoreInstance;
   let router: Router;
+  const loginSlug = AUTH_PAGE_PATHS.LOGIN;
 
   beforeEach(() => {
     const authStoreMock: Partial<AuthStoreInstance> = {
@@ -31,8 +32,8 @@ describe('authInterceptor', () => {
         expiresAtMs: signal<number | null>(null),
       }),
       isLoading: signal(false),
-      lastError: signal(null),
-      login: vi.fn() as unknown as RxMethod<LoginRequest>,
+      lastErrorResponse: signal(null),
+      login: vi.fn() as unknown as RxMethod<LoginRequestDto>,
       refreshTokens: vi.fn(),
     };
 
@@ -87,7 +88,7 @@ describe('authInterceptor', () => {
       desc: 'missing/outdated access token',
     },
     {
-      endpoint: `/api/v1/${LOGIN_PAGE_SLUG}`,
+      endpoint: `/api/v1/${loginSlug}`,
       authorized: true,
       expectedCallCount: 1,
       desc: 'ignored path',
@@ -101,7 +102,7 @@ describe('authInterceptor', () => {
   ])(
     'should send $expectedCallCount requests for scenario: $desc',
     async ({ endpoint, authorized, expectedCallCount }) => {
-      const mockRefreshTokenResponse: LoginResponse = {
+      const mockRefreshTokenResponse: LoginResponseDto = {
         jwt: 'accessToken',
         adminData: {
           id: 1,
@@ -142,7 +143,7 @@ describe('authInterceptor', () => {
 
       expect(nextMock).toHaveBeenCalled();
       expect(callCount).toBe(expectedCallCount);
-      if (endpoint.includes(LOGIN_PAGE_SLUG)) {
+      if (endpoint.includes(loginSlug)) {
         expect(authStore.refreshTokens).not.toHaveBeenCalled();
       } else {
         expect(authStore.refreshTokens).toHaveBeenCalled();
