@@ -37,6 +37,7 @@ import {
   RegistrationEligibilityRequestDto,
   RegistrationEligibilityResponseDto,
 } from '../dto/admin-register.dtos';
+import { AdminPrivileges } from '../types/admin-data.types';
 
 const getInitialState = () => structuredClone(initialState);
 
@@ -46,7 +47,7 @@ export const AuthStore = signalStore(
   withMethods((store) => ({
     _updateAuthState(response: LoginResponseDto): void {
       patchState(store, {
-        admin: response.adminData,
+        admin: { ...response.adminData, privileges: new Set(response.adminData.privileges) },
         accessToken: {
           token: response.jwt,
           expiresAtMs: getAccessTokenExpirationTimeMs(response.jwt),
@@ -105,6 +106,7 @@ export const AuthStore = signalStore(
         }),
       );
     },
+    // Reset password methods
     requestPasswordReset: rxMethod<RequestPasswordResetRequestDto>(
       pipe(
         tap(() => store._startRequest()),
@@ -131,6 +133,7 @@ export const AuthStore = signalStore(
         ),
       ),
     ),
+    // Finalize registration methods
     async checkRegistrationEligibility(
       payload: RegistrationEligibilityRequestDto,
     ): Promise<RegistrationEligibilityResponseDto | undefined> {
@@ -156,6 +159,17 @@ export const AuthStore = signalStore(
         ),
       ),
     ),
+    // Privileges methods
+    hasAppropriatePrivileges(neededPrivileges: AdminPrivileges): boolean {
+      if (!store.admin() || !store.admin()?.privileges || neededPrivileges === undefined)
+        return false;
+      if (neededPrivileges.size === 0) return true;
+
+      const adminPrivileges: AdminPrivileges = store.admin()!.privileges;
+
+      if (neededPrivileges.size > adminPrivileges.size) return false;
+      return [...neededPrivileges].every((privilege) => adminPrivileges.has(privilege));
+    },
   })),
   withMethods((store, router = inject(Router)) => ({
     _processAutoRefresh: rxMethod<number | null>(

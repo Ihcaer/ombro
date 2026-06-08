@@ -1,0 +1,6 @@
+@use 'sass:math';
+@use '../../shared/common.scss';
+
+.itemTextTransitionDelay {
+  transition-delay: math.div(common.$transitionDuration * 2, 3);
+}

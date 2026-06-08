@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Admin } from '../types/admin-data.types';
 
 export type AuthState = {
-  admin: Omit<Admin, 'password' | 'email'> | null;
+  admin: Admin | null;
   accessToken: { token: string | null; expiresAtMs: number | null };
   isLoading: boolean;
   lastErrorResponse: HttpErrorResponse | null;
