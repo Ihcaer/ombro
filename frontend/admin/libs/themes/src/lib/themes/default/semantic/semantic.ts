@@ -1,8 +1,9 @@
-import { customVariables } from './misc/custom-variables';
 import { fontColor } from './font/font-color';
 import { fontSize } from './font/font-size';
-import { formField } from './misc/formField';
-import { meterColors } from './misc/meter';
+import { formField } from './general/form-field';
+import { meterColors } from './general/meter';
+import { miscellaneous } from './general/miscellaneous';
+import { layout } from './layout';
 
 export const semantic = {
   primary: {
@@ -30,7 +31,8 @@ export const semantic = {
         700: '{grey.700}',
       },
       text: fontColor,
-      customVariables,
+      miscellaneous,
+      layout,
       formField,
       meter: meterColors,
     },

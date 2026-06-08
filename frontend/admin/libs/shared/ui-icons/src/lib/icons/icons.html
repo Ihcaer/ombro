@@ -1,16 +1,18 @@
 @if (isMaterial()) {
-<span
-  class="material-symbols-outlined"
-  [style.font-size.px]="size()"
-  [style.font-variation-settings]="fontSettings()"
->
-  {{ name() }}
+<span class="material-symbols-container" [style.width.px]="size()" [style.height.px]="size()">
+  <i
+    class="material-symbols-outlined"
+    [style.font-size.px]="size()"
+    [style.font-variation-settings]="fontSettings()"
+  >
+    {{ name() }}
+  </i>
 </span>
 } @else {
 <img
   [src]="customIconPath()"
   [style.width.px]="size()"
   [style.height.px]="size()"
-  alt="{{ name() }}"
+  [alt]="name() + ' icon'"
 />
 }
