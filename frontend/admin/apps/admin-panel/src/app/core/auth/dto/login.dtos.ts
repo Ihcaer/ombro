@@ -1,5 +1,7 @@
-import { Admin } from '../types/admin-data.types';
+import { Admin, AdminPrivilege } from '../types/admin-data.types';
+
+type AdminApiData = Readonly<Omit<Admin, 'privileges'> & { privileges: AdminPrivilege[] }>;
 
 export type LoginRequestDto = { readonly identifier: string; readonly password: string };
 
-export type LoginResponseDto = { readonly jwt: string; readonly adminData: Admin };
+export type LoginResponseDto = { readonly jwt: string; readonly adminData: AdminApiData };

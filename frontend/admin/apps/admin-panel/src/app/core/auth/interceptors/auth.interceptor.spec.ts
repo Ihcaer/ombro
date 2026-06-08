@@ -109,7 +109,7 @@ describe('authInterceptor', () => {
           displayName: 'displayName',
           handleName: 'handleName',
           avatarId: null,
-          privileges: 1,
+          privileges: ['ADMINS_MANAGE'],
           verification: 'VERIFIED',
           isActivated: true,
         },
