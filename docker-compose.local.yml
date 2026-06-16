@@ -1,25 +1,65 @@
 services:
   db:
     volumes:
-      - postgres_data_local:/var/lib/postgresql/data
-  
-  minio:
+      - postgres_data_local:/var/lib/postgresql
+
+  seaweed-master:
     volumes:
-      - minio_data_local:/data
+      - seaweed_data_master_local:/data
+  
+  seaweed-volume:
+    volumes:
+      - seaweed_data_volume_local:/data
+
+  seaweed-filer:
+    volumes:
+      - seaweed_data_filer_local:/data
+
+  seaweed-s3:
+    tmpfs:
+      - /data
+
+  mailpit:
+    image: axllent/mailpit:v1.30
+    restart: unless-stopped
+    ports:
+      - "8025:8025"
+    environment:
+      MP_MAX_MESSAGES: 500
+      MP_DATABASE: /data/mailpit.db
+    volumes:
+      - mailpit_data_local:/data
+    networks:
+      - mailpit_net
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://${EMAIL_HOST}:8025/livez"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    stop_signal: SIGKILL
   
   backend:
     env_file:
       - ".env.local"
+    networks:
+      - mailpit_net
+    depends_on:
+      mailpit:
+        condition: service_healthy
 
   nginx:
     ports:
-      - "5000:80"
-    environment:
-      NGINX_PORT: ${NGINX_PORT}
-      RATE_LIMIT_ENABLED: ${RATE_LIMIT_ENABLED}
-      SSL_ENABLED: ${SSL_ENABLED}
-      HSTS_MAX_AGE: ${HSTS_MAX_AGE}
+      - "80:80"
+    volumes:
+      - ./infrastructure/nginx/nginx.local.conf:/etc/nginx/nginx.conf:ro
+
+networks:
+  mailpit_net:
 
 volumes:
   postgres_data_local:
-  minio_data_local:
+  seaweed_data_master_local:
+  seaweed_data_volume_local:
+  seaweed_data_filer_local:
+  mailpit_data_local:

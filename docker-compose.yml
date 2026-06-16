@@ -1,7 +1,7 @@
 services:
   db:
     image: postgres:18-alpine
-    restart: always
+    restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -15,120 +15,152 @@ services:
       retries: 5
       start_period: 30s
 
-  minio:
-    image: minio/minio:RELEASE.2025-09-07T16-13-09Z
-    restart: always
-    environment:
-      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY_ID}
-      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_ACCESS_KEY}
-      MINIO_SERVER_URL: "http://${APP_MEDIA_DOMAIN}/s3"
-      MINIO_BROWSER: off
+  seaweed-master:
+    image: chrislusf/seaweedfs:4.33
+    restart: unless-stopped
+    stop_grace_period: 30s
+    command: "master -port=9333 -mdir=/data"
     networks:
-      - minio_net
-      - minio_public_net
-    command: server /data --console-address ":9001"
+      - seaweed_net
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:${MINIO_PORT}/minio/health/live"]
+      test: ["CMD", "curl", "-f", "http://seaweed-master:9333/cluster/healthz"]
       interval: 30s
-      timeout: 20s
-      retries: 3
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  seaweed-volume:
+    image: chrislusf/seaweedfs:4.33
+    restart: unless-stopped
+    stop_grace_period: 30s
+    command: "volume -mserver=seaweed-master:9333 -port=8080 -dir=/data -max=1"
+    networks:
+      - seaweed_net
+    depends_on:
+      seaweed-master:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://seaweed-volume:8080/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  seaweed-filer:
+    image: chrislusf/seaweedfs:4.33
+    restart: unless-stopped
+    stop_grace_period: 30s
+    command: "filer -master=seaweed-master:9333 -port=${SEAWEEDFS_FILER_PORT}"
+    networks:
+      - seaweed_net
+    depends_on:
+      seaweed-master:
+        condition: service_healthy
+      seaweed-volume:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://seaweed-filer:${SEAWEEDFS_FILER_PORT}/"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  seaweed-s3:
+    image: chrislusf/seaweedfs:4.33
+    restart: unless-stopped
+    stop_grace_period: 30s
+    environment:
+      AWS_ACCESS_KEY_ID: ${SEAWEEDFS_S3_ACCESS_KEY}
+      AWS_SECRET_ACCESS_KEY: ${SEAWEEDFS_S3_SECRET_KEY}
+    command: "s3 -filer=seaweed-filer:${SEAWEEDFS_FILER_PORT} -port=${SEAWEEDFS_S3_PORT}"
+    networks:
+      - seaweed_net
+      - seaweed_public_net
+    depends_on:
+      seaweed-filer:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "pgrep", "weed"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
 
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
       target: final
-    restart: always
+    restart: unless-stopped
     env_file:
       - .env.local
-    depends_on:
-      db:
-        condition: service_healthy
-      minio:
-        condition: service_healthy
     networks:
       - backend_net
       - db_net
-      - minio_net
+      - seaweed_backend_net
+    depends_on:
+      db:
+        condition: service_healthy
 
-  # frontend_main placeholder
+  # frontend-web placeholder
 
-  frontend_admin:
+  frontend-admin:
     build:
       context: ./frontend/admin
       dockerfile: Dockerfile
       target: final
-    restart: always
+    restart: unless-stopped
     networks:
       - frontend_admin_net
 
   nginx:
-    image: nginx:1.29
+    image: nginx:1.31
     restart: always
-    ports:
-      - "5000:80"
-    volumes:
-      - ./infrastructure/nginx/templates/variables.conf.template:/etc/nginx/templates/variables.conf.template:ro
-      - ./infrastructure/nginx/includes:/etc/nginx/includes:ro
-      - ./infrastructure/nginx/conf.d/default-http.conf:/etc/nginx/conf.d/default-http.conf:ro
-      - ./infrastructure/nginx/conf.d/default-https.conf:/etc/nginx/conf.d/default-https.conf:ro
-      - ./infrastructure/nginx/error-sites:/usr/share/nginx/html/errors:ro
-      - ./infrastructure/nginx/ssl/certificates:/etc/nginx/ssl:ro
-      - ./infrastructure/nginx/public-assets:/usr/share/nginx/html/public-assets:ro
     environment:
       # NGINX config
       NGINX_HOST: ${APP_MAIN_DOMAIN}
       NGINX_PORT: ${NGINX_PORT}
-      RATE_LIMIT_ENABLED: ${RATE_LIMIT_ENABLED}
-      UPLOAD_FILE_MAX_SIZE: ${UPLOAD_FILE_MAX_SIZE}
       # SSL
       SSL_ENABLED: ${SSL_ENABLED}
       SSL_CERT_NAME: ${SSL_CERT_NAME}
       SSL_KEY_NAME: ${SSL_KEY_NAME}
       HSTS_MAX_AGE: ${HSTS_MAX_AGE}
       # Services
-      MINIO_HOST: "${MINIO_HOST}:${MINIO_PORT}"
-      MINIO_CONSOLE_HOST: "${MINIO_HOST}:9001"
-      BACKEND_API_HOST: "backend:${API_PORT}"
-      FRONTEND_MAIN_HOST: "frontend_main:80"
-      FRONTEND_ADMIN_HOST: "frontend_admin:80"
-      FRONTEND_ADMIN_SLUG: "{ADMIN_PANEL_SLUG}"
+      SEAWEEDFS_HOST: seaweed-s3:${SEAWEEDFS_S3_PORT}
+      SEAWEEDFS_SLUG: ${SEAWEEDFS_FILER_SLUG}
+      BACKEND_API_HOST: backend:${API_PORT}
+      BACKEND_SLUG: ${BACKEND_SLUG}
+      FRONTEND_ADMIN_HOST: frontend-admin:${FRONTEND_ADMIN_PORT}
+      FRONTEND_ADMIN_SLUG: ${FRONTEND_ADMIN_SLUG}
+      FRONTEND_WEB_HOST: frontend-web:${FRONTEND_WEB_PORT}
+      FRONTEND_WEB_SLUG: ${FRONTEND_WEB_SLUG}
+      PUBLIC_ASSETS_SLUG: ${PUBLIC_ASSETS_SLUG}
+      ADMIN_UPLOAD_FILE_MAX_SIZE: ${ADMIN_UPLOAD_FILE_MAX_SIZE_MB}M
+    volumes:
+      - ./infrastructure/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./infrastructure/nginx/templates:/etc/nginx/templates:ro
+      - ./infrastructure/nginx/includes:/etc/nginx/includes:ro
+      - ./infrastructure/nginx/error-sites:/usr/share/nginx/html/errors:ro
+      - ./infrastructure/nginx/ssl/certificates:/etc/nginx/ssl/certificates:ro
+      - ./infrastructure/nginx/public-assets:/usr/share/nginx/html/public-assets:ro
     networks:
-      - minio_public_net
       - backend_net
       - frontend_admin_net
+      - seaweed_public_net
     depends_on:
-      - backend
-      - frontend_admin
-    command: >
-      /bin/sh -c "
-        envsubst '
-          ${NGINX_HOST}
-          ${NGINX_PORT}
-          ${RATE_LIMIT_ENABLED}
-          ${UPLOAD_FILE_MAX_SIZE}
-          ${SSL_ENABLED}
-          ${SSL_CERT_NAME}
-          ${SSL_KEY_NAME}
-          ${HSTS_MAX_AGE}
-          ${MINIO_HOST}
-          ${MINIO_CONSOLE_HOST}
-          ${BACKEND_API_HOST}
-          ${FRONTEND_MAIN_HOST}
-          ${FRONTEND_ADMIN_HOST}
-          ${FRONTEND_ADMIN_SLUG}
-        ' < /etc/nginx/templates/variables.conf.template \
-          > /etc/nginx/includes/variables.conf &&
-        if [ \"$SSL_ENABLED\" != \"true\" ]; then
-          rm -f /etc/nginx/conf.d/default-https.conf;
-        fi &&
-        nginx -g 'daemon off;'
-      "
+      backend:
+        condition: service_started
+      frontend-admin:
+        condition: service_started
+      seaweed-s3:
+        condition: service_healthy
+        
 
 networks:
   db_net:
-  minio_net:
-  minio_public_net:
+  seaweed_net:
+  seaweed_backend_net:
+  seaweed_public_net:
   backend_net:
   frontend_main_net:
   frontend_admin_net:

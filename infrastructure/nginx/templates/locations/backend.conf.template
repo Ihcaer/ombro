@@ -1,8 +1,10 @@
-set $full_url_base $protocol_scheme$server_name;
-
-location /api/v1/ {
+location /${BACKEND_SLUG}/ {
    limit_req zone=api_limit burst=20 nodelay;
+
+   client_max_body_size ${ADMIN_UPLOAD_FILE_MAX_SIZE};
+
    include /etc/nginx/includes/proxy.conf;
+   set $full_url_base $scheme://$server_name;
 
    if ($request_method = OPTIONS) {
       add_header 'Access-Control-Allow-Origin' "$full_url_base" always;
@@ -21,5 +23,5 @@ location /api/v1/ {
       add_header 'Access-Control-Allow-Origin' "$full_url_base" always;
    }
 
-   proxy_pass http://$backend_api_host/;
+   proxy_pass http://${BACKEND_API_HOST}/;
 }

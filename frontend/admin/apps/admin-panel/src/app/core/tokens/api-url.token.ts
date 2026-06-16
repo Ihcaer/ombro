@@ -7,8 +7,15 @@ export const API_URL = new InjectionToken<string>('API_URL', {
     let base = environment.apiDomain;
     const slug = environment.apiSlug ?? '';
 
-    if (base && !base.startsWith('http') && !base.includes('localhost')) base = `https://${base}`;
+    if (base && !base.startsWith('http')) {
+      if (base.includes('localhost')) {
+        base = `http://${base}`;
+      } else {
+        base = `https://${base}`;
+      }
+    }
 
-    return `${base}${slug.startsWith('/') ? slug : '/' + slug}`;
+    const separator = base && !base.endsWith('/') && !slug.startsWith('/') ? '/' : '';
+    return `${base}${separator}${slug}`;
   },
 });

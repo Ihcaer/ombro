@@ -13,19 +13,31 @@ This repository contains the complete source code for the Skema application, inc
 | `docker-compose.*.yml`  | Orchestration           | Docker files for local, test, and production environments. |
 | `.env.example`          | Configuration           | Environment variable templates for the Docker stack.       |
 
-## Quick Start (Local Setup)
+## Quick start (Local setup)
 
-1.  **Dependencies:** Ensure you have **Docker** and **Docker Compose** installed.
-2.  **Configuration:** Copy the example and set environment variables: `cp .env.example .env.local`
-3.  **Run:** Start the entire stack: `docker compose -f docker-compose.yml -f docker-compose.local.yml up -d`
-4.  **Access:** End-user interface: `http://localhost/` (default) | Admin Panel: `http://localhost/admin` (default)
+1.  **Dependencies:** Ensure you have **Docker**, **Docker Compose** and **Node.js 24+** installed.
+1.  **Configuration:** Copy the example and set environment variables: `cp .env.example .env.local`.
+1.  **Run:** Start the entire stack: `npm run start:local`.
+1.  **Access:** End-user interface: `http://localhost/` (default) | Admin Panel: `http://localhost/admin` (default).
 
-## Copyright and Licensing Notice
+## Advanced start (Production setup)
 
-**© 2025 Ihcaer. All Rights Reserved. (UNLICENSED)**
+1.  **Dependencies:** Ensure you have **Docker**, **Docker Compose** and **Node.js 24+** installed.
+1.  **Configuration:**
+    1.  Copy the example and set environment variables: `cp .env.example .env`.
+    1.  Put SSL certificate files in `infrastructure/nginx/ssl/`.
+    1.  Adjust the data in the `.env` file to your environment.
+1.  **Build:** Start the entire stack: `npm run build:prod`.
+1.  **Placing:** Transfer **application image**, **`.env` file**, **docker-compose.yml** and **docker-compose.prod.yml** to server with installed **Docker** and **Docker Compose**. All files except **image** put in the same folder.
+1.  **Run:** Move to folder with app files and start app: `docker compose --env-file .env -f docker-compose.yml -f docker-compose.prod.yml up -d`.
+1.  **Access:** End-user interface: `https://[your-domain]/` | Admin Panel: `https://[your-domain]/admin`.
 
-**Licensing Terms:**
+## Copyright and licensing notice
+
+**© 2025 Ihcaer. All rights reserved. (UNLICENSED)**
+
+**Licensing terms:**
 
 1.  **This code is NOT released under any Open Source license.** It is explicitly marked as UNLICENSED.
-2.  Any copying, modification, redistribution, or utilization of this code or documentation for commercial or private purposes is **strictly prohibited** without the express written consent of the Copyright Holder.
-3.  This repository is made publicly visible **for review and informational purposes only.**
+1.  Any copying, modification, redistribution, or utilization of this code or documentation for commercial or private purposes is **strictly prohibited** without the express written consent of the Copyright Holder.
+1.  This repository is made publicly visible **for review and informational purposes only.**

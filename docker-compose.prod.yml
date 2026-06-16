@@ -1,13 +1,23 @@
 services:
   db:
     volumes:
-      - postgres_data_prod:/var/lib/postgresql/data
+      - postgres_data_prod:/var/lib/postgresql
 
-  minio:
-    environment:
-      MINIO_SERVER_URL: "https://${MAIN_DOMAIN}/s3"
+  seaweed-master:
     volumes:
-      - minio_data_prod:/data
+      - seaweed_data_master_prod:/data
+
+  seaweed-volume:
+    volumes:
+      - seaweed_data_volume_prod:/data
+
+  seaweed-filer:
+    volumes:
+      - seaweed_data_filer_prod:/data
+
+  seaweed-s3:
+    tmpfs:
+      - /data
 
   backend:
     env_file:
@@ -17,14 +27,11 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    environment:
-      NGINX_PORT: ${NGINX_PORT}
-      RATE_LIMIT_ENABLED: ${RATE_LIMIT_ENABLED}
-      SSL_ENABLED: ${SSL_ENABLED}
-      SSL_CERT_NAME: ${SSL_CERT_NAME}
-      SSL_KEY_NAME: ${SSL_KEY_NAME}
-      HSTS_MAX_AGE: ${HSTS_MAX_AGE}
+    volumes:
+      - ./infrastructure/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
 
 volumes:
   postgres_data_prod:
-  minio_data_prod:
+  seaweed_data_master_prod:
+  seaweed_data_volume_prod:
+  seaweed_data_filer_prod:

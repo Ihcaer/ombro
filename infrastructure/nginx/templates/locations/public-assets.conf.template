@@ -1,5 +1,4 @@
-location /public-assets/ {
+location /${PUBLIC_ASSETS_SLUG}/ {
   alias /usr/share/nginx/html/public-assets/;
-
   try_files $uri =404;
 }

@@ -19,15 +19,12 @@ FROM node:24-alpine AS final
 
 WORKDIR /app
 
-COPY --from=builder package*.json ./
-COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder --chown=node:node /app/package*.json ./
+COPY --from=builder --chown=node:node /app/node_modules ./node_modules
+COPY --from=builder --chown=node:node /app/dist ./dist
+COPY --from=builder --chown=node:node /app/prisma ./prisma
+COPY --from=builder --chown=node:node /app/prisma.config.ts ./
 
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/prisma ./prisma
-
-RUN rm -rf /usr/share/man /usr/share/doc /tmp/* /var/cache/apk/*
-
-RUN chown -R node:node /app
 USER node
 
 EXPOSE 3000
