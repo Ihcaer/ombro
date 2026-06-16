@@ -1,30 +1,22 @@
-services:
-  db:
-    ports:
-      - "5432:5432"
-
-  minio:
-    ports:
-      - "9000:9000"
-      - "9001:9001"
-      
+services:     
   mailpit:
-    image: axllent/mailpit:v1.28
+    image: axllent/mailpit:v1.30.1
     ports:
-      - "1025:1025"
       - "8025:8025"
+    networks:
+      - mailpit_net
     
   backend:
     env_file:
       - ".env.test"
-
-  frontend_admin:
+    networks:
+      - mailpit_net
 
   nginx:
     ports:
-      - "5000:80"
-    environment:
-      NGINX_PORT: ${NGINX_PORT}
-      RATE_LIMIT_ENABLED: ${RATE_LIMIT_ENABLED}
-      SSL_ENABLED: ${SSL_ENABLED}
-      HSTS_MAX_AGE: ${HSTS_MAX_AGE}
+      - "80:80"
+    volumes:
+      - ./infrastructure/nginx/nginx.local.conf:/etc/nginx/nginx.conf:ro
+
+networks:
+  mailpit_net:

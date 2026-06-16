@@ -13,7 +13,7 @@
     "test:affected:develop": "npx nx affected --target=test --base=develop",
     "test:watch": "npx nx run-many --target=test --all --watch",
     "test:e2e": "npx nx e2e admin-panel-e2e",
-    "build": "npx nx build admin-panel",
+    "build:prod": "nx build admin-panel -c production --skip-nx-cache",
     "targets": "npx nx show project admin-panel"
   },
   "private": true,

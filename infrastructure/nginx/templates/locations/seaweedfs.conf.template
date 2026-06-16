@@ -1,0 +1,4 @@
+location /${SEAWEEDFS_SLUG}/ {
+   include /etc/nginx/includes/proxy.conf;
+   proxy_pass http://${SEAWEEDFS_HOST}/;
+}

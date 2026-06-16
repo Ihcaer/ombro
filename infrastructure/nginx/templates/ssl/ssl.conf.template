@@ -1,0 +1,8 @@
+ssl_certificate /etc/nginx/ssl/certificates/${SSL_CERT_NAME};
+ssl_certificate_key /etc/nginx/ssl/certificates/${SSL_KEY_NAME};
+
+ssl_protocols TLSv1.2 TLSv1.3;
+ssl_prefer_server_ciphers on;
+ssl_ciphers HIGH:!aNULL:!MD5;
+
+add_header Strict-Transport-Security "max-age=${HSTS_MAX_AGE}; includeSubDomains" always;

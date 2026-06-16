@@ -1,0 +1,4 @@
+location /${FRONTEND_ADMIN_SLUG}/ {
+   include /etc/nginx/includes/proxy.conf;
+   proxy_pass http://${FRONTEND_ADMIN_HOST}/;
+}
