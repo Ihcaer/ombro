@@ -1,4 +1,4 @@
-<p-breadcrumb [model]="references()">
+<p-breadcrumb [model]="references()" [pt]="{ root: { 'aria-label': navAriaLabel() } }">
   <ng-template #item let-item>
     @if (item.id === 'home' && item.current) {
       <ng-container [ngTemplateOutlet]="homeIcon" />
@@ -7,7 +7,7 @@
         <ng-container [ngTemplateOutlet]="homeIcon" />
       </a>
     } @else if (item.current) {
-      <span aria-current="page">
+      <span aria-current="page" class="leading-none">
         <ng-container [ngTemplateOutlet]="defaultItem" [ngTemplateOutletContext]="{ data: item }" />
       </span>
     } @else {
@@ -20,7 +20,7 @@
 </p-breadcrumb>
 
 <ng-template #homeIcon>
-  <span class="p-breadcrumb-item-label home-label"><ombro-icon name="home" /></span>
+  <div class="p-breadcrumb-item-label home-label"><ombro-icon name="home" [size]="15" /></div>
 </ng-template>
 <ng-template #defaultItem let-item="data">
   <span class="p-breadcrumb-item-label">{{ item.label }}</span>

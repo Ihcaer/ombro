@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, Signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  signal,
+  Signal,
+} from '@angular/core';
 import { BreadcrumbItem } from './types';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { RouterLink } from '@angular/router';
@@ -20,6 +28,8 @@ export class BreadcrumbComponent {
   separatorItem = input<string>('/');
 
   items: Signal<BreadcrumbItem[]> = this.service.getBreadcrumbs();
+
+  protected navAriaLabel = signal<string>('Ścieżka nawigacji');
 
   private homeItem: BreadcrumbItem = { label: 'home', url: this.homeUrl(), id: 'home' };
 

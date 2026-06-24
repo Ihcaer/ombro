@@ -29,15 +29,22 @@ export class BreadcrumbService {
     breadcrumbs: BreadcrumbItem[] = [],
   ): BreadcrumbItem[] {
     const child = route.firstChild;
-
     if (!child) return breadcrumbs;
 
+    const labelDataName = 'breadcrumbLabel';
+
     const routeUrl = child.snapshot.url.map((s) => s.path).join('/');
+    if (!routeUrl && !child.snapshot.data[labelDataName]) {
+      return this.createBreadcrumbs(child, url, breadcrumbs);
+    }
+
     const nextUrl = routeUrl ? `${url}/${routeUrl}` : url;
-    const label: string = child.snapshot.data['breadcrumb'] ?? nextUrl;
 
-    breadcrumbs.push({ label, url: nextUrl });
+    const fallbackLabel = nextUrl.replace(/^\//, '');
+    const label: string = child.snapshot.data[labelDataName] ?? fallbackLabel;
 
-    return this.createBreadcrumbs(child, nextUrl, breadcrumbs);
+    const updatedBreadcrumbs = [...breadcrumbs, { label, url: nextUrl }];
+
+    return this.createBreadcrumbs(child, nextUrl, updatedBreadcrumbs);
   }
 }

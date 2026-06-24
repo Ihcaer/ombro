@@ -5,7 +5,10 @@ export const layout = {
     gap: { vertical: '{spacing.0}', horizontal: '{spacing.5}' },
   },
   panel: {
-    'bg-color': '#ffffff0a',
+    bg: {
+      color: '#ffffff0a',
+      blur: '{blur.sm}',
+    },
     border: {
       width: '{borderWidth.sm}',
       style: '{borderStyle.solid}',

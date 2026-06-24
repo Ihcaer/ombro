@@ -26,12 +26,12 @@ export const routes: Routes = [
   {
     path: 'settings',
     component: SettingsComponent,
-    data: { breadcrumb: 'Settings' },
+    data: { breadcrumbLabel: 'Settings' },
     children: [
       {
         path: 'profile',
         component: ProfileComponent,
-        data: { breadcrumb: 'User profile' },
+        data: { breadcrumbLabel: 'User profile' },
       },
     ],
   },

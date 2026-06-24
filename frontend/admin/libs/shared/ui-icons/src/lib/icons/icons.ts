@@ -36,6 +36,6 @@ export class IconComponent {
   });
 
   customIconPath = computed(() => {
-    return `assets/icons/${this.name()}.svg`;
+    return `assets/icons/file/${this.name()}.svg`;
   });
 }
