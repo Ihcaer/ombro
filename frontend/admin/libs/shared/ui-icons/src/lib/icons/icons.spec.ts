@@ -67,7 +67,7 @@ describe('IconComponent', () => {
     expect(img).toBeTruthy();
     expect(hostElement.querySelector('.material-symbols-outlined')).toBeFalsy();
 
-    expect(img.getAttribute('src')).toBe(`assets/icons/${iconName}.svg`);
+    expect(img.getAttribute('src')).toBe(`${IconComponent.FILE_ICON_FILE_PATH}/${iconName}.svg`);
 
     expect(img.style.width).toBe(`${iconSize}px`);
     expect(img.style.height).toBe(`${iconSize}px`);

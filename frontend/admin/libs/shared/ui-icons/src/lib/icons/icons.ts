@@ -16,6 +16,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class IconComponent {
+  static readonly FILE_ICON_FILE_PATH = 'assets/icons/file';
   /**
    * List of available icons: [ICONS.md](../../../ICONS.md)
    */
@@ -36,6 +37,6 @@ export class IconComponent {
   });
 
   customIconPath = computed(() => {
-    return `assets/icons/file/${this.name()}.svg`;
+    return `${IconComponent.FILE_ICON_FILE_PATH}/${this.name()}.svg`;
   });
 }
