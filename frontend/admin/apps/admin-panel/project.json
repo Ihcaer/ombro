@@ -28,8 +28,8 @@
           },
           {
             "glob": "**/*",
-            "input": "libs/shared/ui/icons/src/assets",
-            "output": "assets"
+            "input": "libs/shared/ui-icons/src/assets",
+            "output": "assets/icons"
           }
         ],
         "styles": ["apps/admin-panel/src/styles.scss"]

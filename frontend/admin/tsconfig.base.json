@@ -23,7 +23,8 @@
       "@ombro/shared/breadcrumb": ["./libs/shared/breadcrumb/src/index.ts"],
       "@ombro/shared/utils/password-strength": [
         "./libs/shared/utils/password-strength/src/index.ts"
-      ]
+      ],
+      "@ombro/shared/ui-primitives": ["./libs/shared/ui-primitives/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -1,0 +1,30 @@
+$panelBackground: var(--p-layout-panel-bg-color);
+$panelBorderWidth: var(--p-layout-panel-border-width);
+$panelBorderStyle: var(--p-layout-panel-border-style);
+$panelBorderColor: var(--p-layout-panel-border-color);
+$panelBorderRadius: var(--p-layout-panel-border-radius);
+$panelBgBlur: blur(var(--p-layout-panel-bg-blur));
+$transitionDuration: 350ms;
+
+.layout,
+.panel {
+  --transition-duration: #{$transitionDuration};
+}
+
+.panel {
+  position: relative;
+  background-color: $panelBackground;
+  border-radius: $panelBorderRadius;
+  backdrop-filter: $panelBgBlur;
+}
+
+.panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+
+  border: $panelBorderWidth $panelBorderStyle $panelBorderColor;
+  border-radius: inherit;
+
+  pointer-events: none;
+}

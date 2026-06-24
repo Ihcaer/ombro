@@ -40,3 +40,9 @@ a {
     text-decoration: underline;
   }
 }
+
+[popover] {
+  background-color: color-mix(in srgb, var(--p-grey-700) 60%, transparent);
+  border-radius: var(--p-radius-md);
+  backdrop-filter: blur(var(--p-blur-md));
+}

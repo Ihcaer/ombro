@@ -1,0 +1,19 @@
+@let admin = authStore.admin();
+@let handleName = admin?.handleName || 'N7';
+@let displayName = admin?.displayName || 'N7';
+@let imageUrl = admin?.avatarUrl || null;
+<button
+  type="button"
+  popovertarget="profile-menu"
+  class="profile-button cursor-pointer"
+  [aria-label]="buttonAriaLabel()"
+>
+  <ombro-primitive-avatar [imageUrl]="imageUrl" [name]="handleName" [size]="avatarSize()" />
+</button>
+<app-profile-menu
+  [displayName]="displayName"
+  [handleName]="handleName"
+  popover="auto"
+  id="profile-menu"
+  class="profile-menu"
+/>

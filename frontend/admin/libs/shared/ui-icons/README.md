@@ -23,8 +23,39 @@ export const appConfig: ApplicationConfig = {
 
 Icons are provided as component. Here's how you can use a specific icon in minimal effort:
 
+#### 1. App's _project.json_ (or _angular.json_)
+
+Add file icons assets:
+
+```json
+"targets": {
+  "build": {
+    "options": {
+      "assets": [
+        {
+          "glob": "**/*",
+          "input": "libs/shared/ui-icons/src/assets",
+          "output": "assets/icons"
+        }
+      ],
+    }
+  }
+}
+```
+
+#### 2. Component:
+
+```ts
+import { IconComponent } from '@ombro/shared/ui-icons';
+
+@Component({
+  imports: [IconComponent],
+  // other component properties
+})
+```
+
 ```html
-<ui-icon name="close" />
+<ombro-icon name="close" />
 ```
 
 ### Available ui-icons

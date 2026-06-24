@@ -1,0 +1,74 @@
+<aside class="panel py-(--p-spacing-5) px-(--p-spacing-2) flex h-full flex-col items-center">
+  <app-logo
+    [variant]="isCollapsed() ? 'lettermark' : 'wordmark'"
+    class="mb-(--p-spacing-6) min-h-[25px]"
+  />
+  <nav class="flex w-full flex-col overflow-y-auto" [aria-label]="navAriaLabel()">
+    <ul
+      class="text-(length:--p-font-size-body-md) font-(weight:--p-font-weight-500) text-(--p-primary-300) gap-(--p-spacing-1) flex flex-col"
+      [style.--side-menu-active-color]="'var(--p-primary-300)'"
+    >
+      @for (item of menuItems(); track $index) {
+        <li>
+          @if (item.isActive) {
+            <ng-container *ngTemplateOutlet="itemTemplate; context: { $implicit: item }" />
+          } @else {
+            <a
+              [routerLink]="item.link"
+              class="text-(--p-text-color-subtle) hover:no-underline! block"
+            >
+              <ng-container *ngTemplateOutlet="itemTemplate; context: { $implicit: item }" />
+            </a>
+          }
+        </li>
+      }
+    </ul>
+  </nav>
+  <button
+    class="bg-primary-500 text-(--p-text-color-emphasis) rounded-r-(--p-radius-md) duration-(--transition-duration) absolute left-[100%] top-[40px] flex h-[45px] w-[1rem] cursor-pointer justify-end overflow-hidden transition-[width] hover:w-[1.25rem]"
+    (click)="changeMenuStatus()"
+  >
+    <ombro-icon
+      name="chevron_backward"
+      [size]="16"
+      [weight]="500"
+      [class]="isCollapsed() ? 'rotate-180' : 'rotate-0'"
+      class="transition-rotate duration-(--transition-duration)"
+    />
+  </button>
+</aside>
+
+<ng-template #itemTemplate let-item>
+  @let icon = item.icon;
+  @let iconSize = 20;
+  @let animationDurationMs = 200;
+  <div
+    class="gap-(--p-spacing-4) rounded-(--p-radius-lg) transition-background duration-(--side-menu-item-transition-duration) ease flex min-h-[3rem]"
+    [class]="item.isActive ? '' : 'hover:bg-[#ffffff14]'"
+    [style.--side-menu-item-transition-duration.ms]="animationDurationMs"
+  >
+    <span
+      class="bg-(--side-menu-active-color) transition-width duration-(--side-menu-item-transition-duration) shrink-0 self-stretch rounded-[5px]"
+      [class]="item.isActive ? 'w-[4px]' : 'w-[0px]'"
+    ></span>
+    <div class="menu-item">
+      @if (icon) {
+        <ombro-icon
+          [name]="icon"
+          [size]="iconSize"
+          class="duration(--side-menu-item-transition-duration) transition-transform ease-in-out"
+        />
+      }
+      <span
+        class="duration-(--side-menu-item-transition-duration) whitespace-nowrap transition-[max-width,opacity] ease-in-out"
+        [class]="
+          isCollapsed() && icon
+            ? 'opacity-[0] max-w-[0]'
+            : 'itemTextTransitionDelay opacity-[100] max-w-[10rem]'
+        "
+      >
+        {{ item.name }}
+      </span>
+    </div>
+  </div>
+</ng-template>
