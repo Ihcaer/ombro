@@ -38,6 +38,7 @@ import {
   RegistrationEligibilityResponseDto,
 } from '../dto/admin-register.dtos';
 import { AdminPrivileges } from '../types/admin-data.types';
+import { PANEL_PATHS } from '@ombro/admin-panel/app/features/panel/panel-paths';
 
 const getInitialState = () => structuredClone(initialState);
 
@@ -75,7 +76,7 @@ export const AuthStore = signalStore(
       patchState(store, { isLoading: false, lastErrorResponse: null });
     },
   })),
-  withMethods((store, authService = inject(AuthService)) => ({
+  withMethods((store, authService = inject(AuthService), router = inject(Router)) => ({
     login: rxMethod<LoginRequestDto>(
       pipe(
         tap(() => store._startRequest()),
@@ -84,8 +85,7 @@ export const AuthStore = signalStore(
             tapResponse({
               next: (res) => {
                 store._updateAuthState(res);
-                console.log('Login successful');
-                // add routing to panel and delete console.log
+                router.navigateByUrl(PANEL_PATHS.DASHBOARD);
               },
               error: (err: HttpErrorResponse) => store._setError(err),
             }),

@@ -4,10 +4,12 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
+import { TopbarComponent } from './components/topbar/topbar.component';
+import { BreadcrumbComponent } from '@ombro/shared/breadcrumb';
 
 @Component({
   selector: 'app-panel-layout',
-  imports: [RouterOutlet, SidebarComponent],
+  imports: [RouterOutlet, SidebarComponent, TopbarComponent, BreadcrumbComponent],
   templateUrl: './panel-layout.component.html',
   styleUrl: './panel-layout.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

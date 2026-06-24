@@ -1,11 +1,9 @@
-<div
-  class="panel py-(--p-spacing-5) px-(--p-spacing-2) relative flex h-full flex-col items-center before:z-[2]"
->
+<aside class="panel py-(--p-spacing-5) px-(--p-spacing-2) flex h-full flex-col items-center">
   <app-logo
     [variant]="isCollapsed() ? 'lettermark' : 'wordmark'"
     class="mb-(--p-spacing-6) min-h-[25px]"
   />
-  <nav class="flex w-full flex-col overflow-y-auto">
+  <nav class="flex w-full flex-col overflow-y-auto" [aria-label]="navAriaLabel()">
     <ul
       class="text-(length:--p-font-size-body-md) font-(weight:--p-font-weight-500) text-(--p-primary-300) gap-(--p-spacing-1) flex flex-col"
       [style.--side-menu-active-color]="'var(--p-primary-300)'"
@@ -27,7 +25,7 @@
     </ul>
   </nav>
   <button
-    class="bg-primary-500 text-(--p-text-color-emphasis) rounded-r-(--p-radius-md) duration-(--transition-duration) absolute left-[100%] top-[40px] z-[2] flex h-[45px] w-[1rem] cursor-pointer justify-end transition-[width] hover:w-[1.5rem]"
+    class="bg-primary-500 text-(--p-text-color-emphasis) rounded-r-(--p-radius-md) duration-(--transition-duration) absolute left-[100%] top-[40px] flex h-[45px] w-[1rem] cursor-pointer justify-end overflow-hidden transition-[width] hover:w-[1.25rem]"
     (click)="changeMenuStatus()"
   >
     <ombro-icon
@@ -38,7 +36,7 @@
       class="transition-rotate duration-(--transition-duration)"
     />
   </button>
-</div>
+</aside>
 
 <ng-template #itemTemplate let-item>
   @let icon = item.icon;
@@ -53,13 +51,12 @@
       class="bg-(--side-menu-active-color) transition-width duration-(--side-menu-item-transition-duration) shrink-0 self-stretch rounded-[5px]"
       [class]="item.isActive ? 'w-[4px]' : 'w-[0px]'"
     ></span>
-    <div class="gap-(--p-spacing-3) flex items-center overflow-hidden">
+    <div class="menu-item">
       @if (icon) {
         <ombro-icon
           [name]="icon"
           [size]="iconSize"
           class="duration(--side-menu-item-transition-duration) transition-transform ease-in-out"
-          [style.--icon-size.px]="iconSize"
         />
       }
       <span

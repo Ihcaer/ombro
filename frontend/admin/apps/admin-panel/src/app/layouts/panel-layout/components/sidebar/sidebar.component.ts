@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, model } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, model, signal } from '@angular/core';
 import { IconComponent } from '@ombro/shared/ui-icons';
 import { LogoComponent } from '@ombro/admin-panel/app/shared/components/logo/logo.component';
 import { SIDE_MENU_ITEMS, SideMenuItem } from './menu-items';
@@ -20,6 +20,8 @@ export class SidebarComponent {
 
   private readonly router = inject(Router);
   private readonly authStore = inject(AuthStore);
+
+  protected navAriaLabel = signal<string>('Nawigacja główna');
 
   private readonly navigationEndEvent = toSignal(
     this.router.events.pipe(filter((event) => event instanceof NavigationEnd)),

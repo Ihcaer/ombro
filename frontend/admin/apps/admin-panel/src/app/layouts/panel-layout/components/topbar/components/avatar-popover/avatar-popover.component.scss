@@ -1,0 +1,38 @@
+:host {
+  display: inline-block;
+}
+
+.profile-button {
+  anchor-name: --profile-button-anchor;
+}
+
+.profile-menu {
+  position: absolute;
+  position-anchor: --profile-button-anchor;
+  position-area: bottom span-left;
+  margin-top: var(--p-spacing-4);
+}
+
+[popover] {
+  transform: scale(0.95) translateY(-10px);
+  transition:
+    opacity 0.15s ease-in,
+    transform 0.15s ease-in,
+    display 0.15s allow-discrete,
+    overlay 0.15s allow-discrete;
+}
+
+[popover]:popover-open {
+  transform: scale(1) translateY(0);
+  transition:
+    opacity 0.15s ease-out,
+    transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1),
+    display 0.15s allow-discrete,
+    overlay 0.15s allow-discrete;
+}
+
+@starting-style {
+  [popover]:popover-open {
+    transform: scale(0.95) translateY(-10px);
+  }
+}

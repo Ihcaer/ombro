@@ -13,7 +13,7 @@ export type Admin = {
   id: number;
   displayName: string;
   handleName: string;
-  avatarId: number | null;
+  avatarUrl: string | null;
   privileges: AdminPrivileges;
   verification: AdminVerification;
   isActivated: boolean;

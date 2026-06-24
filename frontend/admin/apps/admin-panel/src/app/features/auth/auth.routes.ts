@@ -6,6 +6,7 @@ import { AUTH_PAGE_PATHS } from './auth-paths';
 import { AppRoutes } from '../../core/config/types/routing.types';
 
 const authRoutes: AppRoutes = [
+  { path: '', redirectTo: AUTH_PAGE_PATHS.LOGIN, pathMatch: 'full' },
   { path: AUTH_PAGE_PATHS.LOGIN, component: LoginComponent },
   { path: AUTH_PAGE_PATHS.REQUEST_PASSWORD_RESET, component: RequestPasswordResetComponent },
   { path: 'reset-password/:token', component: ResetPasswordComponent },
