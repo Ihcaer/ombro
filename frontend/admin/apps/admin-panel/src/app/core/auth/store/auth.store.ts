@@ -26,7 +26,7 @@ import {
 import { tapResponse } from '@ngrx/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { initialState } from './auth.state';
-import { getAccessTokenExpirationTimeMs } from './functions';
+import { getAccessTokenExpirationTimeMs, loginPagePath } from './common';
 import {
   RequestPasswordResetRequestDto,
   ResetPasswordRequestDto,
@@ -50,8 +50,8 @@ export const AuthStore = signalStore(
       patchState(store, {
         admin: { ...response.adminData, privileges: new Set(response.adminData.privileges) },
         accessToken: {
-          token: response.jwt,
-          expiresAtMs: getAccessTokenExpirationTimeMs(response.jwt),
+          token: response.accessToken,
+          expiresAtMs: getAccessTokenExpirationTimeMs(response.accessToken),
         },
         isLoading: false,
         lastErrorResponse: null,
@@ -73,7 +73,7 @@ export const AuthStore = signalStore(
       patchState(store, { lastErrorResponse: null });
     },
     _startRequest(): void {
-      patchState(store, { isLoading: false, lastErrorResponse: null });
+      patchState(store, { isLoading: true, lastErrorResponse: null });
     },
   })),
   withMethods((store, authService = inject(AuthService), router = inject(Router)) => ({
@@ -85,7 +85,7 @@ export const AuthStore = signalStore(
             tapResponse({
               next: (res) => {
                 store._updateAuthState(res);
-                router.navigateByUrl(PANEL_PATHS.DASHBOARD);
+                router.navigateByUrl('/' + PANEL_PATHS.DASHBOARD);
               },
               error: (err: HttpErrorResponse) => store._setError(err),
             }),
@@ -106,6 +106,25 @@ export const AuthStore = signalStore(
         }),
       );
     },
+    logout: rxMethod<void>(
+      pipe(
+        tap(() => store._startRequest()),
+        exhaustMap(() =>
+          authService.logout().pipe(
+            tapResponse({
+              next: () => {
+                store._resetAuthState;
+                router.navigateByUrl(loginPagePath);
+              },
+              error: () => {
+                store._resetAuthState;
+                router.navigateByUrl(loginPagePath);
+              },
+            }),
+          ),
+        ),
+      ),
+    ),
     // Reset password methods
     requestPasswordReset: rxMethod<RequestPasswordResetRequestDto>(
       pipe(

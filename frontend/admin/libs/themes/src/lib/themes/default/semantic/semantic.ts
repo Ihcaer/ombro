@@ -3,7 +3,7 @@ import { fontSize } from './font/font-size';
 import { formField } from './general/form-field';
 import { meterColors } from './general/meter';
 import { misc } from './general/miscellaneous';
-import { layout } from './layout';
+import { surface } from './surface';
 
 export const semantic = {
   colorScheme: {
@@ -21,18 +21,9 @@ export const semantic = {
         900: '{brandBlue.900}',
         950: '{brandBlue.950}',
       },
-      surface: {
-        100: '{grey.100}',
-        200: '{grey.200}',
-        300: '{grey.300}',
-        400: '{grey.400}',
-        500: '{grey.500}',
-        600: '{grey.600}',
-        700: '{grey.700}',
-      },
+      surface: surface,
       text: fontColor,
       misc,
-      layout,
       formField,
       meter: meterColors,
     },

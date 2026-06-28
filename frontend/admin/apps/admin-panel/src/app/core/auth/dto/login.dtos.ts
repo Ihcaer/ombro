@@ -4,4 +4,4 @@ type AdminApiData = Readonly<Omit<Admin, 'privileges'> & { privileges: AdminPriv
 
 export type LoginRequestDto = { readonly identifier: string; readonly password: string };
 
-export type LoginResponseDto = { readonly jwt: string; readonly adminData: AdminApiData };
+export type LoginResponseDto = { readonly accessToken: string; readonly adminData: AdminApiData };

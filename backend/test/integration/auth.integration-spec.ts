@@ -7,12 +7,14 @@ import {
   ResetPasswordRequestDto,
 } from '@core/auth/dto';
 import { AdminRegistrationService } from '@core/auth/services/admin-registration/admin-registration.service';
-import { AdminAccountActivationTemplate } from '@shared/email/templates/auth/admin-account-activation.template';
 import { TestContext } from './helpers';
 import { AuthAdmin } from '@generated/prisma-client';
 import { AUTH_ROUTE_PREFIX } from '@core/auth/auth.constants';
-import { AdminPasswordResetTemplate } from '@shared/email/templates/auth/admin-password-reset.template';
 import { ForgotPasswordRequestDto } from '@core/auth/dto/forgot-password-request.dto';
+import { AUTH_SLUGS as EMAIL_AUTH_SLUGS } from '@shared/email/frontend-paths.constants';
+import { PrivilegesUtils } from '@core/auth/utils/privileges.utils';
+import { AdminPrivileges } from '@core/auth/enums/admin-privileges';
+import { TestCreateAdminRequestDto } from './helpers/common-test.types';
 
 describe('Auth Module', () => {
   jest.setTimeout(25000);
@@ -40,7 +42,7 @@ describe('Auth Module', () => {
         displayName: 'display name',
         handleName: 'handle',
         email: 'test@email.com',
-        privileges: 1,
+        privileges: AdminPrivileges.ADMINS_MANAGE,
       };
 
       const newAdmin = await adminRegistrationService.createAdminAccount(newAdminData);
@@ -52,16 +54,14 @@ describe('Auth Module', () => {
 
       const { HTML } = await ctx.email.getEmailContent(mail.ID);
 
-      const tokenRegex = new RegExp(
-        `(?<=${AdminAccountActivationTemplate.REGISTRATION_SLUG + '/'})[a-zA-Z0-9_-]+`,
-      );
+      const tokenRegex = new RegExp(`(?<=${EMAIL_AUTH_SLUGS.REGISTRATION + '/'})[a-zA-Z0-9_-]+`);
       const tokenMatch = HTML.match(tokenRegex);
       if (!tokenMatch) throw new Error('Test failed: No token found in registration email');
 
       const token = tokenMatch[0];
 
       const confirmAccountFormRes = await request(ctx.app.getHttpServer())
-        .get(modulePrefix + '/register' + '/confirm-account-form/' + token)
+        .get(modulePrefix + '/register' + '/invite/' + token)
         .expect(200);
 
       const newPassword = 'correct-horse-battery-staple-2026';
@@ -75,7 +75,7 @@ describe('Auth Module', () => {
       };
 
       await request(ctx.app.getHttpServer())
-        .patch(modulePrefix + '/register' + '/confirm-admin')
+        .patch(modulePrefix + '/register' + '/confirm')
         .send(confirmAccountBody)
         .expect(204);
 
@@ -93,8 +93,8 @@ describe('Auth Module', () => {
           id: 1,
           displayName,
           handleName: handleName!,
-          privileges,
-          avatarId: null,
+          privileges: PrivilegesUtils.bitmaskToArray(privileges),
+          avatarUrl: null,
           verification: 'VERIFIED',
           isActivated: true,
         },
@@ -120,9 +120,21 @@ describe('Auth Module', () => {
 
   describe('Privilege protection verification', () => {
     it.each([
-      { privilegeValue: 1, expected: 201, desc: 'correct privileges' },
-      { privilegeValue: 0, expected: 403, desc: 'wrong privileges' },
-      { privilegeValue: 3, expected: 201, desc: 'another correct privileges' },
+      {
+        privilegeValue: AdminPrivileges.ADMINS_MANAGE,
+        expected: 201,
+        desc: 'correct privileges',
+      },
+      {
+        privilegeValue: AdminPrivileges.NONE,
+        expected: 403,
+        desc: 'wrong privileges',
+      },
+      {
+        privilegeValue: AdminPrivileges.BLOG_MANAGE + AdminPrivileges.ADMINS_MANAGE,
+        expected: 201,
+        desc: 'another correct privileges',
+      },
     ])('should return $expected for scenario: $desc', async ({ privilegeValue, expected }) => {
       const admin: Partial<AuthAdmin> = {
         handleName: 'handle',
@@ -133,10 +145,10 @@ describe('Auth Module', () => {
         identifier: admin.handleName!,
         password: admin.password!,
       };
-      const newAdmin: CreateAdminRequestDto = {
+      const newAdmin: TestCreateAdminRequestDto = {
         displayName: 'new-display-name',
         email: 'new-test@email.com',
-        privileges: 1,
+        privileges: ['ADMINS_MANAGE'],
       };
 
       await ctx.adminFactory.create(admin);
@@ -145,7 +157,7 @@ describe('Auth Module', () => {
         .post(modulePrefix + '/login')
         .send(loginCredentials)
         .expect(201);
-      const accessToken = (loginRes.body as LoginResponseDto).jwt;
+      const accessToken = (loginRes.body as LoginResponseDto).accessToken;
 
       await request(ctx.app.getHttpServer())
         .post(modulePrefix + '/register' + '/create-admin')
@@ -175,9 +187,7 @@ describe('Auth Module', () => {
 
       const { HTML } = await ctx.email.getEmailContent(passwordResetEmail.ID);
 
-      const tokenRegex = new RegExp(
-        `(?<=${AdminPasswordResetTemplate.PASSWORD_RESET_SLUG + '/'})[a-zA-Z0-9_-]+`,
-      );
+      const tokenRegex = new RegExp(`(?<=${EMAIL_AUTH_SLUGS.PASSWORD_RESET + '/'})[a-zA-Z0-9_-]+`);
       const tokenMatch = HTML.match(tokenRegex);
       if (!tokenMatch) throw new Error('Test failed: No token found in password reset email');
       const token = tokenMatch[0];

@@ -10,16 +10,27 @@
   <ul class="mt-(--p-spacing-3) gap-(--p-spacing-1) flex flex-col">
     @for (item of navItems; track $index) {
       <li>
-        <a
-          [routerLink]="item.path"
-          class="menu-item rounded-(--p-radius-lg) hover:no-underline! min-h-[3rem] px-[0.5rem] hover:bg-[#ffffff14]"
-        >
-          @if (item.icon) {
-            <ombro-icon [name]="item.icon" [size]="20" class="text-(--p-muted-blue-300)" />
-          }
-          <span class="text-(length:--p-size-13) text-(--p-primary-100)">{{ item.name }}</span>
-        </a>
+        @if (item.path) {
+          <a [routerLink]="item.path" class="menu-item item">
+            <ng-container *ngTemplateOutlet="itemTemplate; context: { $implicit: item }" />
+          </a>
+        } @else if (item.action) {
+          <button (click)="item.action()" class="menu-item item">
+            <ng-container *ngTemplateOutlet="itemTemplate; context: { $implicit: item }" />
+          </button>
+        } @else {
+          <div class="menu-item">
+            <ng-container *ngTemplateOutlet="itemTemplate; context: { $implicit: item }" />
+          </div>
+        }
       </li>
     }
   </ul>
 </nav>
+
+<ng-template #itemTemplate let-item>
+  @if (item.icon) {
+    <ombro-icon [name]="item.icon" [size]="20" class="text-(--p-muted-blue-300)" />
+  }
+  <span class="text-(length:--p-size-13) text-(--p-primary-100)">{{ item.name }}</span>
+</ng-template>

@@ -8,6 +8,7 @@ import { AdminAccountActivationTemplate } from '../templates/auth/admin-account-
 import { EmailService } from './email.service';
 import { PasswordResetRequestEvent } from '@core/auth/events/password-reset-request.event';
 import { AdminPasswordResetTemplate } from '../templates/auth/admin-password-reset.template';
+import { AUTH_SLUGS } from '../frontend-paths.constants';
 
 @Injectable()
 export class EmailEventListenerService {
@@ -28,7 +29,7 @@ export class EmailEventListenerService {
   @OnEvent(AdminCreatedEvent.EVENT_NAME, { async: true })
   private async sendAdminCreationConfirmation(payload: AdminCreatedEvent): Promise<void> {
     const registrationUrl = this.createCtaLink(
-      AdminAccountActivationTemplate.REGISTRATION_SLUG,
+      AUTH_SLUGS.REGISTRATION,
       payload.accountConfirmationToken,
     );
     const mediaUrl = `${this.protocol}://${this.metadataConf.mediaDomain}`;
@@ -48,7 +49,7 @@ export class EmailEventListenerService {
   @OnEvent(PasswordResetRequestEvent.EVENT_NAME, { async: true })
   private async sendAdminPasswordReset(payload: PasswordResetRequestEvent): Promise<void> {
     const passwordResetLink = this.createCtaLink(
-      AdminPasswordResetTemplate.PASSWORD_RESET_SLUG,
+      AUTH_SLUGS.PASSWORD_RESET,
       payload.tokenData.token,
     );
 

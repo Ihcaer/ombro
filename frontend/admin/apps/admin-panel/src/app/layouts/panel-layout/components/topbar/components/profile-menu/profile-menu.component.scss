@@ -10,3 +10,15 @@ $shadowColor: var(--p-misc-shadow-color-default);
   background-color: color-mix(in srgb, $bgColor, transparent);
   box-shadow: $shadowOffsetX $shadowOffsetY $shadowBlur $shadowColor;
 }
+
+.item {
+  border-radius: var(--p-radius-lg);
+  min-height: 3rem;
+  padding-inline: 0.5rem;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: none !important;
+    background-color: #ffffff14;
+  }
+}

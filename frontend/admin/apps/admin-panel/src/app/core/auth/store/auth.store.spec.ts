@@ -36,12 +36,12 @@ describe('AuthStore', () => {
 
   it('should update status after successful login', () => {
     const mockResponse: LoginResponseDto = {
-      jwt: 'accessToken',
+      accessToken: 'accessToken',
       adminData: {
         id: 1,
         displayName: 'displayName',
         handleName: 'handleName',
-        avatarId: null,
+        avatarUrl: null,
         privileges: ['ADMINS_MANAGE'],
         verification: 'VERIFIED',
         isActivated: true,
@@ -53,7 +53,7 @@ describe('AuthStore', () => {
       id: 1,
       displayName: 'displayName',
       handleName: 'handleName',
-      avatarId: null,
+      avatarUrl: null,
       privileges: new Set(['ADMINS_MANAGE']),
       verification: 'VERIFIED',
       isActivated: true,
@@ -65,7 +65,7 @@ describe('AuthStore', () => {
     store.login({ identifier: 'handleName', password: 'password' });
 
     expect(store.admin()).toEqual(expectedAdminStateValue);
-    expect(store.accessToken.token()).toBe(mockResponse.jwt);
+    expect(store.accessToken.token()).toBe(mockResponse.accessToken);
     expect(store.isLoading()).toBe(false);
   });
 
@@ -97,7 +97,7 @@ describe('AuthStore', () => {
           id: 1,
           displayName: 'displayName',
           handleName: 'handle',
-          avatarId: null,
+          avatarUrl: null,
           privileges: ownedPrivileges,
           verification: 'VERIFIED',
           isActivated: true,

@@ -15,10 +15,12 @@ import { RegistrationController } from './controllers/registration/registration.
 import { PasswordResetController } from './controllers/password-reset/password-reset.controller';
 import securityConfig from '@core/config/envs/security.config';
 import { AuthController } from './controllers/auth/auth.controller';
+import serverConfig from '@core/config/envs/server.config';
 
 @Module({
   imports: [
     ConfigModule.forFeature(securityConfig),
+    ConfigModule.forFeature(serverConfig),
     PrismaModule,
     HashModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),

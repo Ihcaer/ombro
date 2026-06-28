@@ -1,11 +1,12 @@
 import { zxcvbn, zxcvbnOptions } from '@zxcvbn-ts/core';
 import { adjacencyGraphs, dictionary } from '@zxcvbn-ts/language-common';
-import { dictionary as enDictionary } from '@zxcvbn-ts/language-en';
-import { dictionary as plDictionary } from '@zxcvbn-ts/language-pl';
+import { dictionary as enDictionary, translations as enTranslations } from '@zxcvbn-ts/language-en';
+import { dictionary as plDictionary, translations as plTranslations } from '@zxcvbn-ts/language-pl';
 
 zxcvbnOptions.setOptions({
   dictionary: { ...dictionary, ...enDictionary, ...plDictionary },
-  graphs: adjacencyGraphs,
+  translations: { ...enTranslations, ...plTranslations },
+  graphs: { ...adjacencyGraphs },
 });
 
 const MAX_DATA_LENGTH = 60;

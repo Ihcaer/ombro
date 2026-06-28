@@ -13,6 +13,7 @@
 <app-profile-menu
   [displayName]="displayName"
   [handleName]="handleName"
+  (logoutButtonClicked)="authStore.logout()"
   popover="auto"
   id="profile-menu"
   class="profile-menu"

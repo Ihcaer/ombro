@@ -15,6 +15,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { plainToInstance } from 'class-transformer';
 import { checkPasswordStrengthUtil } from '@core/auth/utils/check-password-strength/check-password-strength.util';
 import { AuthAdminRepository } from '@core/auth/auth-admin.repository';
+import { PrivilegesUtils } from '@core/auth/utils/privileges.utils';
 
 jest.mock('@core/auth/utils/check-password-strength/check-password-strength.util');
 
@@ -85,14 +86,14 @@ describe('AdminRegistrationService', () => {
         plainToInstance(CreateAdminRequestDto, {
           displayName: 'name',
           email: 'test@email.com',
-          privileges: 1,
+          privileges: PrivilegesUtils.arrayToBitmask(['ADMINS_MANAGE']),
         }),
       ];
       const requestDto: Readonly<CreateAdminRequestDto> = params[0];
       const expectedResult: Readonly<CreateAdminResponseDto> = {
         displayName: requestDto.displayName,
         email: requestDto.email,
-        privileges: requestDto.privileges,
+        privileges: PrivilegesUtils.bitmaskToArray(requestDto.privileges),
       };
       const tokenPair = { rawToken: 'token', hashedToken: 'tokenHash' };
       const createdAdminMock = { admin: { ...requestDto } };

@@ -30,7 +30,9 @@
         <app-auth-form-buttons>Zatwierdź</app-auth-form-buttons>
       </form>
     } @else {
-      <div class="flex justify-center"><p-progress-spinner ariaLabel="Ładowanie" /></div>
+      <div class="flex justify-center">
+        <p-progress-spinner [aria-label]="progressSpinnerAriaLabel()" />
+      </div>
     }
   </ng-container>
 </app-auth-wrapper>

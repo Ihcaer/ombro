@@ -5,6 +5,8 @@ import { LoginRequestDto } from '@core/auth/dto';
 import { AuthService } from '@core/auth/services/auth/auth.service';
 import { RefreshTokenWithAdmin } from '@core/auth/types/jwt.types';
 import { Response } from 'express';
+import serverConfig from '@core/config/envs/server.config';
+import { createServerConfigMock } from '@mocks/config/server.config.mock';
 
 describe('LoginController', () => {
   let controller: AuthController;
@@ -19,8 +21,10 @@ describe('LoginController', () => {
           useValue: {
             loginWithCredentials: jest.fn(),
             loginWithRefreshToken: jest.fn(),
+            logout: jest.fn(),
           },
         },
+        { provide: serverConfig.KEY, useValue: createServerConfigMock() },
       ],
     }).compile();
 
@@ -40,7 +44,7 @@ describe('LoginController', () => {
 
       authService.loginWithCredentials.mockResolvedValue({
         adminData: {
-          jwt: 'access-token',
+          accessToken: 'access-token',
           adminData: {
             id: 1,
             handleName: 'handle',
@@ -67,11 +71,11 @@ describe('LoginController', () => {
         'new-refresh-token',
         expect.objectContaining({
           httpOnly: true,
-          secure: true,
+          secure: false,
           sameSite: 'strict',
         }),
       );
-      expect(result.jwt).toBe('access-token');
+      expect(result.accessToken).toBe('access-token');
     });
   });
   describe('.refreshTokens()', () => {
@@ -87,7 +91,7 @@ describe('LoginController', () => {
 
       authService.loginWithRefreshToken.mockResolvedValue({
         adminData: {
-          jwt: 'access-token',
+          accessToken: 'access-token',
           adminData: {
             id: 1,
             handleName: 'handle',
@@ -113,11 +117,11 @@ describe('LoginController', () => {
         'new-refresh-token',
         expect.objectContaining({
           httpOnly: true,
-          secure: true,
+          secure: false,
           sameSite: 'strict',
         }),
       );
-      expect(result.jwt).toBe('access-token');
+      expect(result.accessToken).toBe('access-token');
     });
   });
 });

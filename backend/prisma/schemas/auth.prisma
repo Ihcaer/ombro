@@ -23,7 +23,7 @@ model AuthAdmin {
   id           Int              @id @default(autoincrement())
   displayName  String
   handleName   String?          @unique
-  avatarId     Int?             @unique
+  avatarFileId Int?             @unique
   email        String           @unique
   password     String?
   privileges   Int
@@ -39,7 +39,7 @@ model AuthAdmin {
   actionLogs                AuditAdminLogs[]
   approvalRequests          TeamApprovalRequest[]
   approvalResponses         TeamApprovalResponses[]
-  avatar                    FilesFile?              @relation("AdminAvatar", fields: [avatarId], references: [id], onDelete: SetNull)
+  avatar                    FilesFile?              @relation("AdminAvatar", fields: [avatarFileId], references: [id], onDelete: SetNull)
   createdFiles              FilesFile[]             @relation("AuthorToFile")
   editedFiles               FilesFile[]             @relation("EditorToFile")
   createdFolders            FilesFolder[]           @relation("AuthorToFolder")

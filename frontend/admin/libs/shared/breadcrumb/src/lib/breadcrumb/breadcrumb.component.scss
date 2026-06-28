@@ -1,7 +1,7 @@
-$border: var(--p-layout-panel-border-width) var(--p-layout-panel-border-style)
-  var(--p-layout-panel-border-color);
+$border: var(--p-surface-panel-border-width) var(--p-surface-panel-border-style)
+  var(--p-surface-panel-border-color);
 $fontSize: var(--p-font-size-label-md);
-$bgBlur: blur(var(--p-layout-panel-bg-blur));
+$bgBlur: blur(var(--p-surface-panel-bg-blur));
 
 :host ::ng-deep .p-breadcrumb {
   display: inline-flex;

@@ -1,4 +1,4 @@
-import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import type { ConfigType } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import type { Request } from 'express';
@@ -23,13 +23,7 @@ export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-refres
   }
 
   validate(req: Request, payload: RefreshJwtPayload): RefreshTokenWithAdmin {
-    const cookies = req.cookies as { refresh_token?: unknown };
-    const refreshToken =
-      typeof cookies.refresh_token === 'string' ? cookies.refresh_token : undefined;
-
-    if (!refreshToken) {
-      throw new ForbiddenException('Refresh token missing');
-    }
+    const refreshToken = req.cookies['refresh_token'] as string;
 
     return { id: payload.id, refreshToken };
   }

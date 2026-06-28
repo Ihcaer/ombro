@@ -1,3 +1,3 @@
-import { AuthAdmin } from '@generated/prisma-client';
+import { PossibleFieldsToFill } from '../types/common.types';
 
-export type ConfirmAdminAccountFormFieldDto = (keyof AuthAdmin)[];
+export type ConfirmAdminAccountFormFieldDto = (keyof PossibleFieldsToFill)[];

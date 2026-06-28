@@ -1,6 +1,12 @@
-import { AdminData } from '../types/common.types';
+import {
+  AdminAvatarUrlField,
+  AdminData,
+  AdminPrivilegeTranslatedField,
+} from '../types/admin.types';
 
 export type LoginResponseDto = {
-  readonly jwt: string;
-  readonly adminData: AdminData;
+  readonly accessToken: string;
+  readonly adminData: Omit<AdminData, 'privileges' | 'avatarFileId'> &
+    AdminPrivilegeTranslatedField &
+    AdminAvatarUrlField;
 };

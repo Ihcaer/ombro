@@ -42,6 +42,8 @@ export class FinalizeRegistrationComponent extends AuthPageBase implements OnIni
   private readonly route = inject(ActivatedRoute);
   private readonly regexAuthPatterns = inject(REGEX_PATTERNS).auth;
 
+  protected progressSpinnerAriaLabel = signal<string>('Ładowanie');
+
   protected registrationForm = new FormGroup({});
   protected neededFormFields: RegistrationEligibilityResponseDto = [];
   protected readonly CONFIRM_PASSWORD_FIELD_NAME = 'confirmPassword';
