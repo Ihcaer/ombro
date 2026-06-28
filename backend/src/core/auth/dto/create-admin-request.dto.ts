@@ -1,7 +1,9 @@
-import { IsDefined, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsEmail, IsInt, IsNotEmpty, IsOptional, IsString, Min } from 'class-validator';
 import { IsValidPrivilege } from '../decorators/is-valid-privilege.decorator';
 import { Trim } from '@shared/decorators';
 import { AuthAdmin } from '@generated/prisma-client';
+import { Transform } from 'class-transformer';
+import { PrivilegesUtils } from '../utils/privileges.utils';
 
 export class CreateAdminRequestDto
   implements
@@ -11,7 +13,7 @@ export class CreateAdminRequestDto
   @IsString()
   @IsNotEmpty()
   @Trim()
-  readonly displayName: string;
+  readonly displayName!: string;
 
   @IsOptional()
   @IsString()
@@ -22,10 +24,15 @@ export class CreateAdminRequestDto
   @IsNotEmpty()
   @IsEmail()
   @Trim()
-  readonly email: string;
+  readonly email!: string;
 
-  @IsDefined()
-  @IsNumber()
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  @Transform(({ value }) => PrivilegesUtils.arrayToBitmask(value), { toClassOnly: true })
+  @IsInt({
+    message:
+      'One or more of the specified permissions are invalid or the array is in the wrong format.',
+  })
+  @Min(0)
   @IsValidPrivilege()
-  readonly privileges: number;
+  readonly privileges!: number;
 }

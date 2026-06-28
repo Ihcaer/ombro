@@ -1,4 +1,4 @@
-import { AuthVerification } from '@generated/prisma-client';
+import { AuthRefreshToken, AuthVerification } from '@generated/prisma-client';
 
 export type TokensExpirationTimes = {
   readonly accessExpiration: number;
@@ -20,3 +20,6 @@ export type AccessJwtPayload = {
 export type RefreshJwtPayload = { id: number };
 
 export type RefreshTokenWithAdmin = { id: number; refreshToken: string };
+
+export type RefreshTokenMetadata = Pick<AuthRefreshToken, 'refreshTokenHash' | 'expiresAt'>;
+export type RefreshTokenMetadataTable = RefreshTokenMetadata[];

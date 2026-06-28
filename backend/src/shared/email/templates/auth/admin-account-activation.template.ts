@@ -4,7 +4,6 @@ export class AdminAccountActivationTemplate extends EmailBase {
   protected options: EmailOptions;
   protected content: EmailTemplateContent;
   protected mediaDomain: string;
-  static REGISTRATION_SLUG = 'confirm-account';
   private adminCreationContent: string = `Administrator systemu <b>Admin Panel</b> utworzył dla Ciebie konto. Możesz je teraz aktywować i ustawić swoje hasło poprzez kliknięcie przycisku poniżej. Link wygaśnie w ciągu 24 godzin.`;
 
   constructor(

@@ -4,7 +4,6 @@ export class AdminPasswordResetTemplate extends EmailBase {
   protected options: EmailOptions;
   protected content: EmailTemplateContent;
   protected mediaDomain: string;
-  static PASSWORD_RESET_SLUG = 'password-reset';
   private static EXPIRATION_TIME_PLACEHOLDER: string = '{{expiration-time}}';
   private passwordResetContent: string = `Otrzymaliśmy prośbę o zresetowanie hasła do Twojego konta w Admin Panel. Możesz je teraz zmienić klikając poniższy przycisk. Link wygaśnie w ciągu ${AdminPasswordResetTemplate.EXPIRATION_TIME_PLACEHOLDER}.`;
   private additionalContent: string =

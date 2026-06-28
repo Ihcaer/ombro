@@ -74,7 +74,7 @@ CREATE TABLE "auth"."admins" (
     "id" SERIAL NOT NULL,
     "displayName" TEXT NOT NULL,
     "handleName" TEXT,
-    "avatarId" INTEGER,
+    "avatarFileId" INTEGER,
     "email" TEXT NOT NULL,
     "password" TEXT,
     "privileges" INTEGER NOT NULL,
@@ -264,7 +264,7 @@ CREATE INDEX "admin_logs_action_idx" ON "audit"."admin_logs"("action");
 CREATE UNIQUE INDEX "admins_handleName_key" ON "auth"."admins"("handleName");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "admins_avatarId_key" ON "auth"."admins"("avatarId");
+CREATE UNIQUE INDEX "admins_avatarFileId_key" ON "auth"."admins"("avatarFileId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "admins_email_key" ON "auth"."admins"("email");
@@ -330,7 +330,7 @@ CREATE INDEX "_BlogPostToBlogTag_B_index" ON "blog"."_BlogPostToBlogTag"("B");
 ALTER TABLE "audit"."admin_logs" ADD CONSTRAINT "admin_logs_adminId_fkey" FOREIGN KEY ("adminId") REFERENCES "auth"."admins"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "auth"."admins" ADD CONSTRAINT "admins_avatarId_fkey" FOREIGN KEY ("avatarId") REFERENCES "files"."files"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "auth"."admins" ADD CONSTRAINT "admins_avatarFileId_fkey" FOREIGN KEY ("avatarFileId") REFERENCES "files"."files"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "auth"."one_time_tokens" ADD CONSTRAINT "one_time_tokens_adminId_fkey" FOREIGN KEY ("adminId") REFERENCES "auth"."admins"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -63,7 +63,7 @@ export class PasswordResetService {
               target.includes('hashedToken'):
               continue;
             case error.code === 'P2025':
-              throw new BadRequestException('No admin with the given email address was found.');
+              return;
           }
           throw error;
         }
@@ -98,9 +98,10 @@ export class PasswordResetService {
     const { admin } = tokenContext;
     if (!admin) {
       console.error('resetPasswordByToken() method do not have needed admin to proceed request.');
-      throw new InternalServerErrorException(
-        PasswordResetService.DEFAULT_RESET_PASSWORD_INTERNAL_ERR_MESSAGE,
-      );
+      throw new InternalServerErrorException({
+        errorCode: 'WEAK_PASSWORD',
+        message: PasswordResetService.DEFAULT_RESET_PASSWORD_INTERNAL_ERR_MESSAGE,
+      });
     }
 
     const adminInfo: Readonly<string>[] = adminFields.map((key) => {
@@ -109,11 +110,10 @@ export class PasswordResetService {
       return String(value);
     });
     const isPasswordStrong: boolean = checkPasswordStrengthUtil(dto.password, [...adminInfo]);
-    if (!isPasswordStrong) {
+    if (!isPasswordStrong)
       throw new BadRequestException(
         'The password is too weak or contains data from an email, handle or display name.',
       );
-    }
 
     const hashedPassword = await this.hashService.hashBcrypt(dto.password, PASSWORD_SALT_ROUNDS);
 

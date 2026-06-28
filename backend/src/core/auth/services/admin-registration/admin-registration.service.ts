@@ -22,6 +22,7 @@ import { checkPasswordStrengthUtil } from '@core/auth/utils/check-password-stren
 import { PossibleFieldsToFill } from '@core/auth/types/common.types';
 import { PASSWORD_SALT_ROUNDS } from '@core/auth/auth.constants';
 import { AuthAdminRepository } from '@core/auth/auth-admin.repository';
+import { PrivilegesUtils } from '@core/auth/utils/privileges.utils';
 
 @Injectable()
 export class AdminRegistrationService {
@@ -71,7 +72,7 @@ export class AdminRegistrationService {
         result = {
           displayName: admin.displayName,
           email: admin.email,
-          privileges: admin.privileges,
+          privileges: PrivilegesUtils.bitmaskToArray(admin.privileges),
         };
 
         break;
@@ -163,11 +164,10 @@ export class AdminRegistrationService {
     });
 
     const isStrongPassword: boolean = checkPasswordStrengthUtil(dto.password, [...adminInfo]);
-    if (!isStrongPassword) {
+    if (!isStrongPassword)
       throw new BadRequestException(
         'The password is too weak or contains data from an email, handle or display name.',
       );
-    }
 
     const hashedPassword = await this.hashService.hashBcrypt(dto.password, PASSWORD_SALT_ROUNDS);
     const adminData: AdminConfirmationData = {

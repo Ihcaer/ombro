@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { API_URL } from '../tokens/api-url.token';
 import { LoginRequestDto, LoginResponseDto } from './dto/login.dtos';
 import { Observable } from 'rxjs';
-import { AUTH_ENDPOINTS, AUTH_ROUTE_PREFIX } from './auth.constants';
+import { AUTH_ENDPOINTS, AUTH_ROUTE_PREFIX } from './auth-api-endpoints';
 import { RequestPasswordResetRequestDto, ResetPasswordRequestDto } from './dto/reset-password.dtos';
 import {
   FinalizeAdminRegistrationRequestDto,
@@ -18,7 +18,7 @@ export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly baseApi: string = inject(API_URL);
 
-  private readonly fullApiUrl: string = this.baseApi + AUTH_ROUTE_PREFIX;
+  private readonly fullApiUrl: string = this.baseApi + '/' + AUTH_ROUTE_PREFIX;
 
   login(credentials: LoginRequestDto): Observable<LoginResponseDto> {
     return this.http.post<LoginResponseDto>(
@@ -35,6 +35,12 @@ export class AuthService {
         withCredentials: true,
       },
     );
+  }
+
+  logout(): Observable<void> {
+    return this.http.post<void>(`${this.fullApiUrl}/${AUTH_ENDPOINTS.LOGOUT}`, undefined, {
+      withCredentials: true,
+    });
   }
 
   requestPasswordReset(dto: RequestPasswordResetRequestDto): Observable<void> {
