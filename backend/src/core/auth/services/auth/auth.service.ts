@@ -4,14 +4,21 @@ import {
   OnModuleInit,
   UnauthorizedException,
 } from '@nestjs/common';
-import { AccessJwtPayload, RefreshJwtPayload } from '../../types/jwt.types';
+import {
+  AccessJwtPayload,
+  RefreshJwtPayload,
+  RefreshTokenMetadata,
+  RefreshTokenMetadataTable,
+} from '../../types/jwt.types';
 import { AuthTokenService } from '../auth-token/auth-token.service';
 import { HashService } from '@shared/hash/hash.service';
 import { AuthAdminRepository } from '../../auth-admin.repository';
 import { TokenExpirationFactory } from '../../factories/token-expiration.factory';
-import { SignInResponse, AdminData, Identifier } from '../../types/common.types';
+import { SignInResponse } from '../../types/common.types';
+import { AdminAvatarUrlField, AdminData, Identifier } from '@core/auth/types/admin.types';
 import { LoginRequestDto } from '@core/auth/dto';
 import { PASSWORD_SALT_ROUNDS } from '@core/auth/auth.constants';
+import { PrivilegesUtils } from '@core/auth/utils/privileges.utils';
 
 const throwLoginError = (
   errorCode: string = 'INVALID_CREDENTIALS',
@@ -24,7 +31,7 @@ const throwLoginError = (
 export class AuthService implements OnModuleInit {
   static readonly ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 15; // in milliseconds
   static readonly REFRESH_TOKEN_EXPIRATION = 1000 * 60 * 60 * 24 * 7; // in milliseconds
-  dummyHash: string;
+  dummyHash!: string;
 
   constructor(
     private adminRepository: AuthAdminRepository,
@@ -57,27 +64,52 @@ export class AuthService implements OnModuleInit {
     }
     if (!admin || !admin.password || !isPasswordValid) throwLoginError();
 
-    const { password: _password, ...adminWithoutPassword } = admin!;
+    const { password: _password, avatarFileId, ...adminWithoutPassword } = admin!;
+    const avatarUrl: AdminAvatarUrlField['avatarUrl'] = avatarFileId === null ? avatarFileId : null;
 
-    return this.issueTokens(adminWithoutPassword);
+    return this.issueTokens({ ...adminWithoutPassword, avatarUrl });
   }
 
-  async loginWithRefreshToken(adminId: number, refreshToken: string): Promise<SignInResponse> {
-    const now = new Date();
+  async loginWithRefreshToken(
+    adminId: AdminData['id'],
+    refreshToken: string,
+  ): Promise<SignInResponse> {
     const data = await this.adminRepository.findAdminAndRefreshTokensById(adminId);
     if (!data || data.refreshTokens.length === 0) throwLoginError();
 
-    const { refreshTokens, ...admin } = data!;
+    const { refreshTokens, avatarFileId, ...admin } = data!;
 
-    const isTokenValid: boolean = refreshTokens
-      .filter((token) => token.expiresAt > now)
-      .some((token) => this.hashService.compareHash(refreshToken, token.refreshTokenHash));
+    const avatarUrl: AdminAvatarUrlField['avatarUrl'] = avatarFileId === null ? avatarFileId : null;
+
+    const activeTokens: RefreshTokenMetadataTable =
+      AuthService.filterInactiveRefreshTokens(refreshTokens);
+    const isTokenValid: boolean = activeTokens.some((token) =>
+      this.hashService.compareHash(refreshToken, token.refreshTokenHash),
+    );
     if (!isTokenValid) throwLoginError();
 
-    return this.issueTokens(admin);
+    return this.issueTokens({ ...admin, avatarUrl });
   }
 
-  private async issueTokens(admin: AdminData): Promise<SignInResponse> {
+  async logout(adminId: AdminData['id'], refreshToken: string): Promise<void> {
+    const tokens = await this.adminRepository.findRefreshTokensByAdminId(adminId);
+    if (!tokens) return;
+
+    const activeTokens: RefreshTokenMetadataTable = AuthService.filterInactiveRefreshTokens(tokens);
+    const currentSessionToken: RefreshTokenMetadata | undefined = activeTokens.find((token) =>
+      this.hashService.compareHash(refreshToken, token.refreshTokenHash),
+    );
+    if (!currentSessionToken) return;
+
+    await this.adminRepository.deleteRefreshTokenByHashAndAdminId(
+      currentSessionToken.refreshTokenHash,
+      adminId,
+    );
+  }
+
+  private async issueTokens(
+    admin: Omit<AdminData, 'avatarFileId'> & AdminAvatarUrlField,
+  ): Promise<SignInResponse> {
     const tokenExpirationTimes = TokenExpirationFactory.create();
     const accessPayload: AccessJwtPayload = {
       id: admin.id,
@@ -100,7 +132,13 @@ export class AuthService implements OnModuleInit {
     );
 
     return {
-      adminData: { jwt: tokens.accessToken, adminData: admin },
+      adminData: {
+        accessToken: tokens.accessToken,
+        adminData: {
+          ...admin,
+          privileges: PrivilegesUtils.bitmaskToArray(admin.privileges),
+        },
+      },
       refreshTokenData: {
         token: tokens.refreshToken,
         maxAge: tokenExpirationTimes.refreshExpiresInSec,
@@ -110,5 +148,12 @@ export class AuthService implements OnModuleInit {
 
   private static classifyIdentifier(identifier: string): Identifier {
     return identifier.includes('@') ? 'email' : 'handleName';
+  }
+
+  private static filterInactiveRefreshTokens(
+    refreshTokens: RefreshTokenMetadataTable,
+  ): RefreshTokenMetadataTable {
+    const now = new Date();
+    return refreshTokens.filter((token) => token.expiresAt > now);
   }
 }

@@ -91,7 +91,7 @@ describe('AuthService', () => {
         const result = await service.loginWithCredentials(loginCredentials);
 
         expect(adminRepository.saveRefreshToken).toHaveBeenCalled();
-        expect(result.adminData.jwt).toBe(jwtTokensValue.accessToken);
+        expect(result.adminData.accessToken).toBe(jwtTokensValue.accessToken);
       });
 
       it('should throw on invalid password', async () => {
@@ -158,7 +158,7 @@ describe('AuthService', () => {
           methodPayload.refreshToken,
         );
 
-        expect(result.adminData.jwt).toBe(jwtTokensValue.accessToken);
+        expect(result.adminData.accessToken).toBe(jwtTokensValue.accessToken);
       });
 
       it('should throw when id is wrong', async () => {
@@ -170,12 +170,10 @@ describe('AuthService', () => {
       });
 
       it('should throw on invalid refresh token', async () => {
-        console.log({ ...admin, refreshTokens });
         const adminAndRefreshTokenFromDb = {
           ...admin,
           refreshTokens: [...refreshTokens],
         };
-        console.log(adminAndRefreshTokenFromDb);
         adminRepository.findAdminAndRefreshTokensById.mockResolvedValue(adminAndRefreshTokenFromDb);
         hashService.compareHash.mockReturnValue(false);
 
