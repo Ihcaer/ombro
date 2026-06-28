@@ -1,14 +1,11 @@
-export const layout = {
-  shell: {
+export const surface = {
+  primary: {
     'bg-color': '{brandBlue.700}',
     padding: '{spacing.2}',
     gap: { vertical: '{spacing.0}', horizontal: '{spacing.5}' },
   },
-  panel: {
-    bg: {
-      color: '#ffffff0a',
-      blur: '{blur.sm}',
-    },
+  secondary: {
+    'bg-color': '{brandBlue.600}',
     border: {
       width: '{borderWidth.sm}',
       style: '{borderStyle.solid}',
@@ -16,8 +13,11 @@ export const layout = {
       radius: '{radius.2xl}',
     },
   },
-  card: {
-    'bg-color': '{brandBlue.600}',
+  panel: {
+    bg: {
+      color: '#ffffff0a',
+      blur: '{blur.sm}',
+    },
     border: {
       width: '{borderWidth.sm}',
       style: '{borderStyle.solid}',

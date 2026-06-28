@@ -21,9 +21,9 @@ export class PasswordStrengthService {
     );
 
     const options: Partial<Options> = {
+      dictionary: { ...dictionary, ...enDictionary, ...plDictionary },
       translations: { ...enTranslations, ...plTranslations },
       graphs: { ...adjacencyGraphs },
-      dictionary: { ...dictionary, ...enDictionary, ...plDictionary },
     };
 
     zxcvbnOptions.setOptions(options);
