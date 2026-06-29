@@ -23,6 +23,7 @@ import {
 } from './core/config/i18n/i18n.config';
 import { environment } from '../environments/environment.example';
 import { NoEvalTranslocoTranspiler } from '@ombro/shared/utils/translation-utils';
+import { demoInterceptor } from './demo/demo.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -30,7 +31,7 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(appRoutes),
     provideHttpClient(
-      withInterceptors([authInterceptor, apiPrefixInterceptor, adminTokenInterceptor]),
+      withInterceptors([authInterceptor, apiPrefixInterceptor, adminTokenInterceptor, demoInterceptor]),
     ),
     providePrimeNG({
       theme: {
