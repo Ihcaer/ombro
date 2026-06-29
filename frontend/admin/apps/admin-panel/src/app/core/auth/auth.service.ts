@@ -22,14 +22,14 @@ export class AuthService {
 
   login(credentials: LoginRequestDto): Observable<LoginResponseDto> {
     return this.http.post<LoginResponseDto>(
-      `${this.fullApiUrl}/${AUTH_ENDPOINTS.LOGIN}`,
+      `${this.fullApiUrl}${AUTH_ENDPOINTS.LOGIN}`,
       credentials,
     );
   }
 
   refreshToken(): Observable<LoginResponseDto> {
     return this.http.post<LoginResponseDto>(
-      `${this.fullApiUrl}/${AUTH_ENDPOINTS.REFRESH_TOKEN}`,
+      `${this.fullApiUrl}${AUTH_ENDPOINTS.REFRESH_TOKEN}`,
       undefined,
       {
         withCredentials: true,
@@ -45,24 +45,24 @@ export class AuthService {
 
   requestPasswordReset(dto: RequestPasswordResetRequestDto): Observable<void> {
     return this.http.post<void>(
-      `${this.fullApiUrl}/${AUTH_ENDPOINTS.PASSWORD_RESET.REQUEST_RESET}`,
+      `${this.fullApiUrl}${AUTH_ENDPOINTS.PASSWORD_RESET.REQUEST_RESET}`,
       dto,
     );
   }
 
   resetPassword(dto: ResetPasswordRequestDto): Observable<void> {
-    return this.http.post<void>(`${this.fullApiUrl}/${AUTH_ENDPOINTS.PASSWORD_RESET.RESET}`, dto);
+    return this.http.post<void>(`${this.fullApiUrl}${AUTH_ENDPOINTS.PASSWORD_RESET.RESET}`, dto);
   }
 
   checkRegistrationEligibility(
     token: RegistrationEligibilityRequestDto,
   ): Observable<RegistrationEligibilityResponseDto> {
     return this.http.get<RegistrationEligibilityResponseDto>(
-      `${this.fullApiUrl}/${AUTH_ENDPOINTS.REGISTRATION.CHECK_ELIGIBILITY}/${token}`,
+      `${this.fullApiUrl}${AUTH_ENDPOINTS.REGISTRATION.CHECK_ELIGIBILITY}/${token}`,
     );
   }
 
   finalizeAdminRegistration(dto: FinalizeAdminRegistrationRequestDto): Observable<void> {
-    return this.http.post<void>(`${this.fullApiUrl}/${AUTH_ENDPOINTS.REGISTRATION.FINALIZE}`, dto);
+    return this.http.post<void>(`${this.fullApiUrl}${AUTH_ENDPOINTS.REGISTRATION.FINALIZE}`, dto);
   }
 }
