@@ -11,13 +11,14 @@ import { provideMaterialSymbols } from '@ombro/shared/ui-icons';
 import { PRIME_NG_PL } from './core/config/i18n/primeng-pl';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './core/auth/interceptors/auth.interceptor';
+import { demoInterceptor } from './demo/demo.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(appRoutes),
-    provideHttpClient(withInterceptors([authInterceptor])),
+    provideHttpClient(withInterceptors([authInterceptor, demoInterceptor])),
     providePrimeNG({
       theme: {
         preset: DefaultPreset,
