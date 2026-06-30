@@ -25,7 +25,7 @@ import {
 } from 'rxjs';
 import { tapResponse } from '@ngrx/operators';
 import { HttpErrorResponse } from '@angular/common/http';
-import { initialState } from './auth.state';
+import { AuthStateInternalError, initialState } from './auth.state';
 import { getAccessTokenExpirationTimeMs, loginPagePath } from './common';
 import {
   RequestPasswordResetRequestDto,
@@ -54,7 +54,7 @@ export const AuthStore = signalStore(
           expiresAtMs: getAccessTokenExpirationTimeMs(response.accessToken),
         },
         isLoading: false,
-        lastErrorResponse: null,
+        lastResponseError: null,
       });
     },
     _resetAuthState(): void {
@@ -66,14 +66,20 @@ export const AuthStore = signalStore(
     _cancelLoading(): void {
       patchState(store, { isLoading: false });
     },
-    _setError(err: HttpErrorResponse): void {
-      patchState(store, { isLoading: false, lastErrorResponse: err });
+    _setResponseError(err: HttpErrorResponse): void {
+      patchState(store, { isLoading: false, lastResponseError: err });
     },
     _clearError(): void {
-      patchState(store, { lastErrorResponse: null });
+      patchState(store, { lastResponseError: null });
     },
     _startRequest(): void {
-      patchState(store, { isLoading: true, lastErrorResponse: null });
+      patchState(store, { isLoading: true, lastResponseError: null });
+    },
+    _setInternalError(type: AuthStateInternalError): void {
+      patchState(store, { lastInternalError: type });
+    },
+    clearInternalError(): void {
+      patchState(store, { lastInternalError: null });
     },
   })),
   withMethods((store, authService = inject(AuthService), router = inject(Router)) => ({
@@ -87,7 +93,7 @@ export const AuthStore = signalStore(
                 store._updateAuthState(res);
                 router.navigateByUrl('/' + PANEL_PATHS.DASHBOARD);
               },
-              error: (err: HttpErrorResponse) => store._setError(err),
+              error: (err: HttpErrorResponse) => store._setResponseError(err),
             }),
           ),
         ),
@@ -99,10 +105,13 @@ export const AuthStore = signalStore(
       store._startRequest();
 
       return authService.refreshToken().pipe(
-        tap((res) => store._updateAuthState(res)),
-        catchError((error: unknown) => {
-          store._resetAuthState();
-          return throwError(() => error);
+        tapResponse({
+          next: (res) => store._updateAuthState(res),
+          error: (error) => {
+            store._resetAuthState();
+            store._setInternalError('SESSION_REFRESH_FAILED');
+            return throwError(() => error);
+          },
         }),
       );
     },
@@ -133,7 +142,7 @@ export const AuthStore = signalStore(
           authService.requestPasswordReset(data).pipe(
             tapResponse({
               next: () => store._cancelLoading(),
-              error: (err: HttpErrorResponse) => store._setError(err),
+              error: (err: HttpErrorResponse) => store._setResponseError(err),
             }),
           ),
         ),
@@ -146,7 +155,7 @@ export const AuthStore = signalStore(
           authService.resetPassword(data).pipe(
             tapResponse({
               next: () => store._cancelLoading(),
-              error: (err: HttpErrorResponse) => store._setError(err),
+              error: (err: HttpErrorResponse) => store._setResponseError(err),
             }),
           ),
         ),
@@ -161,7 +170,7 @@ export const AuthStore = signalStore(
       try {
         return await firstValueFrom(authService.checkRegistrationEligibility(payload));
       } catch (error: unknown) {
-        if (error instanceof HttpErrorResponse) store._setError(error);
+        if (error instanceof HttpErrorResponse) store._setResponseError(error);
         return;
       }
     },
@@ -172,7 +181,7 @@ export const AuthStore = signalStore(
           authService.finalizeAdminRegistration(payload).pipe(
             tapResponse({
               next: () => store._cancelLoading(),
-              error: (err: HttpErrorResponse) => store._setError(err),
+              error: (err: HttpErrorResponse) => store._setResponseError(err),
             }),
           ),
         ),
@@ -194,7 +203,8 @@ export const AuthStore = signalStore(
     _processAutoRefresh: rxMethod<number | null>(
       pipe(
         switchMap((expiresAtMs) => {
-          if (!expiresAtMs) return EMPTY;
+          const hasExpiry = !!expiresAtMs;
+          if (!hasExpiry) return store.refreshTokens();
 
           const refreshTime = expiresAtMs - 30000;
           const delay = refreshTime - Date.now();
@@ -222,6 +232,9 @@ export const AuthStore = signalStore(
   })),
   withHooks({
     onInit(store) {
+      queueMicrotask(() => {
+        if (!store.admin()) firstValueFrom(store.refreshTokens());
+      });
       store._processAutoRefresh(store.accessToken.expiresAtMs);
       store._clearResponseErrorWhenNavigating();
     },
