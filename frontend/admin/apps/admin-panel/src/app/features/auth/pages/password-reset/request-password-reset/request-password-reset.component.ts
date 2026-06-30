@@ -36,9 +36,9 @@ export class RequestPasswordResetComponent extends PasswordResetBase {
     if (this.requestPasswordResetForm.valid) {
       const rawValues = this.requestPasswordResetForm.getRawValue();
       this.authStore.requestPasswordReset({ email: rawValues.email });
-      this.showSuccess = true;
+      this.showSuccess.set(true);
     } else {
-      this.showSuccess = false;
+      this.showSuccess.set(false);
       this.requestPasswordResetForm.markAllAsTouched();
     }
   }

@@ -4,7 +4,7 @@ import { noop } from 'rxjs';
 
 const mockAuthStoreValues = {
   isLoading: signal(false),
-  lastErrorResponse: signal(null),
+  lastResponseError: signal(null),
   login: noop,
   requestPasswordReset: noop,
   resetPassword: noop,

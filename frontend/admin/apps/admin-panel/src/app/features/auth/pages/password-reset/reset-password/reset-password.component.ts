@@ -70,9 +70,9 @@ export class ResetPasswordComponent extends PasswordResetBase implements OnInit 
       const token = this.oneTimeTokenStore.oneTimeToken()!;
 
       this.authStore.resetPassword({ token, password });
-      this.showSuccess = true;
+      this.showSuccess.set(true);
     } else {
-      this.showSuccess = false;
+      this.showSuccess.set(false);
       this.resetPasswordForm.markAllAsTouched();
     }
   }
