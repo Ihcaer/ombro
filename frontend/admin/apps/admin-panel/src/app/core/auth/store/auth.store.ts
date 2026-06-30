@@ -203,8 +203,7 @@ export const AuthStore = signalStore(
     _processAutoRefresh: rxMethod<number | null>(
       pipe(
         switchMap((expiresAtMs) => {
-          const hasExpiry = !!expiresAtMs;
-          if (!hasExpiry) return store.refreshTokens();
+          if (!expiresAtMs) return EMPTY;
 
           const refreshTime = expiresAtMs - 30000;
           const delay = refreshTime - Date.now();
