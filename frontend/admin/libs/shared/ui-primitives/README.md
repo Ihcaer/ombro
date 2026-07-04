@@ -23,7 +23,41 @@ import { AvatarComponent } from '@ombro/shared/ui-primitives';
 <ombro-primitive-avatar imageUrl="your-link" name="name value" size="1.5rem" />
 ```
 
-- `size` can take value with and without unit. When value don't have unit, component will use _px_. It should be **string** always.
+- `size` can take value with and without unit. When value doesn't have unit, component will use _px_. It should be **string** always.
+
+### Dialog
+
+Component used to display critical information, overlays or user actions without leaving the current context.
+
+#### Basic usage
+
+```ts
+import { DialogComponent } from '@ombro/shared/ui-primitives';
+
+@Component({
+  imports: [DialogComponent],
+  // other component properties
+})
+export class SampleClass {
+  isVisible = model.required<boolean>();
+}
+```
+
+```html
+<ombro-primitive-dialog [(isVisible)]="isVisible"></ombro-primitive-dialog>
+```
+
+**Possible inputs:**
+
+Most of the inputs are built-in properties of the _PrimeNG_ dialog component.
+To see documentation of them, go to [PrimeNG Dialog Api page](https://primeng.dev/dialog#api).
+
+Component own inputs:
+
+| Input        | Type                                                        | Default | Description                                                |
+| :----------- | :---------------------------------------------------------- | :------ | :--------------------------------------------------------- |
+| `headerIcon` | `IconName \| null` (see [Icon names](../ui-icons/ICONS.md)) | `null`  | Sets icon in the header.                                   |
+| `severity`   | `ButtonSeverity \| null`                                    | `null`  | Sets color of the icon to match with the possible buttons. |
 
 ## Adding new components
 

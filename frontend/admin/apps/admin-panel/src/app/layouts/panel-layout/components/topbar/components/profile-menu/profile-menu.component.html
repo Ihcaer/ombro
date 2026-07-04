@@ -1,10 +1,10 @@
 <nav class="p-(--p-spacing-4) rounded-(--p-radius-xl)" [aria-label]="ariaLabel()">
   <div class="gap-(--p-spacing-1-5) flex flex-col">
     <span class="text-(--p-primary-100) text-(length:--p-size-14) font-(--p-font-weight-600)">
-      {{ displayName() }}
+      {{ displayName() ?? '' }}
     </span>
     <span class="text-(--p-muted-blue-300) text-(length:--p-size-12)">
-      {{ '@' + handleName() }}
+      {{ handleName() !== null ? '@' + handleName() : '' }}
     </span>
   </div>
   <ul class="mt-(--p-spacing-3) gap-(--p-spacing-1) flex flex-col">

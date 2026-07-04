@@ -1,38 +1,47 @@
 import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
+import { SkeletonModule } from 'primeng/skeleton';
 
 @Component({
   selector: 'ombro-primitive-avatar',
-  imports: [],
+  imports: [SkeletonModule],
   templateUrl: './avatar.component.html',
+  styles: `
+    :host {
+      display: flex;
+    }
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AvatarComponent {
   imageUrl = input.required<string | null>();
-  name = input.required<string>();
+  name = input.required<string | null>();
   size = input<string>('1.5rem');
 
   protected imageFetchFailed = signal<boolean>(false);
 
-  protected showImage = computed(() => !!this.imageUrl() && !this.imageFetchFailed());
+  protected showImage = computed<boolean>(() => !!this.imageUrl() && !this.imageFetchFailed());
+  protected isDataLoaded = computed<boolean>(() => !!this.name());
 
-  protected initials = computed(() => {
-    const fullName = this.name().trim();
+  protected initials = computed<string | null>(() => {
+    const rawName = this.name();
+    if (!rawName) return null;
 
-    const parts = fullName.split(/\s+/);
+    const name = rawName.trim();
+
+    const parts = name.split(/\s+/);
     if (parts.length > 1) {
       return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
     } else {
-      return fullName.slice(0, 2).toUpperCase();
+      return name.slice(0, 2).toUpperCase();
     }
   });
 
-  protected backgroundColor = computed(() => {
+  protected backgroundColor = computed<string | 'transparent'>(() => {
     const name = this.name();
-    if (name === 'N7')
-      return 'linear-gradient(90deg, #1a1a1a 0%, #1a1a1a 55%, #df0101 55%, #df0101 65%, #ffffff 65%, #ffffff 70%, #1a1a1a 70%, #1a1a1a 100%)';
+    if (!name) return 'transparent';
 
     let hash = 0;
-    for (const char of name) {
+    for (const char of name!) {
       const codePoint: number = char.codePointAt(0) ?? 0;
       hash = codePoint + ((hash << 5) - hash);
     }

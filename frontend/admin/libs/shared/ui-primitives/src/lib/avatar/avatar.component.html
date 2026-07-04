@@ -1,18 +1,22 @@
 <div
-  class="rounded-(--p-radius-full) inline-flex select-none items-center justify-center text-white"
+  class="rounded-(--p-radius-full) inline-flex select-none items-center justify-center overflow-hidden text-white"
   [style.width]="computedSize()"
   [style.height]="computedSize()"
   [style.background]="showImage() ? 'transparent' : backgroundColor()"
   [style.font-size]="computedFontSize()"
 >
-  @if (showImage()) {
-    <img
-      [src]="imageUrl()"
-      [alt]="name()"
-      (error)="imageFetchFailed.set(true)"
-      class="h-full w-full object-cover"
-    />
+  @if (isDataLoaded()) {
+    @if (showImage()) {
+      <img
+        [src]="imageUrl()"
+        [alt]="name()"
+        (error)="imageFetchFailed.set(true)"
+        class="h-full w-full object-cover"
+      />
+    } @else {
+      <span class="leading-none">{{ initials() }}</span>
+    }
   } @else {
-    <span class="leading-none">{{ initials() }}</span>
+    <p-skeleton shape="circle" size="100%" />
   }
 </div>

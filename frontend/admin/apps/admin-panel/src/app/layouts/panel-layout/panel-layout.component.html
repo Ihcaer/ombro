@@ -2,12 +2,13 @@
   [class]="isSideMenuCollapsed() ? 'grid-cols-[4.25rem_1fr]' : 'grid-cols-[13.5rem_1fr]'"
   class="layout p-(--p-surface-primary-padding) transition-grid-cols duration-(--transition-duration) gap-y-(--p-surface-primary-gap-vertical) gap-x-(--p-surface-primary-gap-horizontal) grid h-screen w-screen grid-rows-[6.25rem_1fr] ease-out"
 >
-  <div class="row-span-full">
-    <app-panel-sidebar [(isCollapsed)]="isSideMenuCollapsed" />
-  </div>
+  <ng-container>
+    <app-panel-layout-sidebar [(isCollapsed)]="isSideMenuCollapsed" class="row-span-full" />
+  </ng-container>
   <div class="flex flex-col justify-between">
-    <app-panel-topbar />
+    <app-panel-layout-topbar />
     <ombro-breadcrumb />
   </div>
   <main><router-outlet /></main>
 </div>
+<app-panel-session-expired-modal [(isVisible)]="isDialogOpen" (onClose)="onDialogClose()" />
