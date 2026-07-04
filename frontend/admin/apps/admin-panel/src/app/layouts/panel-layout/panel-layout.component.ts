@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
@@ -14,10 +7,17 @@ import { map } from 'rxjs';
 import { TopbarComponent } from './components/topbar/topbar.component';
 import { BreadcrumbComponent } from '@ombro/shared/breadcrumb';
 import { AuthStore, loginPagePath } from '../../core/auth/store';
+import { SessionExpiredModalComponent } from './components/dialogs/session-expired-modal/session-expired-modal.component';
 
 @Component({
   selector: 'app-panel-layout',
-  imports: [RouterOutlet, SidebarComponent, TopbarComponent, BreadcrumbComponent],
+  imports: [
+    RouterOutlet,
+    SidebarComponent,
+    TopbarComponent,
+    BreadcrumbComponent,
+    SessionExpiredModalComponent,
+  ],
   templateUrl: './panel-layout.component.html',
   styleUrl: './panel-layout.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,6 +28,7 @@ export class PanelLayoutComponent {
   private readonly router = inject(Router);
 
   protected isSideMenuCollapsed = signal<boolean>(true);
+  protected isDialogOpen = signal<boolean>(false);
 
   private isDesktop = toSignal(
     this.breakpointObserver
@@ -37,22 +38,23 @@ export class PanelLayoutComponent {
   );
 
   private _updateMenuCollapse = effect(() => this.isSideMenuCollapsed.set(!this.isDesktop()));
-
-  // temporary effect
-  private _tempModalHandling = effect(() => {
-    if (this.displayModal()) {
-      alert('You have been logged out.');
-      this.authStore.clearInternalError();
-      this.router.navigateByUrl(loginPagePath);
-    }
-  });
-
-  protected displayModal = computed<boolean>(() => {
+  private _handleDialogState = effect(() => {
     const internalError = this.authStore.lastInternalError();
     if (internalError === 'SESSION_REFRESH_FAILED') {
-      return true;
+      this.isDialogOpen.set(true);
     } else {
-      return false;
+      this.isDialogOpen.set(false);
     }
   });
+  private _handleDialogAutoClosing = effect((onCleanUp) => {
+    if (this.isDialogOpen()) {
+      const timerId = setTimeout(() => this.onDialogClose(), 60000);
+    }
+  });
+
+  protected onDialogClose(): void {
+    this.authStore.clearInternalError();
+    if (this.isDialogOpen()) this.isDialogOpen.set(false);
+    this.router.navigateByUrl(loginPagePath);
+  }
 }
