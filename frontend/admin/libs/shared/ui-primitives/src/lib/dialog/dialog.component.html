@@ -1,0 +1,29 @@
+<p-dialog
+  [(visible)]="isVisible"
+  [modal]="modal()"
+  [closable]="closable()"
+  [closeOnEscape]="closeOnEscape()"
+  [draggable]="draggable()"
+  [focusOnShow]="focusOnShow()"
+  (onHide)="onHide.emit()"
+  [appendTo]="appendTo()"
+  [blockScroll]="blockScroll()"
+  [closeAriaLabel]="closeAriaLabel()"
+  styleClass="backdrop-blur-(--p-dialog-additional-backdrop-blur) m-(--p-dialog-additional-margin)"
+  maskStyleClass="bg-(--p-dialog-additional-mask-background)"
+  contentStyleClass="text-(length:--p-dialog-additional-content-font-size)"
+>
+  <ng-template #header>
+    <div class="gap-(--p-spacing-2) flex items-center">
+      @if (headerIcon()) {
+        <ombro-icon
+          [name]="headerIcon()!"
+          [style.color]="severity() ? `var(--p-button-${severity()}-background)` : 'inherit'"
+        />
+      }
+      <ng-content select="[header]" />
+    </div>
+  </ng-template>
+  <ng-content />
+  <ng-template #footer><ng-content select="[footer]" /></ng-template>
+</p-dialog>
