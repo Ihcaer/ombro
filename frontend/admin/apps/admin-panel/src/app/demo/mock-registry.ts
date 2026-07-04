@@ -9,6 +9,7 @@ import {
   mockRequestPasswordReset,
   mockResetPassword,
 } from './response-mocks/auth-responses.mock';
+import { getRandomDelayMs } from './helpers/random-delay';
 
 type RestMethod = 'POST' | 'GET' | 'PUT' | 'DELETE';
 type MockHandler = (req: HttpRequest<unknown>) => HttpResponse<unknown>;
@@ -25,19 +26,19 @@ export const MOCK_REGISTRY: Mock[] = [
   {
     config: { method: 'POST', path: `${AUTH_ROUTE_PREFIX}/${AUTH_ENDPOINTS.LOGIN}` },
     handler: () => new HttpResponse(mockLoginResponse),
-    delayMs: 700,
+    delayMs: getRandomDelayMs(200),
     matchType: 'exact',
   },
   {
     config: { method: 'POST', path: `${AUTH_ROUTE_PREFIX}/${AUTH_ENDPOINTS.REFRESH_TOKEN}` },
     handler: () => new HttpResponse(mockRefreshTokenResponse),
-    delayMs: 700,
+    delayMs: getRandomDelayMs(200),
     matchType: 'exact',
   },
   {
     config: { method: 'POST', path: `${AUTH_ROUTE_PREFIX}/${AUTH_ENDPOINTS.LOGOUT}` },
     handler: () => new HttpResponse(mockLogoutResponse),
-    delayMs: 300,
+    delayMs: getRandomDelayMs(100, 100),
     matchType: 'exact',
   },
   {
@@ -46,13 +47,13 @@ export const MOCK_REGISTRY: Mock[] = [
       path: `${AUTH_ROUTE_PREFIX}/${AUTH_ENDPOINTS.PASSWORD_RESET.REQUEST_RESET}`,
     },
     handler: () => new HttpResponse(mockRequestPasswordReset),
-    delayMs: 500,
+    delayMs: getRandomDelayMs(400),
     matchType: 'exact',
   },
   {
     config: { method: 'POST', path: `${AUTH_ROUTE_PREFIX}/${AUTH_ENDPOINTS.PASSWORD_RESET.RESET}` },
     handler: () => new HttpResponse(mockResetPassword),
-    delayMs: 400,
+    delayMs: getRandomDelayMs(300),
     matchType: 'contains',
   },
   {
@@ -61,7 +62,7 @@ export const MOCK_REGISTRY: Mock[] = [
       path: `${AUTH_ROUTE_PREFIX}/${AUTH_ENDPOINTS.REGISTRATION.CHECK_ELIGIBILITY}`,
     },
     handler: () => new HttpResponse(mockCheckRegistrationEligibility),
-    delayMs: 300,
+    delayMs: getRandomDelayMs(400),
     matchType: 'exact',
   },
   {
@@ -70,7 +71,7 @@ export const MOCK_REGISTRY: Mock[] = [
       path: `${AUTH_ROUTE_PREFIX}/${AUTH_ENDPOINTS.REGISTRATION.FINALIZE}`,
     },
     handler: () => new HttpResponse(mockFinalizeAdminRegistration),
-    delayMs: 300,
+    delayMs: getRandomDelayMs(900),
     matchType: 'exact',
   },
-];
+] as const;
