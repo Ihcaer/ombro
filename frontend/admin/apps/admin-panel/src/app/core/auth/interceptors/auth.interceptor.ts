@@ -21,7 +21,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   const token = authStore.accessToken().token;
   const excludedUrls = [AUTH_ENDPOINTS.LOGIN, AUTH_ENDPOINTS.REFRESH_TOKEN];
-  const isExcluded = excludedUrls.some((url) => req.url.includes(url));
+  const isExcluded = excludedUrls.some((url) => req.url.endsWith(url));
 
   let authReq = token ? addTokenHeader(req, token) : req;
 

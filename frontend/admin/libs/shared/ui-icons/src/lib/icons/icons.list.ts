@@ -31,6 +31,7 @@ const actionIconsSet = [
 const userAuthIconsSet = [
   'account_box',
   'account_circle',
+  'account_circle_off',
   'person_check',
   'person_off',
   'groups',

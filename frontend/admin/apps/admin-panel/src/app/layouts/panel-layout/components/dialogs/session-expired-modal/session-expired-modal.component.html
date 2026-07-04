@@ -1,0 +1,27 @@
+<ombro-primitive-dialog
+  [(isVisible)]="isVisible"
+  [modal]="true"
+  [closable]="false"
+  [closeOnEscape]="false"
+  [draggable]="false"
+  [focusOnShow]="false"
+  [blockScroll]="true"
+  headerIcon="account_circle_off"
+  [severity]="severity()"
+  (onHide)="close()"
+>
+  <span header>Sesja wygasła</span>
+  <p>
+    Twoja sesja wygasła ze względów bezpieczeństwa. Zostałeś wylogowany, aby chronić Twoje dane.
+  </p>
+  <button
+    footer
+    pButton
+    type="button"
+    [severity]="severity()"
+    (click)="close()"
+    class="text-(length:--p-dialog-additional-button-font-size)"
+  >
+    Przejdź do logowania
+  </button>
+</ombro-primitive-dialog>

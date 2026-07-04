@@ -9,7 +9,7 @@ import { AuthStore } from '@ombro/admin-panel/app/core/auth/store';
 import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
-  selector: 'app-panel-sidebar',
+  selector: 'app-panel-layout-sidebar',
   imports: [IconComponent, LogoComponent, NgTemplateOutlet, RouterLink],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',

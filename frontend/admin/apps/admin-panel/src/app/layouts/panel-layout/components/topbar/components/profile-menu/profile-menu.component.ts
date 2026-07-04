@@ -11,8 +11,8 @@ import { NgTemplateOutlet } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfileMenuComponent {
-  displayName = input.required<string>();
-  handleName = input.required<string>();
+  displayName = input.required<string | null>();
+  handleName = input.required<string | null>();
   logoutButtonClicked = output<void>();
 
   protected ariaLabel = signal<string>('Menu profilu');

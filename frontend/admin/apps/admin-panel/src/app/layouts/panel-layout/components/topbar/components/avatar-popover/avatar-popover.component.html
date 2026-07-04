@@ -1,6 +1,6 @@
 @let admin = authStore.admin();
-@let handleName = admin?.handleName || 'N7';
-@let displayName = admin?.displayName || 'N7';
+@let handleName = admin?.handleName || null;
+@let displayName = admin?.displayName || null;
 @let imageUrl = admin?.avatarUrl || null;
 <button
   type="button"
