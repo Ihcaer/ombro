@@ -9,7 +9,7 @@ export const surface = {
     border: {
       width: '{borderWidth.sm}',
       style: '{borderStyle.solid}',
-      color: '#ffffff1a',
+      color: 'rgba(255, 255, 255, 0.1)',
       radius: '{radius.2xl}',
     },
   },
@@ -21,7 +21,7 @@ export const surface = {
     border: {
       width: '{borderWidth.sm}',
       style: '{borderStyle.solid}',
-      color: '#ffffff1a',
+      color: 'rgba(255, 255, 255, 0.1)',
       radius: '{radius.2xl}',
     },
   },
