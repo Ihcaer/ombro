@@ -4,8 +4,8 @@ import { RedirectCode } from '../enums/redirect-code.enum';
 @Exclude()
 export class GetRedirectDto {
   @Expose()
-  readonly targetUrl: string;
+  readonly targetUrl!: string;
 
   @Expose()
-  readonly redirectCode: RedirectCode;
+  readonly redirectCode!: RedirectCode;
 }

@@ -60,7 +60,7 @@ describe('AuthService', () => {
         handleName: 'handle',
         displayName: 'name',
         password: 'test-password',
-        avatarId: 1,
+        avatarFileId: 1,
         privileges: 1,
         verification: 'VERIFIED',
         isActivated: true,

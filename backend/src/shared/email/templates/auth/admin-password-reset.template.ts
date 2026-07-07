@@ -23,16 +23,16 @@ export class AdminPasswordResetTemplate extends EmailBase {
       `${expirationTimeMinutes} minut`,
     );
 
-    this.setOptions();
-    this.setContent(name, passwordResetLink);
+    this.options = this.setOptions();
+    this.content = this.setContent(name, passwordResetLink);
   }
 
-  private setOptions(): void {
-    this.options = { subject: 'Resetowanie hasła w Skema Admin Panel' };
+  private setOptions(): EmailOptions {
+    return { subject: 'Resetowanie hasła w Skema Admin Panel' };
   }
 
-  private setContent(name: string, ctaLink: string): void {
-    this.content = {
+  private setContent(name: string, ctaLink: string): EmailTemplateContent {
+    return {
       image: {
         src: this.mediaDomain + '/public-assets/email/authentication.jpg',
         alt: 'Ilustracja przedstawiająca proces weryfikacji i bezpieczeństwa konta',

@@ -6,5 +6,5 @@ export class ForgotPasswordRequestDto {
   @IsNotEmpty()
   @IsEmail()
   @Trim()
-  email: string;
+  email!: string;
 }

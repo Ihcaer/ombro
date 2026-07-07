@@ -5,5 +5,5 @@ export class FieldsToConfirmAccountRequestDto {
   @IsString()
   @IsNotEmpty()
   @IsOneTimeToken()
-  readonly token: Base64URLString;
+  readonly token!: Base64URLString;
 }
