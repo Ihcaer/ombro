@@ -14,16 +14,16 @@ export class AdminAccountActivationTemplate extends EmailBase {
     super();
 
     this.mediaDomain = inputMediaDomain;
-    this.setOptions();
-    this.setContent(name, confirmAccountLink);
+    this.options = this.setOptions();
+    this.content = this.setContent(name, confirmAccountLink);
   }
 
-  private setOptions(): void {
-    this.options = { subject: 'Potwierdź rejestrację w Skema Admin Panel' };
+  private setOptions(): EmailOptions {
+    return { subject: 'Potwierdź rejestrację w Skema Admin Panel' };
   }
 
-  private setContent(name: string, ctaLink: string): void {
-    this.content = {
+  private setContent(name: string, ctaLink: string): EmailTemplateContent {
+    return {
       image: {
         src: this.mediaDomain + '/public-assets/email/welcome.jpg',
         alt: 'Ilustracja przedstawiająca kobietę siedzącą na parapecie okna, obok kubka kawy i drzewa, symbolizująca powitanie.',

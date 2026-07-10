@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
-import { IconName, IconComponent } from '@ombro/shared/ui-icons';
+import { IconName, IconComponent } from '@ombro/shared/ui/ui-icons';
 import { RouterLink } from '@angular/router';
 import { NgTemplateOutlet } from '@angular/common';
 

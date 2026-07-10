@@ -7,7 +7,7 @@ export class ConfirmAdminRequestDto implements PossibleFieldsToFill {
   @IsString()
   @IsNotEmpty()
   @IsOneTimeToken()
-  readonly oneTimeToken: Base64URLString;
+  readonly oneTimeToken!: Base64URLString;
 
   @IsOptional()
   @IsString()
@@ -18,5 +18,5 @@ export class ConfirmAdminRequestDto implements PossibleFieldsToFill {
   @IsString()
   @IsNotEmpty()
   @MaxLength(256, { message: 'Password is too long. Maximum length is 128 characters.' })
-  readonly password: string;
+  readonly password!: string;
 }

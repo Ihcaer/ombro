@@ -14,7 +14,7 @@ import {
   InputTextComponent,
   matchFieldsValidator,
   passwordStrengthValidator,
-} from '@ombro/shared/ui-forms';
+} from '@ombro/shared/ui/ui-forms';
 import { AuthWrapperComponent } from '../../components/auth-wrapper/auth-wrapper.component';
 import { FormButtonsComponent } from '../../components/form-buttons/form-buttons.component';
 import { REGEX_PATTERNS } from '@ombro/admin-panel/app/shared/tokens/pattern.tokens';

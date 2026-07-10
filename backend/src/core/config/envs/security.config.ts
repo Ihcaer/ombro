@@ -7,24 +7,24 @@ export class SecurityConfig {
   @Expose({ name: 'JWT_ACCESS_SECRET' })
   @IsString()
   @IsNotEmpty()
-  jwtAccessSecret: string;
+  jwtAccessSecret!: string;
 
   @Expose({ name: 'JWT_REFRESH_SECRET' })
   @IsString()
   @IsNotEmpty()
-  jwtRefreshSecret: string;
+  jwtRefreshSecret!: string;
 
   @Expose({ name: 'REQUEST_BASE_DELAY' })
   @IsNumber()
   @Min(20)
   @Max(2000)
-  requestBaseDelay: number;
+  requestBaseDelay!: number;
 
   @Expose({ name: 'REQUEST_JITTER' })
   @IsNumber()
   @Min(0)
   @Max(500)
-  requestJitter: number;
+  requestJitter!: number;
 }
 
 export default registerAs('security', () => validateConfig(SecurityConfig));

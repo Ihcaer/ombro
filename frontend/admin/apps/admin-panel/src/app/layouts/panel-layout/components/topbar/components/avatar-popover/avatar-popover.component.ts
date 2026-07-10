@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { AuthStore } from '@ombro/admin-panel/app/core/auth/store';
-import { AvatarComponent } from '@ombro/shared/ui-primitives';
+import { AvatarComponent } from '@ombro/shared/ui/ui-primitives';
 import { ProfileMenuComponent } from '../profile-menu/profile-menu.component';
 
 @Component({

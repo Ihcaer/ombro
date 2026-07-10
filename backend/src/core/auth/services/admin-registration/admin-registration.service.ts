@@ -10,6 +10,7 @@ import { PrismaService } from '@core/database/prisma/prisma.service';
 import { AuthAdmin, AuthVerification, Prisma } from '@generated/prisma-client';
 import {
   BadRequestException,
+  Inject,
   Injectable,
   InternalServerErrorException,
   UnprocessableEntityException,
@@ -18,11 +19,12 @@ import { HashService } from '@shared/hash/hash.service';
 import { AuthTokenService } from '../auth-token/auth-token.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AdminCreatedEvent } from '@core/auth/events/admin-created.event';
-import { checkPasswordStrengthUtil } from '@core/auth/utils/check-password-strength/check-password-strength.util';
 import { PossibleFieldsToFill } from '@core/auth/types/common.types';
 import { PASSWORD_SALT_ROUNDS } from '@core/auth/auth.constants';
 import { AuthAdminRepository } from '@core/auth/auth-admin.repository';
 import { PrivilegesUtils } from '@core/auth/utils/privileges.utils';
+import { PASSWORD_STRENGTH_VALIDATOR } from '@core/auth/providers/password-strength.provider';
+import type { PasswordStrengthValidatorFn } from '@core/auth/providers/password-strength.provider';
 
 @Injectable()
 export class AdminRegistrationService {
@@ -38,6 +40,8 @@ export class AdminRegistrationService {
     private readonly tokenService: AuthTokenService,
     private readonly authAdminRepository: AuthAdminRepository,
     private readonly eventEmitter: EventEmitter2,
+    @Inject(PASSWORD_STRENGTH_VALIDATOR)
+    private readonly isPasswordStrongValidator: PasswordStrengthValidatorFn,
   ) {}
 
   async createAdminAccount(dto: CreateAdminRequestDto): Promise<CreateAdminResponseDto> {
@@ -163,7 +167,7 @@ export class AdminRegistrationService {
       return String(value);
     });
 
-    const isStrongPassword: boolean = checkPasswordStrengthUtil(dto.password, [...adminInfo]);
+    const isStrongPassword: boolean = this.isPasswordStrongValidator(dto.password, [...adminInfo]);
     if (!isStrongPassword)
       throw new BadRequestException(
         'The password is too weak or contains data from an email, handle or display name.',

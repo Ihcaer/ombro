@@ -1,19 +1,11 @@
-import {
-  Inject,
-  Injectable,
-  OnModuleDestroy,
-  OnModuleInit,
-} from '@nestjs/common';
+import { Inject, Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '@generated/prisma-client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import type { ConfigType } from '@nestjs/config';
 import databaseConfig from '@core/config/envs/database.config';
 
 @Injectable()
-export class PrismaService
-  extends PrismaClient
-  implements OnModuleInit, OnModuleDestroy
-{
+export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
   constructor(
     @Inject(databaseConfig.KEY)
     private dbConfig: ConfigType<typeof databaseConfig>,

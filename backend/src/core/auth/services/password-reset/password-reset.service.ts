@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { AuthTokenService } from '../auth-token/auth-token.service';
 import { AuthAdmin, Prisma } from '@generated/prisma-client';
 import { PrismaService } from '@core/database/prisma/prisma.service';
@@ -6,9 +11,10 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PasswordResetRequestEvent } from '@core/auth/events/password-reset-request.event';
 import { ResetPasswordRequestDto } from '@core/auth/dto';
 import { OneTimeTokenContext } from '@core/auth/types/one-time-token.types';
-import { checkPasswordStrengthUtil } from '@core/auth/utils/check-password-strength/check-password-strength.util';
 import { HashService } from '@shared/hash/hash.service';
 import { PASSWORD_SALT_ROUNDS } from '@core/auth/auth.constants';
+import { PASSWORD_STRENGTH_VALIDATOR } from '@core/auth/providers/password-strength.provider';
+import type { PasswordStrengthValidatorFn } from '@core/auth/providers/password-strength.provider';
 
 @Injectable()
 export class PasswordResetService {
@@ -21,6 +27,8 @@ export class PasswordResetService {
     private readonly hashService: HashService,
     private readonly prismaService: PrismaService,
     private readonly eventEmitter: EventEmitter2,
+    @Inject(PASSWORD_STRENGTH_VALIDATOR)
+    private readonly isPasswordStrongValidator: PasswordStrengthValidatorFn,
   ) {}
 
   async requestPasswordReset(email: string): Promise<void> {
@@ -109,7 +117,7 @@ export class PasswordResetService {
       if (typeof value === 'boolean' || value === null || typeof value === 'undefined') return '';
       return String(value);
     });
-    const isPasswordStrong: boolean = checkPasswordStrengthUtil(dto.password, [...adminInfo]);
+    const isPasswordStrong: boolean = this.isPasswordStrongValidator(dto.password, [...adminInfo]);
     if (!isPasswordStrong)
       throw new BadRequestException(
         'The password is too weak or contains data from an email, handle or display name.',

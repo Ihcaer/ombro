@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AuthWrapperComponent } from '../../components/auth-wrapper/auth-wrapper.component';
 import { FormButtonsComponent } from '../../components/form-buttons/form-buttons.component';
-import { InputTextComponent } from '@ombro/shared/ui-forms';
+import { InputTextComponent } from '@ombro/shared/ui/ui-forms';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MessageModule } from 'primeng/message';
 import { RouterLink } from '@angular/router';

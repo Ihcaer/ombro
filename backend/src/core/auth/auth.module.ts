@@ -16,6 +16,7 @@ import { PasswordResetController } from './controllers/password-reset/password-r
 import securityConfig from '@core/config/envs/security.config';
 import { AuthController } from './controllers/auth/auth.controller';
 import serverConfig from '@core/config/envs/server.config';
+import { PasswordStrengthProvider } from './providers/password-strength.provider';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import serverConfig from '@core/config/envs/server.config';
     AuthAdminRepository,
     AdminRegistrationService,
     PasswordResetService,
+    PasswordStrengthProvider,
   ],
   controllers: [AuthController, RegistrationController, PasswordResetController],
   exports: [],

@@ -1,4 +1,4 @@
-import { RegexPatternRule } from '@ombro/shared/ui-forms';
+import { RegexPatternRule } from '@ombro/shared/ui/ui-forms';
 import { Admin } from '../../core/auth/types/admin-data.types';
 import { InjectionToken } from '@angular/core';
 

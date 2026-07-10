@@ -6,10 +6,10 @@ export class ResetPasswordRequestDto implements Pick<AuthAdmin, 'password'> {
   @IsString()
   @IsNotEmpty()
   @IsOneTimeToken()
-  readonly token: Base64URLString;
+  readonly token!: Base64URLString;
 
   // password strength is checked in the service
   @IsString()
   @IsNotEmpty()
-  readonly password: string;
+  readonly password!: string;
 }

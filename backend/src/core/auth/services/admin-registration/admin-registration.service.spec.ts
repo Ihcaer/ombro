@@ -13,11 +13,9 @@ import {
 import { AuthTokenService } from '../auth-token/auth-token.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { plainToInstance } from 'class-transformer';
-import { checkPasswordStrengthUtil } from '@core/auth/utils/check-password-strength/check-password-strength.util';
 import { AuthAdminRepository } from '@core/auth/auth-admin.repository';
 import { PrivilegesUtils } from '@core/auth/utils/privileges.utils';
-
-jest.mock('@core/auth/utils/check-password-strength/check-password-strength.util');
+import { PASSWORD_STRENGTH_VALIDATOR } from '@core/auth/providers/password-strength.provider';
 
 describe('AdminRegistrationService', () => {
   let service: AdminRegistrationService;
@@ -27,9 +25,7 @@ describe('AdminRegistrationService', () => {
   // let authAdminRepository: jest.Mocked<AuthAdminRepository>;
   let eventEmitter: jest.Mocked<EventEmitter2>;
 
-  const mockedCheckPasswordStrengthUtil = checkPasswordStrengthUtil as jest.MockedFunction<
-    typeof checkPasswordStrengthUtil
-  >;
+  const isPasswordStrongValidator = jest.fn();
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -64,6 +60,10 @@ describe('AdminRegistrationService', () => {
         {
           provide: EventEmitter2,
           useValue: { emit: jest.fn() },
+        },
+        {
+          provide: PASSWORD_STRENGTH_VALIDATOR,
+          useValue: isPasswordStrongValidator,
         },
       ],
     }).compile();
@@ -170,7 +170,7 @@ describe('AdminRegistrationService', () => {
       beforeEach(() => {
         hashedToken = 'tokenHash';
         hashService.hash.mockReturnValue(hashedToken);
-        mockedCheckPasswordStrengthUtil.mockReturnValue(true);
+        isPasswordStrongValidator.mockReturnValue(true);
       });
 
       it('should parse token and confirmation data, update admin status if data are correct', async () => {

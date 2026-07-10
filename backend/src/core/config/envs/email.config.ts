@@ -7,11 +7,11 @@ export class EmailConfig {
   @Expose({ name: 'EMAIL_HOST' })
   @IsString()
   @IsNotEmpty()
-  host: string;
+  host!: string;
 
   @Expose({ name: 'EMAIL_PORT' })
   @IsPort()
-  port: string;
+  port!: string;
 
   @Expose({ name: 'EMAIL_IS_SECURE' })
   @Transform(
@@ -30,24 +30,24 @@ export class EmailConfig {
   )
   @IsDefined()
   @IsBoolean()
-  isSecure: boolean;
+  isSecure!: boolean;
 
   @Expose({ name: 'EMAIL_SENDER' })
   @IsString()
   @IsNotEmpty()
   @IsEmail()
-  sender: string;
+  sender!: string;
 
   @Expose({ name: 'EMAIL_PASSWORD' })
   @IsString()
   @IsNotEmpty()
-  password: string;
+  password!: string;
 
   @Expose({ name: 'EMAIL_RECIPIENT' })
   @IsString()
   @IsNotEmpty()
   @IsEmail()
-  recipient: string;
+  recipient!: string;
 }
 
 export default registerAs('email', () => validateConfig(EmailConfig));
