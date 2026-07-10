@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, model, signal } from '@angular/core';
-import { IconComponent } from '@ombro/shared/ui-icons';
+import { IconComponent } from '@ombro/shared/ui/ui-icons';
 import { LogoComponent } from '@ombro/admin-panel/app/shared/components/logo/logo.component';
 import { SIDE_MENU_ITEMS, SideMenuItem } from './menu-items';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';

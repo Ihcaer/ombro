@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Options, ZxcvbnResult } from '@zxcvbn-ts/core';
+import type { OptionsType, ZxcvbnResult } from '@zxcvbn-ts/core';
 import { PasswordStrengthScore } from './password-strength.types';
 
 type ZxcvbnFunction = (password: string, userInputs?: string[]) => ZxcvbnResult;
@@ -11,8 +11,10 @@ export class PasswordStrengthService {
   async getValidator(): Promise<ZxcvbnFunction> {
     if (this.engine) return this.engine;
 
-    const { zxcvbn, zxcvbnOptions } = await import('@zxcvbn-ts/core');
-    const { dictionary, adjacencyGraphs } = await import('@zxcvbn-ts/language-common');
+    const { ZxcvbnFactory } = await import('@zxcvbn-ts/core');
+    const { dictionary: commonDictionary, adjacencyGraphs } = await import(
+      '@zxcvbn-ts/language-common'
+    );
     const { dictionary: enDictionary, translations: enTranslations } = await import(
       '@zxcvbn-ts/language-en'
     );
@@ -20,14 +22,14 @@ export class PasswordStrengthService {
       '@zxcvbn-ts/language-pl'
     );
 
-    const options: Partial<Options> = {
-      dictionary: { ...dictionary, ...enDictionary, ...plDictionary },
-      translations: { ...enTranslations, ...plTranslations },
+    const options: OptionsType = {
+      dictionary: { ...commonDictionary, ...enDictionary, ...plDictionary },
       graphs: { ...adjacencyGraphs },
+      translations: { ...enTranslations, ...plTranslations },
     };
 
-    zxcvbnOptions.setOptions(options);
-    this.engine = zxcvbn;
+    const zxcvbn = new ZxcvbnFactory(options);
+    this.engine = zxcvbn.check.bind(zxcvbn);
     return this.engine;
   }
 

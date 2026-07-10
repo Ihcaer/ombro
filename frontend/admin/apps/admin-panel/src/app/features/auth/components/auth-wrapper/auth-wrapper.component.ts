@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
-import { IconComponent, IconName } from '@ombro/shared/ui-icons';
+import { IconComponent, IconName } from '@ombro/shared/ui/ui-icons';
 import { LogoComponent } from '@ombro/admin-panel/app/shared/components/logo/logo.component';
 import { MessageModule } from 'primeng/message';
 import { AuthStore } from '@ombro/admin-panel/app/core/auth/store/auth.store';

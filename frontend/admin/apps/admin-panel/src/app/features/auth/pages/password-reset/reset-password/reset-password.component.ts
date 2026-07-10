@@ -7,7 +7,7 @@ import {
   matchFieldsValidator,
   InputTextComponent,
   passwordStrengthValidator,
-} from '@ombro/shared/ui-forms';
+} from '@ombro/shared/ui/ui-forms';
 import { AuthWrapperComponent } from '../../../components/auth-wrapper/auth-wrapper.component';
 import { MessageModule } from 'primeng/message';
 import { FormButtonsComponent } from '../../../components/form-buttons/form-buttons.component';

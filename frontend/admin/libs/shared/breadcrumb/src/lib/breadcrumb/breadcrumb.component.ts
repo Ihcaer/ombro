@@ -10,7 +10,7 @@ import {
 import { BreadcrumbItem } from './types';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { RouterLink } from '@angular/router';
-import { IconComponent } from '@ombro/shared/ui-icons';
+import { IconComponent } from '@ombro/shared/ui/ui-icons';
 import { BreadcrumbService } from './breadcrumb.service';
 import { NgTemplateOutlet } from '@angular/common';
 

@@ -1,1 +1,3 @@
-export type PasswordStrengthScore = 0 | 1 | 2 | 3 | 4;
+import { ZxcvbnResult } from '@zxcvbn-ts/core';
+
+export type PasswordStrengthScore = ZxcvbnResult['score'];

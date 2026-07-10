@@ -1,5 +1,5 @@
 import { Provider } from '@nestjs/common';
-import { Options, ZxcvbnFactory, ZxcvbnResult } from '@zxcvbn-ts/core';
+import { OptionsType, ZxcvbnFactory, ZxcvbnResult } from '@zxcvbn-ts/core';
 import { adjacencyGraphs, dictionary as commonDictionary } from '@zxcvbn-ts/language-common';
 import { dictionary as enDictionary, translations as enTranslations } from '@zxcvbn-ts/language-en';
 import { dictionary as plDictionary, translations as plTranslations } from '@zxcvbn-ts/language-pl';
@@ -14,10 +14,9 @@ export type PasswordStrengthValidatorFn = (
 const configureZxcvbn = (): PasswordStrengthValidatorFn => {
   const minimalPasswordStrength: ZxcvbnResult['score'] = 3;
 
-  const options: Partial<Options> = {
+  const options: OptionsType = {
     dictionary: { ...commonDictionary, ...enDictionary, ...plDictionary },
     graphs: { ...adjacencyGraphs },
-    useLevenshteinDistance: true,
     translations: { ...enTranslations, ...plTranslations },
   };
 

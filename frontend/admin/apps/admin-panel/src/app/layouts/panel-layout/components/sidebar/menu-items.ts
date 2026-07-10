@@ -1,5 +1,5 @@
 import { AdminPrivileges } from '@ombro/admin-panel/app/core/auth/types/admin-data.types';
-import { IconName } from '@ombro/shared/ui-icons';
+import { IconName } from '@ombro/shared/ui/ui-icons';
 
 export type SideMenuItem = Readonly<{
   name: string;
