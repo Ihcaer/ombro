@@ -129,8 +129,4 @@ export class AuthTokenService {
   private hashOneTimeToken(token: Base64URLString): string {
     return this.hashService.hash(token);
   }
-
-  /* private async deleteOneTimeTokenRecord(adminId: number): Promise<void> {
-    await this.prismaService.authOneTimeToken.delete({ where: { adminId } });
-  } */
 }
