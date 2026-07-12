@@ -4,7 +4,7 @@
 
 This repository hosts the **Admin Panel**, a specialized application built with **Angular** and used exclusively by authorized personnel to manage business data, configuration, and users via the Backend API.
 
-## 1. Quick Start (Local Development)
+## 1. Quick start (Local development)
 
 This guide is for running the Admin Panel locally. For a complete system environment (including Backend, DB, and Proxy), please refer to the [**Main README**](../../README.md).
 
@@ -16,13 +16,12 @@ This guide is for running the Admin Panel locally. For a complete system environ
 
 ### 1.2 Setup
 
-1.  **Install Dependencies:**
+1.  **Install dependencies:**
     ```bash
     npm install
     ```
-2.  **Environment Configuration:**
+2.  **Environment configuration:**
     The Admin Panel requires local environment configuration to define the API endpoint it connects to.
-
     - Create a local environment file based on the template:
       ```bash
       cp src/environments/environment.example.ts src/environments/environment.dev.ts
@@ -31,50 +30,49 @@ This guide is for running the Admin Panel locally. For a complete system environ
       ```typescript
       export const environment = {
         production: false,
-        API_BASE_URL: 'http://localhost/api/v1',
+        apiDomain: '',
+        apiSlug: '/api/v1',
       };
       ```
 
-### 1.3 Running the Application
+### 1.3 Running the application
 
-- **Development Mode:** Starts the application using the local proxy configuration, usually launching on port 4200.
+- **Development mode:** Starts the application using the local proxy configuration, usually launching on port 4200.
   ```bash
   npm run serve
   ```
 - **Access:** When running the full stack via Docker Compose, access the panel via the Reverse Proxy URL: `http://localhost/admin`
 
-## 2. Architecture and State Management
+## 2. Architecture and state management
 
-The application is structured around **Nx Workspaces** and utilizes **NgRx** for predictable state management.
+The application is structured around **Nx Workspaces** and utilizes **NgRx** for reactive, signal-based state management.
 
-### 2.1. Nx Monorepo Structure
+### 2.1. Nx monorepo structure
 
 - **Apps (`apps/`):** Contains the Admin Panel application logic (source code, routing, main components).
-- **Libs (`libs/`):** Contains reusable code shared across Angular apps or standalone components.
+- **Libs (`libs/`):** Contains reusable code shared across Angular apps.
 
-### 2.2. NgRx State Management
+### 2.2. NgRx SignalStore management
 
-All complex application state is managed using the Redux pattern via NgRx:
+Application state is managed using the modern, functional NgRx SignalStore, leveraging Angular Signals for fine-grained reactivity. Instead of the traditional Redux pattern (Actions/Reducers), state and logic are encapsulated within unified stores composed of:
 
-- **Actions:** Describe unique events that occur.
-- **Reducers:** Pure functions that determine how the application's current state transitions to the next state, based on an Action.
-- **Effects:** Handle side effects (API calls, asynchronous logic) by dispatching new Actions upon completion.
-- **Selectors:** Used to retrieve specific slices of data from the store, providing performance benefits (memoization).
+- **State (`withState`):** Defines the strongly-typed initial state. Every state property automatically becomes a reactive Angular Signal.
+- **Computed signals (`withComputed`):** Derived state derived from existing signals (equivalent to traditional Selectors), offering automatic memoization and optimal performance.
+- **Methods (`withMethods`):** Functions responsible for mutating the state (replacing Reducers) and handling asynchronous side effects like API calls (replacing Effects).
 
-### 2.3. Data Flow
+### 2.3. Data flow
 
-1.  **Component:** Dispatches an **Action** (e.g., `loadImagesRequested`).
-2.  **Effect:** Catches the Action, calls the API service (`HttpClient`).
-3.  **API Service:** Sends the HTTP request (with JWT attached via Interceptor).
-4.  **Effect (Success/Failure):** Dispatches a new Action (e.g., `loadImagesSuccess`).
-5.  **Reducer:** Updates the feature state in the **NgRx Store**.
-6.  **Component:** Subscribes to the data using a **Selector**.
+1.  **Component:** Calls a method directly on the injected SignalStore instance (e.g. `store.loadImages()`).
+2.  **Store method:** Handles the asynchronous logic, triggering the API service (`HttpClient`).
+3.  **API service:** Sends the HTTP request.
+4.  **Store method (Success/Failure):** Updates the state directly using the patch state utility (`patchState(store, ...)`).
+5.  **Component:** Automatically reacts to the state changes by reading the store's signals or computed signals directly in the template.
 
 ## 3. Testing
 
 We utilize industry-standard tools integrated via Nx.
 
-### 3.1. Unit Testing (Vitest)
+### 3.1. Unit testing (Vitest)
 
 We use **Vitest** for fast and efficient unit testing of Services, Reducers, Effects, and utility functions.
 
@@ -95,8 +93,6 @@ We use **Vitest** for fast and efficient unit testing of Services, Reducers, Eff
   ```bash
   npm run test:e2e
   ```
-
-➡️ **For detailed API specifications (endpoints, request/response structure), refer to the [API Reference](../../docs/3-API-REFERENCE/index.md) in the main documentation.**
 
 ## Copyright and Licensing Notice
 

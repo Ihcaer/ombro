@@ -1,6 +1,21 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/a494a725-6339-4745-8edd-ec025ac0ef52/deploy-status)](https://app.netlify.com/projects/demo-ombro/deploys)
+![Live Demo](https://img.shields.io/badge/live_preview-test?style=flat&logo=netlify&label=demo&color=00C7B7&link=https%3A%2F%2Fdemo-ombro.netlify.app)
+
 # Skema (Project Ombro)
 
 This repository contains the complete source code for the Skema application, including two frontend services, the core API, and all configuration files, all managed under a unified monorepo structure.
+
+## Frontend live demo
+
+A demo version of the frontend layer is available at the following address:
+
+**[Run live demo](https://demo-ombro.netlify.app)**
+
+> **Technical note:** The live version runs in **Preview/Demo** mode. All HTTP requests to the backend have been mocked (using interceptor). This allows for full testing of the interface and application states without having to launch the database.
+
+### Test account details
+
+The application accepts any login details.
 
 ## Structure
 

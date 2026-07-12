@@ -20,8 +20,6 @@ This list contains all icons available in this library.
 | **Navigation**        | Chevron Forward    |      ![chevron_forward](https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/chevron_right/default/40px.svg)      | `"chevron_forward"`     |
 | **Navigation**        | Arrow Down         | ![keyboard_arrow_down](https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/keyboard_arrow_down/default/40px.svg) | `"keyboard_arrow_down"` |
 | **Navigation**        | Arrow Up           |   ![keyboard_arrow_up](https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/keyboard_arrow_up/default/40px.svg)   | `"keyboard_arrow_up"`   |
-| **Navigation**        | Close Left Panel   |    ![left_panel_close](https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/left_panel_close/default/40px.svg)    | `"left_panel_close"`    |
-| **Navigation**        | Open Left Panel    |     ![left_panel_open](https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/left_panel_open/default/40px.svg)     | `"left_panel_open"`     |
 | **Actions**           | Search             |              ![search](https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/search/default/40px.svg)              | `"search"`              |
 | **Actions**           | Edit               |                ![edit](https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/edit/default/40px.svg)                | `"edit"`                |
 | **Actions**           | Delete             |              ![delete](https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/delete/default/40px.svg)              | `"delete"`              |

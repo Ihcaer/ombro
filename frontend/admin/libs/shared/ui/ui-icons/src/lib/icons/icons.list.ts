@@ -8,8 +8,6 @@ const navigationIconsSet = [
   'chevron_forward',
   'keyboard_arrow_down',
   'keyboard_arrow_up',
-  'left_panel_close',
-  'left_panel_open',
 ] as const;
 const actionIconsSet = [
   'search',

@@ -4,7 +4,7 @@
 
 This repository contains the core business logic and API services for the application, built using **NestJS** and **Prisma** for database interaction.
 
-## 1. Quick Start (Standalone Mode)
+## 1. Quick start (Standalone Mode)
 
 If you need to run the **Backend API outside of Docker** for fast debugging or IDE integration, follow this guide. For the full stack setup, refer to the [**Main README**](../README.md).
 
@@ -16,35 +16,34 @@ If you need to run the **Backend API outside of Docker** for fast debugging or I
 
 ### 1.2 Setup
 
-1.  **Install Dependencies:**
+1.  **Install dependencies:**
     ```bash
     npm install
-    # or yarn install
     ```
-2.  **Environment File:** Create a local environment file. This file contains the necessary database connection string and secrets.
+2.  **Environment file:** Create a local environment file. This file contains the necessary database connection string and secrets.
     ```bash
     cp .env.example .env.local
     # Edit .env.local with your local database connection details
     ```
-3.  **Database Connection:** Ensure your `POSTGRES_URL` in `.env.local` points to an accessible database. Example: `postgresql://user:password@localhost:5432/yourdb`
+3.  **Database connection:** Ensure your `POSTGRES_URL` in `.env.local` points to an accessible database. Example: `postgresql://user:password@localhost:5432/yourdb`
 
-### 1.3 Running the Application
+### 1.3 Running the application
 
-- **Development Mode (Watch):** Starts the application and automatically reloads on file changes.
+- **Development mode (Watch):** Starts the application and automatically reloads on file changes.
   ```bash
   npm run start:dev
   ```
-- **Production Build (Run):** Compiles the application and runs the optimized JavaScript code.
+- **Production build (Run):** Compiles the application and runs the optimized JavaScript code.
   ```bash
   npm run build
   npm run start:prod
   ```
 
-## 2. Database and Prisma Management
+## 2. Database and Prisma management
 
 We use **Prisma** as our ORM. All schema changes and migrations are managed via the Prisma CLI.
 
-### 2.1. Schema Changes
+### 2.1. Schema changes
 
 To modify the database structure (add a table, change a column):
 
@@ -54,7 +53,7 @@ To modify the database structure (add a table, change a column):
     npm run prisma:migrate:dev
     ```
 
-### 2.2. Client Generation
+### 2.2. Client generation
 
 After any change to `schema.prisma`, you must regenerate the Prisma Client:
 
@@ -62,9 +61,9 @@ After any change to `schema.prisma`, you must regenerate the Prisma Client:
 npm run prisma:generate
 ```
 
-## 3. Architecture Overview
+## 3. Architecture overview
 
-### 3.1. NestJS Structure
+### 3.1. NestJS structure
 
 This project follows the modular architecture enforced by NestJS:
 
@@ -72,7 +71,7 @@ This project follows the modular architecture enforced by NestJS:
 - **Services:** Contain the core business logic and handle prisma queries.
 - **Controllers:** Handle incoming HTTP requests and delegate tasks to the appropriate service.
 
-### 3.2. Authentication and Authorization
+### 3.2. Authentication and authorization
 
 - **Authentication:** Handled by the `Auth` module using JWTs (JSON Web Tokens). Tokens are validated using **Guards**.
 - **Authorization:** Role-based permissions are enforced using custom **Decorators** and **Guards**.
@@ -81,24 +80,22 @@ This project follows the modular architecture enforced by NestJS:
 
 We utilize **Jest** for all unit and integration testing.
 
-### 4.1. Running Tests
+### 4.1. Running tests
 
-- **Unit/Integration Tests:** Runs all tests found in files ending with `.spec.ts`.
-- **Watch Mode (Development):**
+- **Unit/Integration tests:** Runs all tests found in files ending with `.spec.ts`.
+- **Watch mode (Development):**
 
 ```bash
 npm run test:watch
 ```
 
-- **Test Coverage:** Generates an HTML report showing test coverage statistics.
+- **Test coverage:** Generates an HTML report showing test coverage statistics.
 
 ```bash
 npm run test:cov
 ```
 
 ---
-
-➡️ **For full API usage, including endpoint paths, request bodies, and responses, please refer to the [API Reference](../docs/3-API-REFERENCE/index.md)**
 
 ## Copyright and Licensing Notice
 
