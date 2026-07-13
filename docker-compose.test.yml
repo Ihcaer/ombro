@@ -5,6 +5,10 @@ services:
       - "8025:8025"
     networks:
       - mailpit_net
+
+  db-prepare:
+    env_file:
+      - ".env.test"
     
   backend:
     env_file:

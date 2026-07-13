@@ -11,7 +11,7 @@
     "start": "npm run prisma:generate && nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start:prod": "node dist/src/main.js",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "npm run prisma:generate && jest",
     "test:watch": "npm run prisma:generate && jest --watch",
@@ -22,8 +22,10 @@
     "prisma:migrate:dev": "prisma migrate dev",
     "prisma:migrate:deploy": "prisma migrate deploy",
     "prisma:generate": "prisma generate",
-    "prisma:seed": "prisma db seed",
-    "prisma:format": "prisma format"
+    "prisma:format": "prisma format",
+    "prisma:seed:admin:dev": "npm run cli -- seed admin",
+    "cli": "ts-node --swc -r tsconfig-paths/register src/cli.ts",
+    "cli:prod": "node dist/src/cli.js"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.27",
@@ -43,6 +45,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
     "cookie-parser": "^1.4.7",
+    "nest-commander": "^3.20.1",
     "nodemailer": "^9.0.3",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
@@ -72,6 +75,7 @@
     "eslint-plugin-prettier": "^5.5.6",
     "globals": "^17.7.0",
     "jest": "^30.4.2",
+    "nest-commander-testing": "^3.5.1",
     "prettier": "^3.9.4",
     "prisma": "^7.8.0",
     "source-map-support": "^0.5.21",

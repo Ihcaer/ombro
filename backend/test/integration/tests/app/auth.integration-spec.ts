@@ -7,14 +7,14 @@ import {
   ResetPasswordRequestDto,
 } from '@core/auth/dto';
 import { AdminRegistrationService } from '@core/auth/services/admin-registration/admin-registration.service';
-import { TestContext } from './helpers';
+import { TestContext } from '../../helpers';
 import { AuthAdmin } from '@generated/prisma-client';
 import { AUTH_ROUTE_PREFIX } from '@core/auth/auth.constants';
 import { ForgotPasswordRequestDto } from '@core/auth/dto/forgot-password-request.dto';
 import { AUTH_SLUGS as EMAIL_AUTH_SLUGS } from '@shared/email/frontend-paths.constants';
 import { PrivilegesUtils } from '@core/auth/utils/privileges.utils';
 import { AdminPrivileges } from '@core/auth/enums/admin-privileges';
-import { TestCreateAdminRequestDto } from './helpers/common-test.types';
+import { TestCreateAdminRequestDto } from '../../helpers/common-test.types';
 
 describe('Auth Module', () => {
   jest.setTimeout(25000);

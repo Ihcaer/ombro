@@ -32,6 +32,7 @@ The application accepts any login details.
 
 1.  **Dependencies:** Ensure you have **Docker**, **Docker Compose** and **Node.js 24+** installed.
 1.  **Configuration:** Copy the example and set environment variables: `cp .env.example .env.local`.
+1.  **Build:** Build container images by running the command: `build:local`
 1.  **Run:** Start the entire stack: `npm run start:local`.
 1.  **Access:** End-user interface: `http://localhost/` (default) | Admin Panel: `http://localhost/admin` (default).
 
@@ -42,7 +43,7 @@ The application accepts any login details.
     1.  Copy the example and set environment variables: `cp .env.example .env`.
     1.  Put SSL certificate files in `infrastructure/nginx/ssl/`.
     1.  Adjust the data in the `.env` file to your environment.
-1.  **Build:** Start the entire stack: `npm run build:prod`.
+1.  **Build:** Build the entire stack: `npm run build:prod`.
 1.  **Placing:** Transfer **application image**, **`.env` file**, **docker-compose.yml** and **docker-compose.prod.yml** to server with installed **Docker** and **Docker Compose**. All files except **image** put in the same folder.
 1.  **Run:** Move to folder with app files and start app: `docker compose --env-file .env -f docker-compose.yml -f docker-compose.prod.yml up -d`.
 1.  **Access:** End-user interface: `https://[your-domain]/` | Admin Panel: `https://[your-domain]/admin`.

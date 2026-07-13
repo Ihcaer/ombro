@@ -36,7 +36,9 @@ export class EmailService implements OnModuleInit {
       console.log('Connection to the SMTP server has been confirmed.');
     } catch (error) {
       console.error('SMTP connection error:', error);
-      throw new InternalServerErrorException();
+      if (this.serverConf.nodeEnv === Environment.Production) {
+        throw new InternalServerErrorException();
+      }
     }
   }
 

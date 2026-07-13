@@ -19,6 +19,10 @@ services:
     tmpfs:
       - /data
 
+  db-prepare:
+    env_file:
+      - .env
+
   backend:
     env_file:
       - .env
