@@ -29,4 +29,4 @@ USER node
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "npm run prisma:migrate:deploy && npm run start:prod"]
+CMD ["sh", "-c", "npm run start:prod"]

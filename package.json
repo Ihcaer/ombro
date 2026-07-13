@@ -4,8 +4,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start:local": "docker compose --env-file .env.local -f docker-compose.yml -f docker-compose.local.yml up --build",
-    "start:prod": "docker compose --env-file .env -f docker-compose.yml -f docker-compose.prod.yml up -d --build",
+    "start:local": "docker compose --env-file .env.local -f docker-compose.yml -f docker-compose.local.yml up",
+    "start:prod": "docker compose --env-file .env -f docker-compose.yml -f docker-compose.prod.yml up -d",
+    "build:local": "docker compose --env-file .env.local -f docker-compose.yml -f docker-compose.local.yml build",
     "build:prod": "docker compose --env-file .env -f docker-compose.yml -f docker-compose.prod.yml build --no-cache",
     "stop": "docker compose down",
     "pretest:e2e": "docker compose -p skema-e2e-test --env-file .env.test --profile e2e -f docker-compose.yml -f docker-compose.test.yml up -d --wait",

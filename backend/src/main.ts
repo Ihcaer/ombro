@@ -23,4 +23,4 @@ async function bootstrap() {
   await app.listen(port);
   console.log(`Server ready! Listening on: http://localhost:${port}`);
 }
-bootstrap();
+void bootstrap();

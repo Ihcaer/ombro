@@ -86,6 +86,20 @@ services:
       retries: 5
       start_period: 15s
 
+  db-prepare:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: final
+    env_file:
+      - .env.local
+    networks:
+      - db_net
+    depends_on:
+      db:
+        condition: service_healthy
+    command: sh -c "npx prisma migrate deploy && node dist/cli.js seed user -e ${SEED_ADMIN_EMAIL} -p ${SEED_ADMIN_PASSWORD} || true"
+
   backend:
     build:
       context: ./backend
@@ -101,6 +115,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      db-prepare:
+        condition: service_completed_successfully
 
   # frontend-web placeholder
 
