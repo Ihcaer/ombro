@@ -1,26 +1,56 @@
 services:     
   mailpit:
-    image: axllent/mailpit:v1.30.1
+    image: axllent/mailpit:v1.30
+    restart: unless-stopped
     ports:
+      - "1025:1025"
       - "8025:8025"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://${EMAIL_HOST}:8025/livez"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  playwright-e2e:
+    profiles:
+      - ci
+    build:
+      context: ./frontend/admin
+      dockerfile: Dockerfile.e2e
+    environment:
+      BASE_URL: http://nginx:${NGINX_PORT}
+      SKIP_WEBSERVER: true
+      IS_IN_COMPOSE: true
     networks:
-      - mailpit_net
+      - frontend_admin_net
+    ipc: host
+    depends_on:
+      nginx:
+        condition: service_started
 
   db-prepare:
     env_file:
       - ".env.test"
+    command: >
+      sh -c "
+      npx prisma migrate deploy && 
+      (node dist/src/cli.js seed admin -e ${SEED_ADMIN_EMAIL} -p ${SEED_ADMIN_PASSWORD} || true) && 
+      touch /tmp/init_done && 
+      sleep infinity
+      "
     
   backend:
     env_file:
       - ".env.test"
-    networks:
-      - mailpit_net
+    depends_on:
+      db:
+        condition: service_healthy
+      db-prepare:
+        condition: service_started
 
   nginx:
     ports:
       - "80:80"
     volumes:
       - ./infrastructure/nginx/nginx.local.conf:/etc/nginx/nginx.conf:ro
-
-networks:
-  mailpit_net:

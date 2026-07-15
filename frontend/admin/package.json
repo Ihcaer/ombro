@@ -12,7 +12,8 @@
     "test:affected": "npx nx affected --target=test",
     "test:affected:develop": "npx nx affected --target=test --base=develop",
     "test:watch": "npx nx run-many --target=test --all --watch",
-    "test:e2e": "npx nx e2e admin-panel-e2e",
+    "test:e2e": "nx e2e admin-panel-e2e",
+    "test:e2e:local:ui": "nx e2e admin-panel-e2e --ui --skip-nx-cache",
     "build:prod": "nx build admin-panel -c production --skip-nx-cache",
     "targets": "npx nx show project admin-panel"
   },
@@ -67,7 +68,7 @@
     "@swc-node/register": "1.11.1",
     "@swc/core": "1.15.11",
     "@swc/helpers": "0.5.18",
-    "@types/node": "20.19.9",
+    "@types/node": "^20.19.9",
     "@typescript-eslint/utils": "^8.40.0",
     "@vitest/coverage-v8": "4.0.18",
     "@vitest/ui": "4.0.18",

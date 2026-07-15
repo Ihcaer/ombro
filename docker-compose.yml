@@ -98,7 +98,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    command: sh -c "npx prisma migrate deploy && node dist/cli.js seed user -e ${SEED_ADMIN_EMAIL} -p ${SEED_ADMIN_PASSWORD} || true"
+    command: sh -c "npx prisma migrate deploy && node dist/src/cli.js seed admin -e ${SEED_ADMIN_EMAIL} -p ${SEED_ADMIN_PASSWORD} || true"
 
   backend:
     build:

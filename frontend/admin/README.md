@@ -89,10 +89,39 @@ We use **Vitest** for fast and efficient unit testing of Services, Reducers, Eff
 
 **Playwright** is used for robust, browser-level testing of the user workflow.
 
-- **Run E2E tests:**
-  ```bash
-  npm run test:e2e
-  ```
+Tests can be run in standard console way and UI mode.
+
+> **Note:** E2E tests verify actual data flow. Before running them, make sure your local backend is running and has access to the test database.
+
+#### Console
+
+1. Install dependencies:
+
+```shell
+npm install
+```
+
+2. Run the tests:
+
+```shell
+npm run test:e2e
+```
+
+---
+
+#### UI mode
+
+1. Install dependencies:
+
+```shell
+npm install
+```
+
+2. Run the tests:
+
+```shell
+npm run test:e2e:local:ui
+```
 
 ## Copyright and Licensing Notice
 
