@@ -25,12 +25,17 @@ services:
     networks:
       - frontend_admin_net
     ipc: host
+    init: true
     depends_on:
       nginx:
         condition: service_started
 
   db-prepare:
-    env_file: ".env.test"
+    extends:
+      file: docker-compose.yml
+      service: db-prepare
+    env_file:
+      - ".env.test"
     command: >
       sh -c "
       npx prisma migrate deploy && 
@@ -40,7 +45,8 @@ services:
       "
     
   backend:
-    env_file: ".env.test"
+    env_file: 
+      - ".env.test"
     depends_on:
       db:
         condition: service_healthy

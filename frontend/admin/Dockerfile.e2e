@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/playwright:v1.61.0-noble
+FROM mcr.microsoft.com/playwright:v1.58.2-noble
 
 WORKDIR /workspace
 
@@ -7,7 +7,5 @@ COPY package*.json ./
 RUN npm ci
 
 COPY . .
-
-RUN npx playwright install --with-deps
 
 CMD ["npm", "run", "test:e2e"]

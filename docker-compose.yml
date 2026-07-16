@@ -91,7 +91,6 @@ services:
       context: ./backend
       dockerfile: Dockerfile
       target: final
-    env_file: .env.local
     networks:
       - db_net
     depends_on:
@@ -105,7 +104,6 @@ services:
       dockerfile: Dockerfile
       target: final
     restart: unless-stopped
-    env_file: .env.local
     networks:
       - backend_net
       - db_net
