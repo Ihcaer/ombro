@@ -20,12 +20,10 @@ services:
       - /data
 
   db-prepare:
-    env_file:
-      - .env
+    env_file: .env
 
   backend:
-    env_file:
-      - .env
+    env_file: .env
 
   nginx:
     ports:

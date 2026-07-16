@@ -40,12 +40,10 @@ services:
     init: true
 
   db-prepare:
-    env_file:
-      - ".env.local"
+    env_file: ".env.local"
   
   backend:
-    env_file:
-      - ".env.local"
+    env_file: ".env.local"
     networks:
       - mailpit_net
     depends_on:
