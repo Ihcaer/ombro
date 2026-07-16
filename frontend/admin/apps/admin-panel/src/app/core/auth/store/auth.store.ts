@@ -20,7 +20,6 @@ import {
   pipe,
   switchMap,
   tap,
-  throwError,
   timer,
 } from 'rxjs';
 import { tapResponse } from '@ngrx/operators';
@@ -110,7 +109,6 @@ export const AuthStore = signalStore(
           error: (error) => {
             store._resetAuthState();
             store._setInternalError('SESSION_REFRESH_FAILED');
-            return throwError(() => error);
           },
         }),
       );
@@ -232,7 +230,7 @@ export const AuthStore = signalStore(
   withHooks({
     onInit(store) {
       queueMicrotask(() => {
-        if (!store.admin()) firstValueFrom(store.refreshTokens());
+        if (!store.admin()) firstValueFrom(store.refreshTokens(), { defaultValue: null });
       });
       store._processAutoRefresh(store.accessToken.expiresAtMs);
       store._clearResponseErrorWhenNavigating();

@@ -37,13 +37,14 @@ services:
       timeout: 5s
       retries: 5
       start_period: 5s
+    init: true
 
   db-prepare:
-    env_file:
+    env_file: 
       - ".env.local"
   
   backend:
-    env_file:
+    env_file: 
       - ".env.local"
     networks:
       - mailpit_net
