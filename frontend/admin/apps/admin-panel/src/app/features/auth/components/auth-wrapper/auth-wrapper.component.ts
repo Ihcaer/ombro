@@ -25,7 +25,7 @@ export class AuthWrapperComponent {
   readonly icon = input<IconName>();
 
   protected readonly errorMessage = computed<string | null>(() => {
-    const errorBody = this.authStore.lastResponseError()?.error as ErrorResponseBody | undefined;
+    const errorBody = this.authStore.lastResponseError()?.error as ErrorResponseBody | null;
     if (!errorBody) return null;
     const errorCode = errorBody.errorCode;
 
