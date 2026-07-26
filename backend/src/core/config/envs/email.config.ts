@@ -1,7 +1,8 @@
 import { registerAs } from '@nestjs/config';
-import { Expose, Transform } from 'class-transformer';
+import { Expose } from 'class-transformer';
 import { IsBoolean, IsDefined, IsEmail, IsNotEmpty, IsPort, IsString } from 'class-validator';
 import { validateConfig } from '../env-config.validator';
+import { ToBoolean } from '@core/auth/decorators/type-transformation.decorators';
 
 export class EmailConfig {
   @Expose({ name: 'EMAIL_HOST' })
@@ -14,21 +15,8 @@ export class EmailConfig {
   port!: string;
 
   @Expose({ name: 'EMAIL_IS_SECURE' })
-  @Transform(
-    ({ obj }: { obj: Record<string, string | undefined> }) => {
-      const value = obj.EMAIL_IS_SECURE;
-
-      if (value === 'true') {
-        return true;
-      } else if (value === 'false') {
-        return false;
-      } else {
-        return undefined;
-      }
-    },
-    { toClassOnly: true },
-  )
   @IsDefined()
+  @ToBoolean()
   @IsBoolean()
   isSecure!: boolean;
 
