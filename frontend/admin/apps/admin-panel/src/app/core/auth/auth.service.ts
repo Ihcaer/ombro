@@ -1,6 +1,5 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { API_URL } from '../tokens/api-url.token';
 import { LoginRequestDto, LoginResponseDto } from './dto/login.dtos';
 import { Observable } from 'rxjs';
 import { AUTH_ENDPOINTS, AUTH_ROUTE_PREFIX } from './auth-api-endpoints';
@@ -10,15 +9,15 @@ import {
   RegistrationEligibilityRequestDto,
   RegistrationEligibilityResponseDto,
 } from './dto/admin-register.dtos';
+import { withApiScopeContext } from './interceptors/api-prefix/api-prefix.interceptor';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private readonly http = inject(HttpClient);
-  private readonly baseApi: string = inject(API_URL);
 
-  private readonly fullApiUrl: string = this.baseApi + '/' + AUTH_ROUTE_PREFIX;
+  private readonly fullApiUrl: string = '/' + AUTH_ROUTE_PREFIX;
 
   login(credentials: LoginRequestDto): Observable<LoginResponseDto> {
     return this.http.post<LoginResponseDto>(
@@ -33,6 +32,7 @@ export class AuthService {
       undefined,
       {
         withCredentials: true,
+        context: withApiScopeContext('admin'),
       },
     );
   }
@@ -40,6 +40,7 @@ export class AuthService {
   logout(): Observable<void> {
     return this.http.post<void>(`${this.fullApiUrl}/${AUTH_ENDPOINTS.LOGOUT}`, undefined, {
       withCredentials: true,
+      context: withApiScopeContext('admin'),
     });
   }
 

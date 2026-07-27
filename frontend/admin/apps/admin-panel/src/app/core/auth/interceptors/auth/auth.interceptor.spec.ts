@@ -12,8 +12,8 @@ import { signal, WritableSignal } from '@angular/core';
 import { RxMethod } from '@ngrx/signals/rxjs-interop';
 import { Router } from '@angular/router';
 import { firstValueFrom, of, throwError } from 'rxjs';
-import { AuthStoreInstance, AuthStore } from '../store';
-import { LoginRequestDto, LoginResponseDto } from '../dto/login.dtos';
+import { AuthStoreInstance, AuthStore } from '../../store';
+import { LoginRequestDto, LoginResponseDto } from '../../dto/login.dtos';
 import { AUTH_PAGE_PATHS } from '@ombro/admin-panel/app/features/auth/auth-paths';
 
 describe('authInterceptor', () => {

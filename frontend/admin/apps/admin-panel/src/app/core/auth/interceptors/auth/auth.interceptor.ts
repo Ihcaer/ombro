@@ -6,10 +6,10 @@ import {
   HttpRequest,
 } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { AuthStore, AuthStoreInstance } from '../store/auth.store';
+import { AuthStore, AuthStoreInstance } from '../../store/auth.store';
 import { BehaviorSubject, catchError, filter, Observable, switchMap, take, throwError } from 'rxjs';
-import { AUTH_ENDPOINTS } from '../auth-api-endpoints';
-import { LoginResponseDto } from '../dto/login.dtos';
+import { AUTH_ENDPOINTS } from '../../auth-api-endpoints';
+import { LoginResponseDto } from '../../dto/login.dtos';
 import { Router } from '@angular/router';
 import { AUTH_PAGE_PATHS } from '@ombro/admin-panel/app/features/auth/auth-paths';
 
