@@ -1,25 +1,23 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthController } from './auth.controller';
-import { LoginRequestDto } from '@core/auth/dto';
+import { AuthRefreshController } from './auth-refresh.controller';
 import { AuthService } from '@core/auth/services/auth/auth.service';
-import { RefreshTokenWithAdmin } from '@core/auth/types/jwt.types';
 import { Response } from 'express';
 import serverConfig from '@core/config/envs/server.config';
 import { createServerConfigMock } from '@mocks/config/server.config.mock';
+import { RefreshTokenWithAdmin } from '@core/auth/types/jwt.types';
 
-describe('LoginController', () => {
-  let controller: AuthController;
+describe('AuthRefreshController', () => {
+  let controller: AuthRefreshController;
   let authService: jest.Mocked<AuthService>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [AuthController],
+      controllers: [AuthRefreshController],
       providers: [
         {
           provide: AuthService,
           useValue: {
-            loginWithCredentials: jest.fn(),
             loginWithRefreshToken: jest.fn(),
             logout: jest.fn(),
           },
@@ -28,56 +26,12 @@ describe('LoginController', () => {
       ],
     }).compile();
 
-    controller = module.get<AuthController>(AuthController);
+    controller = module.get<AuthRefreshController>(AuthRefreshController);
     authService = module.get(AuthService);
 
     jest.clearAllMocks();
   });
 
-  describe('.login()', () => {
-    it('should give access token and user data in response and refresh token in cookie', async () => {
-      const body: LoginRequestDto = {
-        identifier: 'handle',
-        password: 'test-password',
-      };
-      const res = { cookie: jest.fn() } as unknown as Response;
-
-      authService.loginWithCredentials.mockResolvedValue({
-        adminData: {
-          accessToken: 'access-token',
-          adminData: {
-            id: 1,
-            handleName: 'handle',
-            displayName: 'name',
-            avatarUrl: null,
-            privileges: ['ADMINS_MANAGE'],
-            verification: 'VERIFIED',
-            isActivated: true,
-          },
-        },
-        refreshTokenData: {
-          token: 'new-refresh-token',
-          maxAge: 7 * 24 * 60 * 60 * 1000,
-        },
-      });
-
-      const result = await controller.login({ ...body }, res);
-
-      expect(authService.loginWithCredentials).toHaveBeenCalledWith({
-        ...body,
-      });
-      expect(res.cookie).toHaveBeenCalledWith(
-        'refresh_token',
-        'new-refresh-token',
-        expect.objectContaining({
-          httpOnly: true,
-          secure: false,
-          sameSite: 'strict',
-        }),
-      );
-      expect(result.accessToken).toBe('access-token');
-    });
-  });
   describe('.refreshTokens()', () => {
     it('should refresh tokens and set cookie', async () => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment

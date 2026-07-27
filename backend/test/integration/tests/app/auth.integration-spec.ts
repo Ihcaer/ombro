@@ -19,8 +19,11 @@ import { TestCreateAdminRequestDto } from '../../helpers/common-test.types';
 describe('Auth Module', () => {
   jest.setTimeout(25000);
   let ctx: TestContext;
-  const modulePrefix = '/' + AUTH_ROUTE_PREFIX;
   let adminRegistrationService: AdminRegistrationService;
+
+  const modulePrefix = '/' + AUTH_ROUTE_PREFIX;
+  const publicPathPrefix = '/public';
+  const adminPathPrefix = '/admin';
 
   beforeAll(async () => {
     ctx = new TestContext();
@@ -61,7 +64,7 @@ describe('Auth Module', () => {
       const token = tokenMatch[0];
 
       const confirmAccountFormRes = await request(ctx.app.getHttpServer())
-        .get(modulePrefix + '/register' + '/invite/' + token)
+        .get(publicPathPrefix + modulePrefix + '/register' + '/invite/' + token)
         .expect(200);
 
       const newPassword = 'correct-horse-battery-staple-2026';
@@ -75,12 +78,12 @@ describe('Auth Module', () => {
       };
 
       await request(ctx.app.getHttpServer())
-        .patch(modulePrefix + '/register' + '/confirm')
+        .patch(publicPathPrefix + modulePrefix + '/register' + '/confirm')
         .send(confirmAccountBody)
         .expect(204);
 
       const loginRes = await request(ctx.app.getHttpServer())
-        .post(modulePrefix + '/login')
+        .post(publicPathPrefix + modulePrefix + '/login')
         .send(loginCredentials)
         .expect(201);
 
@@ -154,13 +157,13 @@ describe('Auth Module', () => {
       await ctx.adminFactory.create(admin);
 
       const loginRes = await request(ctx.app.getHttpServer())
-        .post(modulePrefix + '/login')
+        .post(publicPathPrefix + modulePrefix + '/login')
         .send(loginCredentials)
         .expect(201);
       const accessToken = (loginRes.body as LoginResponseDto).accessToken;
 
       await request(ctx.app.getHttpServer())
-        .post(modulePrefix + '/register' + '/create-admin')
+        .post(adminPathPrefix + modulePrefix + '/register' + '/create-admin')
         .set('Authorization', `Bearer ${accessToken}`)
         .send(newAdmin)
         .expect(expected);
@@ -176,7 +179,7 @@ describe('Auth Module', () => {
 
       const forgotPasswordDto: ForgotPasswordRequestDto = { email: adminEmail };
       await request(ctx.app.getHttpServer())
-        .post(modulePrefix + '/recovery' + '/forgot')
+        .post(publicPathPrefix + modulePrefix + '/recovery' + '/forgot')
         .send(forgotPasswordDto)
         .expect(202);
 
@@ -195,7 +198,7 @@ describe('Auth Module', () => {
       const passwordResetDto: ResetPasswordRequestDto = { token, password: newPassword };
 
       await request(ctx.app.getHttpServer())
-        .post(modulePrefix + '/recovery' + '/reset')
+        .post(publicPathPrefix + modulePrefix + '/recovery' + '/reset')
         .send(passwordResetDto)
         .expect(204);
     });

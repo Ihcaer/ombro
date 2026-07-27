@@ -1,24 +1,17 @@
 import { AUTH_ROUTE_PREFIX } from '@core/auth/auth.constants';
-import { Auth } from '@core/auth/decorators';
+import { PublicController } from '@core/auth/decorators';
 import {
-  CreateAdminRequestDto,
-  CreateAdminResponseDto,
   FieldsToConfirmAccountRequestDto,
   ConfirmAdminAccountFormFieldDto,
   ConfirmAdminRequestDto,
 } from '@core/auth/dto';
 import { AdminRegistrationService } from '@core/auth/services/admin-registration/admin-registration.service';
-import { Body, Controller, Get, HttpCode, Param, Patch, Post } from '@nestjs/common';
+import { Body, Get, HttpCode, Param, Patch } from '@nestjs/common';
+import { REGISTER_ENDPOINT_PREFIX } from './registration-controllers.constants';
 
-@Controller(AUTH_ROUTE_PREFIX + '/register')
-export class RegistrationController {
+@PublicController(AUTH_ROUTE_PREFIX, REGISTER_ENDPOINT_PREFIX)
+export class RegistrationPublicController {
   constructor(private readonly adminRegistrationService: AdminRegistrationService) {}
-
-  @Post('create-admin')
-  @Auth('ADMINS_MANAGE')
-  async createAdmin(@Body() dto: CreateAdminRequestDto): Promise<CreateAdminResponseDto> {
-    return await this.adminRegistrationService.createAdminAccount(dto);
-  }
 
   @Get('invite/:token')
   async getFieldsToConfirmAccount(
