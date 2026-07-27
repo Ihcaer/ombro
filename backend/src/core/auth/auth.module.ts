@@ -11,12 +11,14 @@ import { PrismaModule } from '@core/database/prisma/prisma.module';
 import { HashModule } from '@shared/hash/hash.module';
 import { AdminRegistrationService } from './services/admin-registration/admin-registration.service';
 import { PasswordResetService } from './services/password-reset/password-reset.service';
-import { RegistrationController } from './controllers/registration/registration.controller';
+import { RegistrationPublicController } from './controllers/registration/registration-public.controller';
 import { PasswordResetController } from './controllers/password-reset/password-reset.controller';
 import securityConfig from '@core/config/envs/security.config';
-import { AuthController } from './controllers/auth/auth.controller';
+import { AuthPublicController } from './controllers/auth/auth-public.controller';
 import serverConfig from '@core/config/envs/server.config';
 import { PasswordStrengthProvider } from './providers/password-strength.provider';
+import { AuthRefreshController } from './controllers/auth/auth-refresh.controller';
+import { RegistrationAdminController } from './controllers/registration/registration-admin.controller';
 
 @Module({
   imports: [
@@ -37,7 +39,13 @@ import { PasswordStrengthProvider } from './providers/password-strength.provider
     PasswordResetService,
     PasswordStrengthProvider,
   ],
-  controllers: [AuthController, RegistrationController, PasswordResetController],
+  controllers: [
+    AuthPublicController,
+    AuthRefreshController,
+    RegistrationPublicController,
+    RegistrationAdminController,
+    PasswordResetController,
+  ],
   exports: [],
 })
 export class AuthModule {}

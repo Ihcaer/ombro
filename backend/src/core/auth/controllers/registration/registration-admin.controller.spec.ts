@@ -1,27 +1,25 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { RegistrationController } from './registration.controller';
+import { RegistrationAdminController } from './registration-admin.controller';
 import { AdminRegistrationService } from '@core/auth/services/admin-registration/admin-registration.service';
 
-describe('RegistrationController', () => {
-  let controller: RegistrationController;
+describe('RegistrationAdminController', () => {
+  let controller: RegistrationAdminController;
   // let adminRegistrationService: jest.Mocked<AdminRegistrationService>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [RegistrationController],
+      controllers: [RegistrationAdminController],
       providers: [
         {
           provide: AdminRegistrationService,
           useValue: {
             createAdminAccount: jest.fn(),
-            getFormFieldsToConfirm: jest.fn(),
-            accountConfirmation: jest.fn(),
           },
         },
       ],
     }).compile();
 
-    controller = module.get<RegistrationController>(RegistrationController);
+    controller = module.get<RegistrationAdminController>(RegistrationAdminController);
     // adminRegistrationService = module.get(AdminRegistrationService);
   });
 

@@ -1,8 +1,10 @@
 export interface EnvConfig {
   readonly production: boolean;
-  readonly apiDomain: string;
-  /** should starts with "/" */
-  readonly apiSlug: string;
+  readonly api: {
+    readonly domain: string;
+    readonly baseUrl: string;
+    readonly endpoints: { readonly public: string; readonly admin: string };
+  };
   readonly coreFeatures: {};
   readonly addonFeatures: {};
 }

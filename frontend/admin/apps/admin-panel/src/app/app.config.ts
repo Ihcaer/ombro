@@ -10,14 +10,18 @@ import { DefaultPreset } from '@ombro/themes';
 import { provideMaterialSymbols } from '@ombro/shared/ui/ui-icons';
 import { PRIME_NG_PL } from './core/config/i18n/primeng-pl';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { authInterceptor } from './core/auth/interceptors/auth.interceptor';
+import { authInterceptor } from './core/auth/interceptors/auth/auth.interceptor';
+import { apiPrefixInterceptor } from './core/auth/interceptors/api-prefix/api-prefix.interceptor';
+import { adminTokenInterceptor } from './core/auth/interceptors/admin-token/admin-token.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(appRoutes),
-    provideHttpClient(withInterceptors([authInterceptor])),
+    provideHttpClient(
+      withInterceptors([authInterceptor, apiPrefixInterceptor, adminTokenInterceptor]),
+    ),
     providePrimeNG({
       theme: {
         preset: DefaultPreset,
