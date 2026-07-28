@@ -4,11 +4,13 @@ import { TestingModule } from '@nestjs/testing';
 import { PrismaService } from '@core/database/prisma/prisma.service';
 import { CommandTestFactory } from 'nest-commander-testing';
 import { CliModule } from '../../../src/cli/cli.module';
+import { Logger } from '@nestjs/common';
 
 export class CliTestContext {
   prisma!: PrismaService;
   commandInstance!: TestingModule;
   private postgresContainer!: StartedPostgreSqlContainer;
+  private readonly logger = new Logger('Integration tests cli bootstrap');
 
   async init() {
     try {
@@ -30,7 +32,8 @@ export class CliTestContext {
 
       return this;
     } catch (error) {
-      console.error('Error initializing CliTestContext:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.fatal(`Critical error while initializing the test cli. Reason: ${errorMessage}`);
       await this.close();
       process.exit(1);
     }
