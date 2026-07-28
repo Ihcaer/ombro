@@ -3,6 +3,7 @@ import {
   Inject,
   Injectable,
   InternalServerErrorException,
+  Logger,
 } from '@nestjs/common';
 import { AuthTokenService } from '../auth-token/auth-token.service';
 import { AuthAdmin, Prisma } from '@generated/prisma-client';
@@ -22,6 +23,8 @@ export class PasswordResetService {
   private static readonly DEFAULT_RESET_PASSWORD_INTERNAL_ERR_MESSAGE: string =
     'We encountered an unexpected problem while resetting your password. Please try again later. If the issue persists, contact our support team.';
 
+  private readonly logger = new Logger(PasswordResetService.name);
+
   constructor(
     private readonly tokenService: AuthTokenService,
     private readonly hashService: HashService,
@@ -35,6 +38,7 @@ export class PasswordResetService {
     const maxAttempts = 5;
     const eventName = PasswordResetRequestEvent.EVENT_NAME;
     let eventData: PasswordResetRequestEvent | null = null;
+    let adminId: number | null = null;
 
     for (let i = 0; i < maxAttempts; i++) {
       try {
@@ -50,7 +54,7 @@ export class PasswordResetService {
             expiresAt,
             admin: { connect: { email } },
           },
-          select: { admin: { select: { displayName: true } } },
+          select: { admin: { select: { id: true, displayName: true } } },
         });
 
         eventData = {
@@ -60,6 +64,8 @@ export class PasswordResetService {
           },
           adminData: { name: admin.displayName, email },
         };
+        adminId = admin.id;
+
         break;
       } catch (error) {
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -84,9 +90,12 @@ export class PasswordResetService {
         eventName,
         new PasswordResetRequestEvent(eventData.tokenData, eventData.adminData),
       );
-      if (!wasHandled) console.warn(`The ${eventName} event was emitted but no one received it!`);
+      if (!wasHandled)
+        this.logger.error(
+          `The ${eventName} event was emitted but no one received it. Admin (User) ID ${adminId ?? 'unknown'}`,
+        );
     } else {
-      console.error('Failed to generate unique token.');
+      this.logger.error(`Failed to generate unique OTP token for Admin (User) ID ${adminId}`);
       throw new InternalServerErrorException(
         PasswordResetService.DEFAULT_RESET_PASSWORD_INTERNAL_ERR_MESSAGE,
       );
@@ -105,7 +114,9 @@ export class PasswordResetService {
 
     const { admin } = tokenContext;
     if (!admin) {
-      console.error('resetPasswordByToken() method do not have needed admin to proceed request.');
+      this.logger.error(
+        'resetPasswordByToken() method do not have needed admin data to proceed request.',
+      );
       throw new InternalServerErrorException({
         errorCode: 'WEAK_PASSWORD',
         message: PasswordResetService.DEFAULT_RESET_PASSWORD_INTERNAL_ERR_MESSAGE,
@@ -141,20 +152,19 @@ export class PasswordResetService {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
         const model = error.meta?.modelName as Prisma.ModelName;
 
-        if (model) {
-          switch (true) {
-            case model === 'AuthAdmin':
-              console.error(
-                'resetPasswordByToken() method do not have needed admin to proceed request.',
-              );
-              break;
-            case model === 'AuthOneTimeToken':
-              console.error(
-                'resetPasswordByToken() do not have needed one time token to proceed request.',
-              );
-              break;
-          }
+        switch (model) {
+          case 'AuthAdmin':
+            this.logger.error(
+              'resetPasswordByToken() method do not have needed admin to proceed request.',
+            );
+            break;
+          case 'AuthOneTimeToken':
+            this.logger.error(
+              'resetPasswordByToken() do not have needed one time token to proceed request.',
+            );
+            break;
         }
+
         throw new InternalServerErrorException(
           PasswordResetService.DEFAULT_RESET_PASSWORD_INTERNAL_ERR_MESSAGE,
         );

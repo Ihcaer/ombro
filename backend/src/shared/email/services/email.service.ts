@@ -1,4 +1,10 @@
-import { Inject, Injectable, InternalServerErrorException, OnModuleInit } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  OnModuleInit,
+} from '@nestjs/common';
 import { createTransport, SendMailOptions, Transporter } from 'nodemailer';
 import { EmailOptions } from '../templates/emailBase';
 import type { ConfigType } from '@nestjs/config';
@@ -9,6 +15,7 @@ import serverConfig, { Environment } from '@core/config/envs/server.config';
 @Injectable()
 export class EmailService implements OnModuleInit {
   private transporter: Transporter;
+  private readonly logger = new Logger(EmailService.name);
 
   constructor(
     @Inject(serverConfig.KEY)
@@ -33,9 +40,11 @@ export class EmailService implements OnModuleInit {
   async onModuleInit() {
     try {
       await this.transporter.verify();
-      console.log('Connection to the SMTP server has been confirmed.');
+      this.logger.log('Connection to the SMTP server has been confirmed.');
     } catch (error) {
-      console.error('SMTP connection error:', error);
+      const cause = error instanceof Error ? error.message : String(error);
+      this.logger.error(`SMTP connection error. Reason: ${cause}`);
+
       if (this.serverConf.nodeEnv === Environment.Production) {
         throw new InternalServerErrorException();
       }
@@ -66,12 +75,14 @@ export class EmailService implements OnModuleInit {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
 
         if (attempt === maxRetries) {
-          console.error('Email cannot be sended:', error);
+          this.logger.error(
+            `Failed to send email to ${recipient} with subject ${mailOptions.subject}. Reason: ${errorMessage}`,
+          );
           break;
         }
 
         const delay = baseDelayMs * Math.pow(2, attempt - 1);
-        console.warn(
+        this.logger.warn(
           `Attempt ${attempt}/${maxRetries} to send email failed: ${errorMessage}. Retrying in ${delay}ms...`,
         );
         await setTimeout(delay);

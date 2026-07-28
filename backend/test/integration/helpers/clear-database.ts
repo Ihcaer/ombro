@@ -1,6 +1,7 @@
 import { PrismaClient } from '@generated/prisma-client';
+import { Logger } from '@nestjs/common';
 
-export async function clearDatabase(prisma: PrismaClient): Promise<void> {
+export async function clearDatabase(prisma: PrismaClient, logger: Logger): Promise<void> {
   try {
     const tables: Array<{ full_name: string }> = await prisma.$queryRaw`
       SELECT '"' || schemaname || '"."' || tablename || '"' as full_name
@@ -15,6 +16,7 @@ export async function clearDatabase(prisma: PrismaClient): Promise<void> {
 
     await prisma.$executeRawUnsafe(`TRUNCATE TABLE ${tableNames} RESTART IDENTITY CASCADE;`);
   } catch (error) {
-    console.error('Error while cleaning the database:', error);
+    const cause = error instanceof Error ? error.message : String(error);
+    logger.error(`Error while cleaning the database. Reason: ${cause}`);
   }
 }

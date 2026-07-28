@@ -1,5 +1,5 @@
 import { PrismaService } from '@core/database/prisma/prisma.service';
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { INestApplication, Logger, ValidationPipe } from '@nestjs/common';
 import { TestingModule, Test } from '@nestjs/testing';
 import cookieParser from 'cookie-parser';
 import { AppModule } from '../../../src/app.module';
@@ -26,6 +26,7 @@ export class TestContext {
 
   private postgresContainer!: StartedPostgreSqlContainer;
   private mailpitContainer!: StartedTestContainer;
+  private readonly logger = new Logger('Integration tests bootstrap');
 
   private static readonly EMAIL_CONFIG = { portSMTP: 1025, port: 8025 };
 
@@ -69,8 +70,9 @@ export class TestContext {
       return this;
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      console.error('Critical error while initializing the test application: ' + errorMessage);
-
+      this.logger.fatal(
+        `Critical error while initializing the test application. Reason: ${errorMessage}`,
+      );
       await this.close();
       process.exit(1);
     }
@@ -78,10 +80,10 @@ export class TestContext {
 
   async clearDatabase() {
     if (!this.prisma) {
-      console.warn('Cleanup skipped: Prisma not initialized');
+      this.logger.warn('DB cleanup skipped: Prisma not initialized');
       return;
     }
-    await clearDatabase(this.prisma);
+    await clearDatabase(this.prisma, this.logger);
   }
 
   async close() {

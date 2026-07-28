@@ -13,6 +13,7 @@ import {
   Inject,
   Injectable,
   InternalServerErrorException,
+  Logger,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { HashService } from '@shared/hash/hash.service';
@@ -34,6 +35,8 @@ export class AdminRegistrationService {
     'handleName',
   ];
 
+  private readonly logger = new Logger(AdminRegistrationService.name);
+
   constructor(
     private readonly hashService: HashService,
     private readonly prismaService: PrismaService,
@@ -49,6 +52,7 @@ export class AdminRegistrationService {
     const maxAttempts = 5;
     let rawToken: Base64URLString | null = null;
     let result: CreateAdminResponseDto | null = null;
+    let adminId: number | null = null;
 
     while (attempts < maxAttempts) {
       try {
@@ -67,7 +71,7 @@ export class AdminRegistrationService {
           },
           select: {
             admin: {
-              select: { displayName: true, email: true, privileges: true },
+              select: { id: true, displayName: true, email: true, privileges: true },
             },
           },
         });
@@ -78,6 +82,7 @@ export class AdminRegistrationService {
           email: admin.email,
           privileges: PrivilegesUtils.bitmaskToArray(admin.privileges),
         };
+        adminId = admin.id;
 
         break;
       } catch (error) {
@@ -110,12 +115,14 @@ export class AdminRegistrationService {
       );
 
       if (!wasHandled) {
-        console.warn(`The ${eventName} event was emitted but no one received it!`);
+        this.logger.error(
+          `The ${eventName} event was emitted but no one received it. Admin (User) ID ${adminId ?? 'unknown'}`,
+        );
       }
 
       return result;
     } else {
-      console.error('Failed to generate unique token.');
+      this.logger.error(`Failed to generate unique OTP token for Admin (User) ID ${adminId}`);
       throw new InternalServerErrorException(
         'We encountered an unexpected problem while creating account of new admin. Please try again later. If the issue persists, contact our support team.',
       );
@@ -201,7 +208,10 @@ export class AdminRegistrationService {
         }),
       ]);
     } catch (error) {
-      console.error('Transaction error:', error);
+      const cause = error instanceof Error ? error.message : String(error);
+      this.logger.error(
+        `Failed to confirm registration for Admin (User) account ID ${id}. Reason: ${cause}`,
+      );
       throw new InternalServerErrorException('Failed to update data. Please try again later.');
     }
   }
