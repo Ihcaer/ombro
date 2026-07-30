@@ -1,4 +1,7 @@
-services:     
+services:
+  redis-queue:
+    command: redis-server --save "" --appendonly no --maxmemory ${REDIS_QUEUE_MAX_MEMORY} --requirepass ${REDIS_QUEUE_PASSWORD}
+
   mailpit:
     image: axllent/mailpit:v1.30
     restart: unless-stopped
