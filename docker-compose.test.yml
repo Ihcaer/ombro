@@ -5,15 +5,14 @@ services:
   mailpit:
     image: axllent/mailpit:v1.30
     restart: unless-stopped
-    ports:
-      - "1025:1025"
-      - "8025:8025"
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://${EMAIL_HOST}:8025/livez"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 5s
+    networks:
+      - mailpit_net
 
   playwright-e2e:
     profiles:
@@ -50,6 +49,8 @@ services:
   backend:
     env_file: 
       - ".env.test"
+    networks:
+      - mailpit_net
     depends_on:
       db:
         condition: service_healthy
@@ -61,3 +62,6 @@ services:
       - "80:80"
     volumes:
       - ./infrastructure/nginx/nginx.local.conf:/etc/nginx/nginx.conf:ro
+
+networks:
+  mailpit_net:

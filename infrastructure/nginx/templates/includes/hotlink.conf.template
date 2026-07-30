@@ -1,5 +1,5 @@
-valid_referers none blocked server_names *.${NGINX_HOST} ${NGINX_HOST} *.google.com *.gstatic.com *.bing.com *bing.net *.ecosia.org *.qwant.com *.duckduckgo.com;
+valid_referers none blocked server_names *.google.com *.gstatic.com *.bing.com *.bing.net *.ecosia.org *.qwant.com *.duckduckgo.com;
 
-if($invalid_referer) {
-  return 403
+if ($invalid_referer) {
+  return 403;
 }

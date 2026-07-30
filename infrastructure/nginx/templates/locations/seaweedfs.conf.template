@@ -1,5 +1,5 @@
 location /${SEAWEEDFS_SLUG}/ {
-   include /etc/nginx/conf.d/includes/hotlink.conf
+   include /etc/nginx/conf.d/includes/hotlink.conf;
    include /etc/nginx/includes/proxy.conf;
    proxy_pass http://${SEAWEEDFS_HOST}/;
 }

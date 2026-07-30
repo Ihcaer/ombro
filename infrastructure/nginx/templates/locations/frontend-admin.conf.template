@@ -1,8 +1,11 @@
 location /${FRONTEND_ADMIN_SLUG}/ {
-   location ~* \. (jpg|jpeg|png|gif|webp|avif|svg|ico) {
-      include /etc/nginx/conf.d/includes/hotlink.conf
-      proxy_pass http://${FRONTEND_ADMIN_HOST}/;
-   }
+   location ~* \.(jpg|jpeg|png|gif|webp|avif|svg|ico)$ {
+      include /etc/nginx/conf.d/includes/hotlink.conf;
+      include /etc/nginx/includes/proxy.conf;
+        
+      rewrite ^/${FRONTEND_ADMIN_SLUG}/(.*)$ /$1 break;
+      proxy_pass http://${FRONTEND_ADMIN_HOST};
+    }
 
    include /etc/nginx/includes/proxy.conf;
    proxy_pass http://${FRONTEND_ADMIN_HOST}/;
