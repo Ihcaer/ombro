@@ -2,7 +2,7 @@ import { registerAs } from '@nestjs/config';
 import { Expose } from 'class-transformer';
 import { IsBoolean, IsDefined, IsEmail, IsNotEmpty, IsPort, IsString } from 'class-validator';
 import { validateConfig } from '../env-config.validator';
-import { ToBoolean } from '@core/auth/decorators/type-transformation.decorators';
+import { ToBoolean } from '@shared/decorators/type-transformation.decorators';
 
 export class EmailConfig {
   @Expose({ name: 'EMAIL_HOST' })

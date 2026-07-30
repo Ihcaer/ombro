@@ -2,7 +2,7 @@ import { registerAs } from '@nestjs/config';
 import { Expose } from 'class-transformer';
 import { IsString, IsNotEmpty, IsNumber, Min, Max } from 'class-validator';
 import { validateConfig } from '../env-config.validator';
-import { ToNumber } from '@core/auth/decorators/type-transformation.decorators';
+import { ToNumber } from '@shared/decorators/type-transformation.decorators';
 
 export class SecurityConfig {
   @Expose({ name: 'JWT_ACCESS_SECRET' })

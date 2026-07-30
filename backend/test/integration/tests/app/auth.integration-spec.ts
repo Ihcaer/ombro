@@ -11,7 +11,7 @@ import { TestContext } from '../../helpers';
 import { AuthAdmin } from '@generated/prisma-client';
 import { AUTH_ROUTE_PREFIX } from '@core/auth/auth.constants';
 import { ForgotPasswordRequestDto } from '@core/auth/dto/forgot-password-request.dto';
-import { AUTH_SLUGS as EMAIL_AUTH_SLUGS } from '@shared/email/frontend-paths.constants';
+import { AUTH_SLUGS as EMAIL_AUTH_SLUGS } from '@modules/notifications/frontend-paths.constants';
 import { PrivilegesUtils } from '@core/auth/utils/privileges.utils';
 import { AdminPrivileges } from '@core/auth/enums/admin-privileges';
 import { TestCreateAdminRequestDto } from '../../helpers/common-test.types';
@@ -33,6 +33,7 @@ describe('Auth Module', () => {
 
   afterEach(async () => {
     await ctx.clearDatabase();
+    await ctx.clearRedisQueue();
   });
 
   afterAll(async () => {

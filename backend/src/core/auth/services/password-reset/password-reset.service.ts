@@ -9,7 +9,7 @@ import { AuthTokenService } from '../auth-token/auth-token.service';
 import { AuthAdmin, Prisma } from '@generated/prisma-client';
 import { PrismaService } from '@core/database/prisma/prisma.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { PasswordResetRequestEvent } from '@core/auth/events/password-reset-request.event';
+import { AdminPasswordResetRequestEvent } from '@core/auth/events/admin-password-reset-request.event';
 import { ResetPasswordRequestDto } from '@core/auth/dto';
 import { OneTimeTokenContext } from '@core/auth/types/one-time-token.types';
 import { HashService } from '@shared/hash/hash.service';
@@ -36,8 +36,8 @@ export class PasswordResetService {
 
   async requestPasswordReset(email: string): Promise<void> {
     const maxAttempts = 5;
-    const eventName = PasswordResetRequestEvent.EVENT_NAME;
-    let eventData: PasswordResetRequestEvent | null = null;
+    const eventName = AdminPasswordResetRequestEvent.EVENT_NAME;
+    let eventData: AdminPasswordResetRequestEvent['payload'] | null = null;
     let adminId: number | null = null;
 
     for (let i = 0; i < maxAttempts; i++) {
@@ -88,7 +88,10 @@ export class PasswordResetService {
     if (eventData) {
       const wasHandled = this.eventEmitter.emit(
         eventName,
-        new PasswordResetRequestEvent(eventData.tokenData, eventData.adminData),
+        new AdminPasswordResetRequestEvent({
+          tokenData: eventData.tokenData,
+          adminData: eventData.adminData,
+        }),
       );
       if (!wasHandled)
         this.logger.error(

@@ -108,9 +108,12 @@ export class AdminRegistrationService {
       const { EVENT_NAME: eventName } = AdminCreatedEvent;
       const wasHandled: boolean = this.eventEmitter.emit(
         eventName,
-        new AdminCreatedEvent(rawToken, {
-          name: result.displayName,
-          email: result.email,
+        new AdminCreatedEvent({
+          accountConfirmationToken: rawToken,
+          newAdminData: {
+            name: result.displayName,
+            email: result.email,
+          },
         }),
       );
 
