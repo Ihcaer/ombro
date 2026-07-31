@@ -12,7 +12,6 @@ import { GenericContainer, StartedTestContainer, Wait } from 'testcontainers';
 import { RedisContainer, StartedRedisContainer } from '@testcontainers/redis';
 import Redis from 'ioredis';
 import { execSync } from 'node:child_process';
-import { setTimeout } from 'node:timers/promises';
 
 export class TestContext {
   app!: INestApplication<App>;
@@ -99,18 +98,13 @@ export class TestContext {
   async clearRedisQueue() {
     if (!this.redisQueueContainer) return;
 
-    await setTimeout(100);
-
     const client = new Redis({
       host: this.redisQueueContainer.getHost(),
       port: this.redisQueueContainer.getPort(),
     });
 
-    try {
-      await client.flushall();
-    } finally {
-      await client.quit();
-    }
+    await client.flushall();
+    await client.quit();
   }
 
   async close() {
