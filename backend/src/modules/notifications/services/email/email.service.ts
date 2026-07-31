@@ -6,7 +6,7 @@ import {
   OnModuleInit,
 } from '@nestjs/common';
 import { createTransport, SendMailOptions, Transporter } from 'nodemailer';
-import { EmailOptions } from '../templates/emailBase';
+import { EmailOptions } from '@modules/notifications/emails/email-base';
 import type { ConfigType } from '@nestjs/config';
 import emailConfig from '@core/config/envs/email.config';
 import { setTimeout } from 'node:timers/promises';

@@ -19,6 +19,11 @@ services:
     tmpfs:
       - /data
 
+  redis-queue:
+    command: redis-server --appendonly yes --maxmemory ${REDIS_QUEUE_MAX_MEMORY} --requirepass ${REDIS_QUEUE_PASSWORD}
+    volumes:
+      - redis_queue_data_prod:/data
+
   db-prepare:
     env_file: 
       - .env
@@ -39,3 +44,4 @@ volumes:
   seaweed_data_master_prod:
   seaweed_data_volume_prod:
   seaweed_data_filer_prod:
+  redis_queue_data_prod:

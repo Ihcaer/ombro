@@ -1,4 +1,4 @@
-import { EmailBase, EmailOptions, EmailTemplateContent } from '../emailBase';
+import { EmailBase, EmailOptions, EmailTemplateContent } from '../email-base';
 
 export class AdminAccountActivationTemplate extends EmailBase {
   protected options: EmailOptions;
@@ -7,7 +7,7 @@ export class AdminAccountActivationTemplate extends EmailBase {
   private adminCreationContent: string = `Administrator systemu <b>Admin Panel</b> utworzył dla Ciebie konto. Możesz je teraz aktywować i ustawić swoje hasło poprzez kliknięcie przycisku poniżej. Link wygaśnie w ciągu 24 godzin.`;
 
   constructor(
-    private name: string,
+    private adminName: string,
     private confirmAccountLink: string,
     private inputMediaDomain: string,
   ) {
@@ -15,7 +15,7 @@ export class AdminAccountActivationTemplate extends EmailBase {
 
     this.mediaDomain = inputMediaDomain;
     this.options = this.setOptions();
-    this.content = this.setContent(name, confirmAccountLink);
+    this.content = this.setContent(adminName, confirmAccountLink);
   }
 
   private setOptions(): EmailOptions {

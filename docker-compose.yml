@@ -7,7 +7,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     networks:
-      - db_net
+      - backend_net
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 10s
@@ -76,6 +76,7 @@ services:
     networks:
       - seaweed_net
       - seaweed_public_net
+      - backend_net
     depends_on:
       seaweed-filer:
         condition: service_healthy
@@ -86,13 +87,25 @@ services:
       retries: 5
       start_period: 15s
 
+  redis-queue:
+    image: redis:8-alpine
+    restart: unless-stopped
+    networks:
+      - backend_net
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_QUEUE_PASSWORD}", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+
   db-prepare:
     build:
       context: ./backend
       dockerfile: Dockerfile
       target: final
     networks:
-      - db_net
+      - backend_net
     depends_on:
       db:
         condition: service_healthy
@@ -105,11 +118,12 @@ services:
       target: final
     restart: unless-stopped
     networks:
+      - api_net
       - backend_net
-      - db_net
-      - seaweed_backend_net
     depends_on:
       db:
+        condition: service_healthy
+      redis-queue:
         condition: service_healthy
       db-prepare:
         condition: service_completed_successfully
@@ -156,7 +170,7 @@ services:
       - ./infrastructure/nginx/ssl/certificates:/etc/nginx/ssl/certificates:ro
       - ./infrastructure/nginx/public-assets:/usr/share/nginx/html/public-assets:ro
     networks:
-      - backend_net
+      - api_net
       - frontend_admin_net
       - seaweed_public_net
     depends_on:
@@ -169,10 +183,9 @@ services:
         
 
 networks:
-  db_net:
   seaweed_net:
-  seaweed_backend_net:
   seaweed_public_net:
+  api_net:
   backend_net:
   frontend_main_net:
   frontend_admin_net:

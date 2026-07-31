@@ -6,6 +6,7 @@
     "analogjs",
     "autoincrement",
     "axllent",
+    "bullmq",
     "dtos",
     "healthcheck",
     "HSTS",

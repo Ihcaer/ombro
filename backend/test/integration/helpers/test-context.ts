@@ -9,6 +9,8 @@ import { AdminFactory } from './factories';
 import { getEmailContent, MailpitDetail, MailpitSummary, waitForEmail } from './email';
 import { PostgreSqlContainer, StartedPostgreSqlContainer } from '@testcontainers/postgresql';
 import { GenericContainer, StartedTestContainer, Wait } from 'testcontainers';
+import { RedisContainer, StartedRedisContainer } from '@testcontainers/redis';
+import Redis from 'ioredis';
 import { execSync } from 'node:child_process';
 
 export class TestContext {
@@ -25,16 +27,23 @@ export class TestContext {
   };
 
   private postgresContainer!: StartedPostgreSqlContainer;
+  private redisQueueContainer!: StartedRedisContainer;
   private mailpitContainer!: StartedTestContainer;
+
   private readonly logger = new Logger('Integration tests bootstrap');
 
   private static readonly EMAIL_CONFIG = { portSMTP: 1025, port: 8025 };
 
   async init() {
     try {
-      const [pg, mailpit] = await Promise.all([this.startPostgresql(), this.startMailpit()]);
+      const [pg, redis, mailpit] = await Promise.all([
+        this.startPostgresql(),
+        this.startRedisQueue(),
+        this.startMailpit(),
+      ]);
 
       this.postgresContainer = pg;
+      this.redisQueueContainer = redis;
       this.mailpitContainer = mailpit;
 
       this.setupEnvironment();
@@ -86,16 +95,35 @@ export class TestContext {
     await clearDatabase(this.prisma, this.logger);
   }
 
+  async clearRedisQueue() {
+    if (!this.redisQueueContainer) return;
+
+    const client = new Redis({
+      host: this.redisQueueContainer.getHost(),
+      port: this.redisQueueContainer.getPort(),
+    });
+
+    await client.flushall();
+    await client.quit();
+  }
+
   async close() {
     if (this.app) await this.app.close().catch(() => {});
 
-    await Promise.all([this.postgresContainer?.stop(), this.mailpitContainer?.stop()]);
+    await Promise.all([
+      this.postgresContainer?.stop(),
+      this.redisQueueContainer?.stop(),
+      this.mailpitContainer?.stop(),
+    ]);
   }
 
   private setupEnvironment() {
     const emailConfig = TestContext.EMAIL_CONFIG;
 
     process.env.POSTGRES_URL = this.postgresContainer.getConnectionUri();
+
+    process.env.REDIS_QUEUE_HOST = this.redisQueueContainer.getHost();
+    process.env.REDIS_QUEUE_PORT = this.redisQueueContainer.getPort().toString();
 
     process.env.EMAIL_HOST = this.mailpitContainer.getHost();
     process.env.EMAIL_PORT = this.mailpitContainer.getMappedPort(emailConfig.portSMTP).toString();
@@ -111,6 +139,10 @@ export class TestContext {
       .withUsername('testuser')
       .withPassword('testpassword')
       .start();
+  }
+
+  private async startRedisQueue() {
+    return await new RedisContainer('redis:8-alpine').start();
   }
 
   private async startMailpit() {

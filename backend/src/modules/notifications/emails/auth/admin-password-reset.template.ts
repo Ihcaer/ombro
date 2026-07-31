@@ -1,4 +1,4 @@
-import { EmailBase, EmailOptions, EmailTemplateContent } from '../emailBase';
+import { EmailBase, EmailOptions, EmailTemplateContent } from '../email-base';
 
 export class AdminPasswordResetTemplate extends EmailBase {
   protected options: EmailOptions;
@@ -10,7 +10,7 @@ export class AdminPasswordResetTemplate extends EmailBase {
     'Jeśli to nie Ty poprosiłeś/aś o zresetowanie hasła, zignoruj tę wiadomość. Twoje hasło pozostanie bez zmian.';
 
   constructor(
-    private name: string,
+    private adminName: string,
     private passwordResetLink: string,
     private inputMediaDomain: string,
     private expirationTimeMinutes: number,
@@ -24,20 +24,20 @@ export class AdminPasswordResetTemplate extends EmailBase {
     );
 
     this.options = this.setOptions();
-    this.content = this.setContent(name, passwordResetLink);
+    this.content = this.setContent(adminName, passwordResetLink);
   }
 
   private setOptions(): EmailOptions {
     return { subject: 'Resetowanie hasła w Skema Admin Panel' };
   }
 
-  private setContent(name: string, ctaLink: string): EmailTemplateContent {
+  private setContent(adminName: string, ctaLink: string): EmailTemplateContent {
     return {
       image: {
         src: this.mediaDomain + '/public-assets/email/authentication.jpg',
         alt: 'Ilustracja przedstawiająca proces weryfikacji i bezpieczeństwa konta',
       },
-      header: `Cześć ${name},`,
+      header: `Cześć ${adminName},`,
       content: this.passwordResetContent,
       cta: { href: ctaLink, content: 'Zmień hasło' },
       additional: this.additionalContent,

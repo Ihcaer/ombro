@@ -28,6 +28,7 @@
     "cli:prod": "node dist/src/cli.js"
   },
   "dependencies": {
+    "@nestjs/bullmq": "^11.0.4",
     "@nestjs/common": "^11.1.27",
     "@nestjs/config": "^4.0.4",
     "@nestjs/core": "^11.1.27",
@@ -42,6 +43,7 @@
     "@zxcvbn-ts/language-en": "^4.1.1",
     "@zxcvbn-ts/language-pl": "^4.1.1",
     "bcrypt": "^6.0.0",
+    "bullmq": "^5.81.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
     "cookie-parser": "^1.4.7",
@@ -62,6 +64,7 @@
     "@swc/core": "^1.15.43",
     "@swc/jest": "^0.2.39",
     "@testcontainers/postgresql": "^12.0.4",
+    "@testcontainers/redis": "^12.0.4",
     "@types/bcrypt": "^6.0.0",
     "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.6",
