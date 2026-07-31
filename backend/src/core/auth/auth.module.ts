@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, Provider } from '@nestjs/common';
 import { AuthService } from './services/auth/auth.service';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
@@ -19,6 +19,24 @@ import serverConfig from '@core/config/envs/server.config';
 import { PasswordStrengthProvider } from './providers/password-strength.provider';
 import { AuthRefreshController } from './controllers/auth/auth-refresh.controller';
 import { RegistrationAdminController } from './controllers/registration/registration-admin.controller';
+import { BullModule } from '@nestjs/bullmq';
+import { TOKEN_CLEANUP_QUEUE } from './auth.constants';
+import { TokenCleanupScheduler } from './cron/token-cleanup.scheduler';
+import { TokenCleanupConsumer } from './cron/token-cleanup.consumer';
+
+const SERVICES: Provider[] = [
+  AuthService,
+  AuthTokenService,
+  AdminRegistrationService,
+  PasswordResetService,
+] as const;
+const STRATEGIES: Provider[] = [JwtStrategy, RefreshTokenStrategy] as const;
+const MISC_PROVIDERS: Provider[] = [
+  AuthAdminRepository,
+  PasswordStrengthProvider,
+  TokenCleanupScheduler,
+  TokenCleanupConsumer,
+] as const;
 
 @Module({
   imports: [
@@ -28,17 +46,9 @@ import { RegistrationAdminController } from './controllers/registration/registra
     HashModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({}),
+    BullModule.registerQueue({ name: TOKEN_CLEANUP_QUEUE }),
   ],
-  providers: [
-    AuthService,
-    JwtStrategy,
-    RefreshTokenStrategy,
-    AuthTokenService,
-    AuthAdminRepository,
-    AdminRegistrationService,
-    PasswordResetService,
-    PasswordStrengthProvider,
-  ],
+  providers: [...SERVICES, ...STRATEGIES, ...MISC_PROVIDERS],
   controllers: [
     AuthPublicController,
     AuthRefreshController,

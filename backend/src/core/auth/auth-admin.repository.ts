@@ -96,4 +96,22 @@ export class AuthAdminRepository {
   async deleteOneTimeTokenById(id: number): Promise<void> {
     await this.prisma.authOneTimeToken.delete({ where: { id }, select: { id: true } });
   }
+
+  async deleteExpiredOneTimeTokens(): Promise<number> {
+    const now = new Date();
+    const result = await this.prisma.authOneTimeToken.deleteMany({
+      where: { expiresAt: { lt: now } },
+    });
+
+    return result.count;
+  }
+
+  async deleteExpiredRefreshTokens(): Promise<number> {
+    const now = new Date();
+    const result = await this.prisma.authRefreshToken.deleteMany({
+      where: { expiresAt: { lt: now } },
+    });
+
+    return result.count;
+  }
 }

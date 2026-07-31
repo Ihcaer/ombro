@@ -1,4 +1,4 @@
-export const NOTIFICATIONS_QUEUE = 'notifications';
+export const NOTIFICATIONS_QUEUE = 'notifications-queue';
 
 export const EMAIL_JOBS = {
   SEND_PASSWORD_RESET: 'send-admin-password-reset-email',

@@ -126,6 +126,14 @@ export class AuthTokenService {
     }
   }
 
+  async deleteExpiredOneTimeTokens(): Promise<number> {
+    return await this.authAdminRepository.deleteExpiredOneTimeTokens();
+  }
+
+  async deleteExpiredRefreshTokens(): Promise<number> {
+    return await this.authAdminRepository.deleteExpiredRefreshTokens();
+  }
+
   private hashOneTimeToken(token: Base64URLString): string {
     return this.hashService.hash(token);
   }
