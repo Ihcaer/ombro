@@ -273,10 +273,16 @@ CREATE UNIQUE INDEX "admins_email_key" ON "auth"."admins"("email");
 CREATE UNIQUE INDEX "one_time_tokens_hashedToken_key" ON "auth"."one_time_tokens"("hashedToken");
 
 -- CreateIndex
+CREATE INDEX "one_time_tokens_expiresAt_idx" ON "auth"."one_time_tokens"("expiresAt");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "one_time_tokens_adminId_type_key" ON "auth"."one_time_tokens"("adminId", "type");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "refresh_tokens_refreshTokenHash_key" ON "auth"."refresh_tokens"("refreshTokenHash");
+
+-- CreateIndex
+CREATE INDEX "refresh_tokens_expiresAt_idx" ON "auth"."refresh_tokens"("expiresAt");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "preferences_adminId_key" ON "auth"."preferences"("adminId");

@@ -13,13 +13,13 @@ import { AdminCreationConfirmationEmailHandler } from './consumers/handlers/emai
 import { EmailConsumer } from './consumers/email.consumer';
 import metadataConfig from '@core/config/envs/metadata.config';
 
-const LISTENERS: Provider[] = [AdminPasswordResetRequestListener, AdminCreatedListener];
-const CONSUMERS: Provider[] = [EmailConsumer];
+const LISTENERS: Provider[] = [AdminPasswordResetRequestListener, AdminCreatedListener] as const;
+const CONSUMERS: Provider[] = [EmailConsumer] as const;
 const HANDLERS: Provider[] = [
   AdminPasswordResetRequestEmailHandler,
   AdminCreationConfirmationEmailHandler,
-];
-const SERVICES: Provider[] = [EmailService, CtaUrlService];
+] as const;
+const SERVICES: Provider[] = [EmailService, CtaUrlService] as const;
 
 @Module({
   imports: [

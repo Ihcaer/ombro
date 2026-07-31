@@ -66,6 +66,7 @@ model AuthOneTimeToken {
   admin AuthAdmin @relation(fields: [adminId], references: [id], onDelete: Cascade)
 
   @@unique([adminId, type])
+  @@index([expiresAt])
   @@map("one_time_tokens")
   @@schema("auth")
 }
@@ -78,6 +79,7 @@ model AuthRefreshToken {
 
   admin AuthAdmin @relation(fields: [adminId], references: [id], onDelete: Cascade)
 
+  @@index([expiresAt])
   @@map("refresh_tokens")
   @@schema("auth")
 }
