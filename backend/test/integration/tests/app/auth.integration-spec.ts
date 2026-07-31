@@ -29,11 +29,11 @@ describe('Auth Module', () => {
     ctx = new TestContext();
     await ctx.init();
     adminRegistrationService = ctx.app.get(AdminRegistrationService);
-    await ctx.clearRedisQueue();
   });
 
   afterEach(async () => {
     await ctx.clearDatabase();
+    await ctx.clearRedisQueue();
   });
 
   afterAll(async () => {
