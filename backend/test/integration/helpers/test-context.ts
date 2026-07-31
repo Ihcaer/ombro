@@ -103,8 +103,11 @@ export class TestContext {
       port: this.redisQueueContainer.getPort(),
     });
 
-    await client.flushall();
-    await client.quit();
+    try {
+      await client.flushall();
+    } finally {
+      await client.quit();
+    }
   }
 
   async close() {

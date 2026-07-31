@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigType } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import enabledModules from '@core/config/feature-flags.config';
+import { getApplicationModules } from './module-registry';
 import { getConfigOptions } from '@core/config/env-config-options';
 import { BullModule } from '@nestjs/bullmq';
 import redisQueueConfig from '@core/config/envs/redis-queue.config';
@@ -17,7 +17,7 @@ import redisQueueConfig from '@core/config/envs/redis-queue.config';
         connection: { host: config.host, port: config.port, password: config.password },
       }),
     }),
-    ...enabledModules,
+    ...getApplicationModules(),
   ],
 })
 export class AppModule {}
