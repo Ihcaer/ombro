@@ -4,6 +4,7 @@ import { COMMON_TESTING_PROVIDERS } from '@ombro/admin-panel/app/shared/testing/
 import { AuthStore, AuthStoreInstance } from '@ombro/admin-panel/app/core/auth/store';
 import { Mocked } from 'vitest';
 import { signal } from '@angular/core';
+import { AUTH_PAGE_BASE_TESTING_PROVIDERS } from '../auth-page-base-testing-providers';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -19,13 +20,7 @@ describe('LoginComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [LoginComponent],
-      providers: [
-        ...COMMON_TESTING_PROVIDERS,
-        {
-          provide: AuthStore,
-          useValue: mockAuthStore,
-        },
-      ],
+      providers: [...COMMON_TESTING_PROVIDERS, ...AUTH_PAGE_BASE_TESTING_PROVIDERS],
     }).compileComponents();
 
     fixture = TestBed.createComponent(LoginComponent);

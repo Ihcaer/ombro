@@ -9,6 +9,7 @@ const mockAuthStoreValues = {
   requestPasswordReset: noop,
   resetPassword: noop,
   finalizeAdminRegistration: noop,
+  isAdminLoggedIn: signal(false),
 };
 
 export const AUTH_PAGE_BASE_TESTING_PROVIDERS = [
