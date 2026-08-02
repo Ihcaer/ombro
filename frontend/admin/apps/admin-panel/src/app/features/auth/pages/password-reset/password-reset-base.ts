@@ -10,7 +10,7 @@ export abstract class PasswordResetBase extends AuthPageBase {
   protected readonly isRequestSucceed = computed(() => {
     if (!this.showSuccess()) return false;
 
-    const isLoading = this.authStore.isLoading();
+    const isLoading = this.isLoading();
     const hasError = !!this.authStore.lastResponseError();
 
     return !isLoading && !hasError;

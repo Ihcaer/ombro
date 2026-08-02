@@ -27,9 +27,9 @@
             }
           }
         </div>
-        <app-auth-form-buttons>Zatwierdź</app-auth-form-buttons>
+        <app-auth-form-buttons [isDisabled]="isLoading()">Zatwierdź</app-auth-form-buttons>
       </form>
-    } @else {
+    } @else if (neededFormFields.length === 0 && isLoading()) {
       <div class="flex justify-center">
         <p-progress-spinner [aria-label]="progressSpinnerAriaLabel()" />
       </div>

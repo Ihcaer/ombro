@@ -21,7 +21,7 @@
           <a [routerLink]="passwordResetLink">Nie pamiętasz hasła?</a>
         </div>
       </div>
-      <app-auth-form-buttons>Zaloguj się</app-auth-form-buttons>
+      <app-auth-form-buttons [isDisabled]="isLoading()">Zaloguj się</app-auth-form-buttons>
     </form>
   </ng-container>
 </app-auth-wrapper>
