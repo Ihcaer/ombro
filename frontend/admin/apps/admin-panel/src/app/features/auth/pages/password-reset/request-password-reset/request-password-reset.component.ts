@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { AuthWrapperComponent } from '../../../components/auth-wrapper/auth-wrapper.component';
 import { FormButtonsComponent } from '../../../components/form-buttons/form-buttons.component';
 import { InputTextComponent } from '@ombro/shared/ui/ui-forms';
@@ -6,6 +6,9 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router } from '@angular/router';
 import { MessageModule } from 'primeng/message';
 import { PasswordResetBase } from '../password-reset-base';
+import { ButtonDirective } from 'primeng/button';
+import { takeWhile, tap, timer } from 'rxjs';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-request-password-reset',
@@ -15,6 +18,8 @@ import { PasswordResetBase } from '../password-reset-base';
     InputTextComponent,
     ReactiveFormsModule,
     MessageModule,
+    ButtonDirective,
+    DatePipe,
   ],
   templateUrl: './request-password-reset.component.html',
   styles: `
@@ -23,7 +28,11 @@ import { PasswordResetBase } from '../password-reset-base';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RequestPasswordResetComponent extends PasswordResetBase {
+  private static readonly cooldownTimeMs: number = 30000;
+
   private readonly router = inject(Router);
+
+  protected cooldownMs = signal<number>(0);
 
   protected requestPasswordResetForm = new FormGroup({
     email: new FormControl('', {
@@ -31,6 +40,21 @@ export class RequestPasswordResetComponent extends PasswordResetBase {
       validators: [Validators.required, Validators.pattern(/^\S*$/), Validators.email],
     }),
   });
+
+  protected isOnCooldown = computed<boolean>(() => this.cooldownMs() > 0);
+
+  protected setClickCooldown(): void {
+    if (this.cooldownMs() > 0) return;
+
+    this.cooldownMs.set(RequestPasswordResetComponent.cooldownTimeMs);
+
+    timer(1000, 1000)
+      .pipe(
+        tap(() => this.cooldownMs.update((ms) => ms - 1000)),
+        takeWhile(() => this.cooldownMs() > 0),
+      )
+      .subscribe();
+  }
 
   protected override onSubmit(): void {
     if (this.requestPasswordResetForm.valid) {

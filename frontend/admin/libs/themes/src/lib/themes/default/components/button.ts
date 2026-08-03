@@ -69,7 +69,10 @@ export const button = {
           activeBorderColor: '{dustyRose.300}',
         },
       },
-      text: { secondary: { color: '{grey.300}' } },
+      text: {
+        primary: { color: '{primary.300}' },
+        secondary: { color: '{grey.300}' },
+      },
     },
   },
 } as const;
