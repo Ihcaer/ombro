@@ -4,7 +4,6 @@ import { IsOneTimeToken } from '../decorators';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ResetPasswordRequestDto implements Pick<AuthAdmin, 'password'> {
-  @ApiProperty({ description: 'One time token' })
   @IsString()
   @IsNotEmpty()
   @IsOneTimeToken()

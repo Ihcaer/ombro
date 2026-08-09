@@ -13,7 +13,6 @@ import {
   ApiInternalServerErrorResponse,
   ApiNoContentResponse,
   ApiOkResponse,
-  ApiOperation,
   ApiParam,
   ApiTags,
   ApiUnprocessableEntityResponse,
@@ -24,8 +23,10 @@ import {
 export class RegistrationPublicController {
   constructor(private readonly adminRegistrationService: AdminRegistrationService) {}
 
+  /**
+   * Sends form fields needed to finalize registration.
+   */
   @Get('invite/:token')
-  @ApiOperation({ summary: 'Sent form fields needed to finalize registration' })
   @ApiParam({ name: 'token', type: String, description: 'One time token' })
   @ApiOkResponse({
     description: 'Sent form fields',
@@ -41,9 +42,11 @@ export class RegistrationPublicController {
     return await this.adminRegistrationService.getFormFieldsToConfirm(params.token);
   }
 
+  /**
+   * Confirms admin account.
+   */
   @Patch('confirm')
   @HttpCode(204)
-  @ApiOperation({ summary: 'Confirms admin account' })
   @ApiNoContentResponse({ description: 'Account confirmed' })
   @ApiBadRequestResponse({ description: 'Password does not meet the requirements.' })
   @ApiInternalServerErrorResponse({ description: 'Unexpected server error.' })

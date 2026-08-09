@@ -11,7 +11,6 @@ import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
   ApiForbiddenResponse,
-  ApiOperation,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -25,8 +24,10 @@ export class AuthPublicController {
     @Inject(serverConfig.KEY) private readonly serverConf: ConfigType<typeof serverConfig>,
   ) {}
 
+  /**
+   * Logs in the admin user.
+   */
   @Post('login')
-  @ApiOperation({ summary: 'Logs in the admin user' })
   @ApiCreatedResponse({
     description: 'Admin has been logged',
     type: LoginResponseDto,

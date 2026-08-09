@@ -4,7 +4,7 @@ import { Trim } from '@shared/decorators';
 import { AuthAdmin } from '@generated/prisma-client';
 import { Transform } from 'class-transformer';
 import { PrivilegesUtils } from '../utils/privileges.utils';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { enumKeysWithout } from '@shared/swagger/enum-keys-without.helper';
 import { AdminDataDto } from './admin-data.dto';
 import { AdminPrivileges } from '../enums/admin-privileges';
@@ -14,19 +14,16 @@ export class CreateAdminRequestDto
     Pick<AuthAdmin, 'displayName' | 'email' | 'privileges'>,
     Partial<Pick<AuthAdmin, 'handleName'>>
 {
-  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   @Trim()
   readonly displayName!: string;
 
-  @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   @Trim()
   readonly handleName?: string;
 
-  @ApiProperty({ format: 'email' })
   @IsString()
   @IsNotEmpty()
   @IsEmail()

@@ -9,7 +9,6 @@ import {
   ApiBearerAuth,
   ApiCreatedResponse,
   ApiInternalServerErrorResponse,
-  ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
 
@@ -19,8 +18,10 @@ import {
 export class RegistrationAdminController {
   constructor(private readonly adminRegistrationService: AdminRegistrationService) {}
 
+  /**
+   * Creates admin account.
+   */
   @Post('create-admin')
-  @ApiOperation({ summary: 'Creates admin account' })
   @ApiCreatedResponse({ description: 'Created admin account', type: CreateAdminResponseDto })
   @ApiBadRequestResponse({ description: 'Email in use.' })
   @ApiInternalServerErrorResponse({ description: 'Unexpected server error.' })

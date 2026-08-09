@@ -8,7 +8,6 @@ import {
   ApiAcceptedResponse,
   ApiInternalServerErrorResponse,
   ApiNoContentResponse,
-  ApiOperation,
   ApiTags,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
@@ -19,9 +18,11 @@ import { errorResponseExamples } from '@shared/swagger/error-response-examples.h
 export class PasswordResetController {
   constructor(private readonly passwordResetService: PasswordResetService) {}
 
+  /**
+   * Requests the password reset.
+   */
   @Post('forgot')
   @HttpCode(202)
-  @ApiOperation({ summary: 'Requests the password reset' })
   @ApiAcceptedResponse({
     description: 'An email with a link has been sent if the account exists in the system',
   })
@@ -30,9 +31,11 @@ export class PasswordResetController {
     await this.passwordResetService.requestPasswordReset(dto.email);
   }
 
+  /**
+   * Resets password.
+   */
   @Post('reset')
   @HttpCode(204)
-  @ApiOperation({ summary: 'Resets password' })
   @ApiNoContentResponse({ description: 'Password reset' })
   @ApiUnprocessableEntityResponse({
     description: 'Password does not meet the requirements.',

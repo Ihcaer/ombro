@@ -15,7 +15,6 @@ import {
   ApiForbiddenResponse,
   ApiNoContentResponse,
   ApiOkResponse,
-  ApiOperation,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -30,9 +29,11 @@ export class AuthRefreshController {
     @Inject(serverConfig.KEY) private readonly serverConf: ConfigType<typeof serverConfig>,
   ) {}
 
+  /**
+   * Refreshes the admin session.
+   */
   @Post('refresh')
   @HttpCode(200)
-  @ApiOperation({ summary: 'Refreshes the admin session' })
   @ApiOkResponse({ description: 'Refreshed the admin session', type: LoginResponseDto })
   @ApiBadRequestResponse({ description: 'Invalid input data (DTO validation).' })
   @ApiUnauthorizedResponse({
@@ -61,9 +62,11 @@ export class AuthRefreshController {
     return fullResponse.adminData;
   }
 
+  /**
+   * Admin log out.
+   */
   @Post('logout')
   @HttpCode(204)
-  @ApiOperation({ summary: 'Admin log out' })
   @ApiNoContentResponse({ description: 'The admin has been successfully logged out' })
   @ApiBadRequestResponse({ description: 'Invalid input data (DTO validation).' })
   async logout(@Req() req: Request): Promise<void> {

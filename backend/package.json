@@ -25,7 +25,8 @@
     "prisma:generate": "prisma generate",
     "prisma:format": "prisma format",
     "prisma:seed:admin:dev": "npm run cli -- seed admin",
-    "swagger:generate": "ts-node --swc -r tsconfig-paths/register src/generate-swagger.ts",
+    "preswagger:generate": "node -e \"const fs=require('fs'); if(fs.existsSync('src/metadata.ts')) fs.unlinkSync('src/metadata.ts');\"",
+    "swagger:generate": "nest start --entryFile generate-swagger",
     "cli": "ts-node --swc -r tsconfig-paths/register src/cli.ts",
     "cli:prod": "node dist/src/cli.js"
   },

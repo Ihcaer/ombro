@@ -60,7 +60,7 @@
             "description": ""
           }
         },
-        "summary": "Logs in the admin user",
+        "summary": "Logs in the admin user.",
         "tags": [
           "Auth"
         ]
@@ -108,7 +108,7 @@
             "refresh_token": []
           }
         ],
-        "summary": "Refreshes the admin session",
+        "summary": "Refreshes the admin session.",
         "tags": [
           "Auth"
         ]
@@ -131,7 +131,7 @@
             "refresh_token": []
           }
         ],
-        "summary": "Admin log out",
+        "summary": "Admin log out.",
         "tags": [
           "Auth"
         ]
@@ -173,7 +173,7 @@
             "description": "Account is not waiting for verification."
           }
         },
-        "summary": "Sent form fields needed to finalize registration",
+        "summary": "Sends form fields needed to finalize registration.",
         "tags": [
           "AuthRegistration"
         ]
@@ -204,7 +204,7 @@
             "description": "Unexpected server error."
           }
         },
-        "summary": "Confirms admin account",
+        "summary": "Confirms admin account.",
         "tags": [
           "AuthRegistration"
         ]
@@ -247,7 +247,7 @@
             "bearer": []
           }
         ],
-        "summary": "Creates admin account",
+        "summary": "Creates admin account.",
         "tags": [
           "AuthRegistration"
         ]
@@ -275,7 +275,7 @@
             "description": "Unexpected server error."
           }
         },
-        "summary": "Requests the password reset",
+        "summary": "Requests the password reset.",
         "tags": [
           "AuthPasswordReset"
         ]
@@ -323,7 +323,7 @@
             "description": "Unexpected server error."
           }
         },
-        "summary": "Resets password",
+        "summary": "Resets password.",
         "tags": [
           "AuthPasswordReset"
         ]
@@ -373,25 +373,24 @@
       "AdminDataDto": {
         "type": "object",
         "properties": {
+          "avatarUrl": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true,
+            "format": "uri-reference",
+            "example": null
+          },
           "id": {
-            "type": "number",
-            "readOnly": true
+            "type": "number"
           },
           "displayName": {
-            "type": "string",
-            "readOnly": true
+            "type": "string"
           },
           "handleName": {
-            "type": "string",
-            "readOnly": true
+            "type": "object"
           },
           "privileges": {
             "type": "array",
-            "readOnly": true,
-            "example": [
-              "ADMINS_MANAGE",
-              "BLOG_MANAGE"
-            ],
             "items": {
               "type": "string",
               "enum": [
@@ -405,7 +404,6 @@
           },
           "verification": {
             "type": "string",
-            "readOnly": true,
             "enum": [
               "VERIFIED",
               "WAITING",
@@ -413,42 +411,27 @@
             ]
           },
           "isActivated": {
-            "type": "boolean",
-            "readOnly": true
-          },
-          "avatarUrl": {
-            "type": "string",
-            "readOnly": true,
-            "nullable": true,
-            "format": "uri-reference",
-            "example": null
+            "type": "boolean"
           }
         },
         "required": [
+          "avatarUrl",
           "id",
           "displayName",
           "handleName",
           "privileges",
           "verification",
-          "isActivated",
-          "avatarUrl"
+          "isActivated"
         ]
       },
       "LoginResponseDto": {
         "type": "object",
         "properties": {
           "accessToken": {
-            "type": "string",
-            "readOnly": true,
-            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30"
+            "type": "string"
           },
           "adminData": {
-            "readOnly": true,
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/AdminDataDto"
-              }
-            ]
+            "$ref": "#/components/schemas/AdminDataDto"
           }
         },
         "required": [
@@ -459,38 +442,29 @@
       "ConfirmAdminRequestDto": {
         "type": "object",
         "properties": {
+          "password": {
+            "type": "string",
+            "maxLength": 256,
+            "format": "password"
+          },
           "oneTimeToken": {
-            "type": "object",
-            "description": "One time token"
+            "type": "string"
           },
           "handleName": {
             "type": "string"
-          },
-          "password": {
-            "type": "string",
-            "format": "password"
           }
         },
         "required": [
-          "oneTimeToken",
-          "password"
+          "password",
+          "oneTimeToken"
         ]
       },
       "CreateAdminRequestDto": {
         "type": "object",
         "properties": {
-          "displayName": {
-            "type": "string"
-          },
-          "handleName": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string",
-            "format": "email"
-          },
           "privileges": {
             "type": "array",
+            "minimum": 0,
             "readOnly": true,
             "example": [
               "ADMINS_MANAGE",
@@ -506,45 +480,44 @@
                 "OWNER"
               ]
             }
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "handleName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
           }
         },
         "required": [
+          "privileges",
           "displayName",
-          "email",
-          "privileges"
-        ]
-      },
-      "AdminPrivilege": {
-        "type": "string",
-        "enum": [
-          "ADMINS_MANAGE",
-          "FILE_MANAGE",
-          "BLOG_MANAGE",
-          "SUPER_ADMIN",
-          "OWNER"
+          "email"
         ]
       },
       "CreateAdminResponseDto": {
         "type": "object",
         "properties": {
           "displayName": {
-            "type": "string",
-            "readOnly": true
+            "type": "string"
           },
           "email": {
-            "type": "string",
-            "readOnly": true,
-            "format": "email"
+            "type": "string"
           },
           "privileges": {
             "type": "array",
-            "readOnly": true,
-            "example": [
-              "ADMINS_MANAGE",
-              "BLOG_MANAGE"
-            ],
             "items": {
-              "$ref": "#/components/schemas/AdminPrivilege"
+              "type": "string",
+              "enum": [
+                "ADMINS_MANAGE",
+                "FILE_MANAGE",
+                "BLOG_MANAGE",
+                "SUPER_ADMIN",
+                "OWNER"
+              ]
             }
           }
         },
@@ -569,18 +542,17 @@
       "ResetPasswordRequestDto": {
         "type": "object",
         "properties": {
-          "token": {
-            "type": "object",
-            "description": "One time token"
-          },
           "password": {
             "type": "string",
             "format": "password"
+          },
+          "token": {
+            "type": "string"
           }
         },
         "required": [
-          "token",
-          "password"
+          "password",
+          "token"
         ]
       }
     }
