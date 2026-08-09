@@ -54,4 +54,5 @@ Does this PR introduce breaking changes to the API or data structure?
 - [ ] Code is formatted and passes the linter locally.
 - [ ] The code includes appropriate tests (unit/integration) if required.
 - [ ] The `.env.example` file has been updated (if new variables have been added).
+- [ ] The `swagger.json` file has been generated again (if api changes has been made).
 - [ ] The Trello card has been moved to the "Review" column.

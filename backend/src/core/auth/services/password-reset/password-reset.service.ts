@@ -1,9 +1,9 @@
 import {
-  BadRequestException,
   Inject,
   Injectable,
   InternalServerErrorException,
   Logger,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { AuthTokenService } from '../auth-token/auth-token.service';
 import { AuthAdmin, Prisma } from '@generated/prisma-client';
@@ -19,9 +19,10 @@ import type { PasswordStrengthValidatorFn } from '@core/auth/providers/password-
 
 @Injectable()
 export class PasswordResetService {
-  private static readonly RESET_PASSWORD_TOKEN_EXPIRATION_MS = 15 * 60 * 1000;
-  private static readonly DEFAULT_RESET_PASSWORD_INTERNAL_ERR_MESSAGE: string =
+  static readonly DEFAULT_RESET_PASSWORD_INTERNAL_ERR_MESSAGE: string =
     'We encountered an unexpected problem while resetting your password. Please try again later. If the issue persists, contact our support team.';
+
+  private static readonly RESET_PASSWORD_TOKEN_EXPIRATION_MS = 15 * 60 * 1000;
 
   private readonly logger = new Logger(PasswordResetService.name);
 
@@ -120,7 +121,7 @@ export class PasswordResetService {
       this.logger.error(
         'resetPasswordByToken() method do not have needed admin data to proceed request.',
       );
-      throw new InternalServerErrorException({
+      throw new UnprocessableEntityException({
         errorCode: 'WEAK_PASSWORD',
         message: PasswordResetService.DEFAULT_RESET_PASSWORD_INTERNAL_ERR_MESSAGE,
       });
@@ -133,7 +134,7 @@ export class PasswordResetService {
     });
     const isPasswordStrong: boolean = this.isPasswordStrongValidator(dto.password, [...adminInfo]);
     if (!isPasswordStrong)
-      throw new BadRequestException(
+      throw new UnprocessableEntityException(
         'The password is too weak or contains data from an email, handle or display name.',
       );
 

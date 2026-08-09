@@ -8,8 +8,21 @@ import { setRefreshTokenCookie } from './auth-controllers-functions';
 import serverConfig from '@core/config/envs/server.config';
 import type { ConfigType } from '@nestjs/config';
 import { RefreshController } from '@core/auth/decorators';
-import { AUTH_ROUTE_PREFIX } from '@core/auth/auth.constants';
+import { AUTH_ROUTE_PREFIX, REFRESH_TOKEN_COOKIE_NAME } from '@core/auth/auth.constants';
+import {
+  ApiBadRequestResponse,
+  ApiCookieAuth,
+  ApiForbiddenResponse,
+  ApiNoContentResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
+import { errorResponseExamples } from '@shared/swagger/error-response-examples.helper';
 
+@ApiTags('Auth')
+@ApiCookieAuth(REFRESH_TOKEN_COOKIE_NAME)
 @RefreshController(AUTH_ROUTE_PREFIX)
 export class AuthRefreshController {
   constructor(
@@ -19,6 +32,15 @@ export class AuthRefreshController {
 
   @Post('refresh')
   @HttpCode(200)
+  @ApiOperation({ summary: 'Refreshes the admin session' })
+  @ApiOkResponse({ description: 'Refreshed the admin session', type: LoginResponseDto })
+  @ApiBadRequestResponse({ description: 'Invalid input data (DTO validation).' })
+  @ApiUnauthorizedResponse({
+    content: errorResponseExamples([
+      { errorCode: 'INVALID_CREDENTIALS', message: 'Invalid credentials.' },
+    ]),
+  })
+  @ApiForbiddenResponse({ description: 'Not verified email.' })
   async refreshTokens(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
@@ -41,6 +63,9 @@ export class AuthRefreshController {
 
   @Post('logout')
   @HttpCode(204)
+  @ApiOperation({ summary: 'Admin log out' })
+  @ApiNoContentResponse({ description: 'The admin has been successfully logged out' })
+  @ApiBadRequestResponse({ description: 'Invalid input data (DTO validation).' })
   async logout(@Req() req: Request): Promise<void> {
     const admin = req.user as RefreshTokenWithAdmin;
     await this.authService.logout(admin.id, admin.refreshToken);

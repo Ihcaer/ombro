@@ -15,6 +15,8 @@ export type AdminData = Pick<
 >;
 
 export type AdminPrivilegesTranslated = Exclude<keyof typeof AdminPrivileges, 'NONE'>;
-export type AdminPrivilegeTranslatedField = { privileges: AdminPrivilegesTranslated[] };
+export interface AdminPrivilegeTranslatedField {
+  privileges: AdminPrivilegesTranslated[];
+}
 
 export type AdminAvatarUrlField = { avatarUrl: string | null };

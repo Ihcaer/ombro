@@ -30,7 +30,7 @@ import type { PasswordStrengthValidatorFn } from '@core/auth/providers/password-
 @Injectable()
 export class AdminRegistrationService {
   private static readonly REGISTER_TOKEN_EXPIRATION_MS = 24 * 60 * 60 * 1000;
-  private static readonly POSSIBLE_COLUMNS_TO_FILL_OUT: (keyof PossibleFieldsToFill)[] = [
+  static readonly POSSIBLE_COLUMNS_TO_FILL_OUT: (keyof PossibleFieldsToFill)[] = [
     'password',
     'handleName',
   ];
@@ -150,7 +150,7 @@ export class AdminRegistrationService {
       await this.authAdminRepository.deleteOneTimeTokenById(tokenContext.id);
       throw new UnprocessableEntityException({
         message: 'Account is not waiting for verification',
-        reason: 'VERIFICATION_IS_NOT_CAPABLE',
+        errorCode: 'VERIFICATION_IS_NOT_CAPABLE',
       });
     }
 
