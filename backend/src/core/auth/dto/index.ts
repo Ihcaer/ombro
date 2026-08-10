@@ -1,6 +1,5 @@
-export * from './admin-data.dto';
 export * from './admin.dto';
-export * from './confirm-admin-account-form-field.dto';
+export * from './confirm-admin-account-form-field-response.dto';
 export * from './confirm-admin-request.dto';
 export * from './create-admin-request.dto';
 export * from './create-admin-response.dto';

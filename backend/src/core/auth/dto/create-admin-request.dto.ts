@@ -6,7 +6,7 @@ import { Transform } from 'class-transformer';
 import { PrivilegesUtils } from '../utils/privileges.utils';
 import { ApiProperty } from '@nestjs/swagger';
 import { enumKeysWithout } from '@shared/swagger/enum-keys-without.helper';
-import { AdminDataDto } from './admin-data.dto';
+import { AdminDto } from './admin.dto';
 import { AdminPrivileges } from '../enums/admin-privileges';
 
 export class CreateAdminRequestDto
@@ -31,10 +31,9 @@ export class CreateAdminRequestDto
   readonly email!: string;
 
   @ApiProperty({
-    readOnly: true,
-    enum: enumKeysWithout(AdminPrivileges, AdminDataDto.EXCLUDED_PRIVILEGES),
+    enum: enumKeysWithout(AdminPrivileges, AdminDto.EXCLUDED_PRIVILEGES),
     isArray: true,
-    example: AdminDataDto.SAMPLE_ADMIN_PRIVILEGES,
+    example: AdminDto.SAMPLE_ADMIN_PRIVILEGES,
   })
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   @Transform(({ value }) => PrivilegesUtils.arrayToBitmask(value), { toClassOnly: true })

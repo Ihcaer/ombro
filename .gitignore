@@ -4,6 +4,9 @@ dist
 # dependencies
 node_modules
 
+# generated code
+generated/
+
 # IDE - VSCode
 .vscode/*
 !.vscode/settings.json
@@ -18,9 +21,6 @@ node_modules
 
 # backend
 /backend/src/metadata.ts
-
-# Prisma
-generated/
 
 # gateway
 **/nginx/ssl/certificates/

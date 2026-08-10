@@ -1,5 +1,5 @@
 import {
-  ConfirmAdminAccountFormFieldDto,
+  ConfirmAdminAccountFormFieldResponseDto,
   ConfirmAdminRequestDto,
   CreateAdminRequestDto,
   CreateAdminResponseDto,
@@ -132,7 +132,9 @@ export class AdminRegistrationService {
     }
   }
 
-  async getFormFieldsToConfirm(inputToken: string): Promise<ConfirmAdminAccountFormFieldDto> {
+  async getFormFieldsToConfirm(
+    inputToken: string,
+  ): Promise<ConfirmAdminAccountFormFieldResponseDto> {
     const possibleFieldsToFillOut = [...AdminRegistrationService.POSSIBLE_COLUMNS_TO_FILL_OUT];
 
     const tokenContext: OneTimeTokenContext = await this.tokenService.fetchTokenContext(
@@ -154,7 +156,7 @@ export class AdminRegistrationService {
       });
     }
 
-    return fieldsToFillOut;
+    return { fields: fieldsToFillOut };
   }
 
   async accountConfirmation(dto: ConfirmAdminRequestDto): Promise<void> {
@@ -166,7 +168,7 @@ export class AdminRegistrationService {
       'REGISTER',
       [...adminFields],
     );
-    const handleName: string = (dto.handleName || tokenContext.admin?.handleName) as string;
+    const handleName = (dto.handleName || tokenContext.admin?.handleName) as string;
 
     await this.tokenService.validateOneTimeToken(tokenContext, 'REGISTER');
 

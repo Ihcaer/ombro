@@ -16,7 +16,7 @@ import { AuthAdminRepository } from '../../auth-admin.repository';
 import { TokenExpirationFactory } from '../../factories/token-expiration.factory';
 import { SignInResponse } from '../../types/common.types';
 import { AdminAvatarUrlField, AdminData, Identifier } from '@core/auth/types/admin.types';
-import { LoginRequestDto } from '@core/auth/dto';
+import { AdminDto, LoginRequestDto } from '@core/auth/dto';
 import { PASSWORD_SALT_ROUNDS } from '@core/auth/auth.constants';
 import { PrivilegesUtils } from '@core/auth/utils/privileges.utils';
 
@@ -62,12 +62,16 @@ export class AuthService implements OnModuleInit {
           'Your email address has not been verified. Please check your inbox for the verification link.',
       });
     }
-    if (!admin || !admin.password || !isPasswordValid) throwLoginError();
+    if (!admin || !admin.password || !isPasswordValid || !admin.handleName) throwLoginError();
 
     const { password: _password, avatarFileId, ...adminWithoutPassword } = admin!;
     const avatarUrl: AdminAvatarUrlField['avatarUrl'] = avatarFileId === null ? avatarFileId : null;
 
-    return this.issueTokens({ ...adminWithoutPassword, avatarUrl });
+    return this.issueTokens({
+      ...adminWithoutPassword,
+      handleName: adminWithoutPassword.handleName!,
+      avatarUrl,
+    });
   }
 
   async loginWithRefreshToken(
@@ -75,7 +79,7 @@ export class AuthService implements OnModuleInit {
     refreshToken: string,
   ): Promise<SignInResponse> {
     const data = await this.adminRepository.findAdminAndRefreshTokensById(adminId);
-    if (!data || data.refreshTokens.length === 0) throwLoginError();
+    if (!data || data.refreshTokens.length === 0 || !data.handleName) throwLoginError();
 
     const { refreshTokens, avatarFileId, ...admin } = data!;
 
@@ -88,7 +92,7 @@ export class AuthService implements OnModuleInit {
     );
     if (!isTokenValid) throwLoginError();
 
-    return this.issueTokens({ ...admin, avatarUrl });
+    return this.issueTokens({ ...admin, handleName: admin.handleName!, avatarUrl });
   }
 
   async logout(adminId: AdminData['id'], refreshToken: string): Promise<void> {
@@ -108,7 +112,7 @@ export class AuthService implements OnModuleInit {
   }
 
   private async issueTokens(
-    admin: Omit<AdminData, 'avatarFileId'> & AdminAvatarUrlField,
+    admin: Omit<AdminDto, 'privileges'> & { privileges: AdminData['privileges'] },
   ): Promise<SignInResponse> {
     const tokenExpirationTimes = TokenExpirationFactory.create();
     const accessPayload: AccessJwtPayload = {

@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { DocumentBuilder, SwaggerDocumentOptions, SwaggerModule } from '@nestjs/swagger';
 import path from 'node:path';
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -32,7 +32,11 @@ async function generateSwaggerSpec() {
     )
     .build();
 
-  const document = SwaggerModule.createDocument(app, config);
+  const options: SwaggerDocumentOptions = {
+    operationIdFactory: (controllerKey: string, methodKey) => `${controllerKey}_${methodKey}`,
+  };
+
+  const document = SwaggerModule.createDocument(app, config, options);
 
   const outputDir = path.resolve(process.cwd(), '..', 'contracts');
   const outputPath = path.join(outputDir, 'swagger.json');

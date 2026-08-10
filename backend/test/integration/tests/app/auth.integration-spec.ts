@@ -113,7 +113,7 @@ describe('Auth Module', () => {
 
       expect(newAdmin).toBeDefined();
       expect(token).toBeDefined();
-      expect(confirmAccountFormRes.body).toEqual(['password']);
+      expect(confirmAccountFormRes.body).toEqual({ fields: ['password'] });
       expect(loginResCookies).toBeDefined();
       expect(loginResCookies!.some((cookie) => cookie.includes('refresh_token'))).toBe(true);
       expect(loginResBody.adminData).toEqual(loginExpectedBody.adminData);

@@ -2,7 +2,7 @@ import { AUTH_ROUTE_PREFIX } from '@core/auth/auth.constants';
 import { PublicController } from '@core/auth/decorators';
 import {
   FieldsToConfirmAccountRequestDto,
-  ConfirmAdminAccountFormFieldDto,
+  ConfirmAdminAccountFormFieldResponseDto,
   ConfirmAdminRequestDto,
 } from '@core/auth/dto';
 import { AdminRegistrationService } from '@core/auth/services/admin-registration/admin-registration.service';
@@ -12,10 +12,8 @@ import {
   ApiBadRequestResponse,
   ApiInternalServerErrorResponse,
   ApiNoContentResponse,
-  ApiOkResponse,
   ApiParam,
   ApiTags,
-  ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
 
 @ApiTags('AuthRegistration')
@@ -28,17 +26,9 @@ export class RegistrationPublicController {
    */
   @Get('invite/:token')
   @ApiParam({ name: 'token', type: String, description: 'One time token' })
-  @ApiOkResponse({
-    description: 'Sent form fields',
-    schema: {
-      type: 'array',
-      items: { type: 'string', enum: AdminRegistrationService.POSSIBLE_COLUMNS_TO_FILL_OUT },
-    },
-  })
-  @ApiUnprocessableEntityResponse({ description: 'Account is not waiting for verification.' })
   async getFieldsToConfirmAccount(
     @Param() params: FieldsToConfirmAccountRequestDto,
-  ): Promise<ConfirmAdminAccountFormFieldDto> {
+  ): Promise<ConfirmAdminAccountFormFieldResponseDto> {
     return await this.adminRegistrationService.getFormFieldsToConfirm(params.token);
   }
 

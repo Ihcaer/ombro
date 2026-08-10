@@ -153,24 +153,14 @@
         ],
         "responses": {
           "200": {
-            "description": "Sent form fields",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string",
-                    "enum": [
-                      "password",
-                      "handleName"
-                    ]
-                  }
+                  "$ref": "#/components/schemas/ConfirmAdminAccountFormFieldResponseDto"
                 }
               }
             }
-          },
-          "422": {
-            "description": "Account is not waiting for verification."
           }
         },
         "summary": "Sends form fields needed to finalize registration.",
@@ -370,12 +360,11 @@
           "password"
         ]
       },
-      "AdminDataDto": {
+      "AdminDto": {
         "type": "object",
         "properties": {
           "avatarUrl": {
             "type": "string",
-            "readOnly": true,
             "nullable": true,
             "format": "uri-reference",
             "example": null
@@ -387,7 +376,7 @@
             "type": "string"
           },
           "handleName": {
-            "type": "object"
+            "type": "string"
           },
           "privileges": {
             "type": "array",
@@ -431,12 +420,30 @@
             "type": "string"
           },
           "adminData": {
-            "$ref": "#/components/schemas/AdminDataDto"
+            "$ref": "#/components/schemas/AdminDto"
           }
         },
         "required": [
           "accessToken",
           "adminData"
+        ]
+      },
+      "ConfirmAdminAccountFormFieldResponseDto": {
+        "type": "object",
+        "properties": {
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "handleName",
+                "password"
+              ]
+            }
+          }
+        },
+        "required": [
+          "fields"
         ]
       },
       "ConfirmAdminRequestDto": {
@@ -465,7 +472,6 @@
           "privileges": {
             "type": "array",
             "minimum": 0,
-            "readOnly": true,
             "example": [
               "ADMINS_MANAGE",
               "BLOG_MANAGE"

@@ -14,6 +14,8 @@ export type AdminData = Pick<
   | 'isActivated'
 >;
 
+export type AdminWithPassword = Readonly<AdminData & Pick<AuthAdmin, 'password'>>;
+
 export type AdminPrivilegesTranslated = Exclude<keyof typeof AdminPrivileges, 'NONE'>;
 export interface AdminPrivilegeTranslatedField {
   privileges: AdminPrivilegesTranslated[];

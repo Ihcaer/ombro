@@ -1,7 +1,7 @@
-import { AdminDataDto } from './admin-data.dto';
+import { AdminDto } from './admin.dto';
 
 export class LoginResponseDto {
   readonly accessToken!: string;
 
-  readonly adminData!: AdminDataDto;
+  readonly adminData!: AdminDto;
 }

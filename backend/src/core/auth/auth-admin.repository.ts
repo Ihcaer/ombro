@@ -1,8 +1,7 @@
-import { Prisma } from '@generated/prisma-client';
+import { AuthAdmin, Prisma } from '@generated/prisma-client';
 import { Injectable } from '@nestjs/common';
 import { AdminData, Identifier } from './types/admin.types';
 import { PrismaService } from '@core/database/prisma/prisma.service';
-import { AdminDto } from './dto/admin.dto';
 import { RefreshTokenMetadata, RefreshTokenMetadataTable } from './types/jwt.types';
 
 @Injectable()
@@ -12,7 +11,7 @@ export class AuthAdminRepository {
   async findAdminByIdentifier(
     identifier: string,
     identifierType: Identifier,
-  ): Promise<AdminDto | null> {
+  ): Promise<AdminWithPassword | null> {
     const whereClause = {
       [identifierType]: identifier,
     } as unknown as Prisma.AuthAdminWhereUniqueInput;
@@ -115,3 +114,16 @@ export class AuthAdminRepository {
     return result.count;
   }
 }
+export type AdminWithPassword = Readonly<
+  Pick<
+    AuthAdmin,
+    | 'id'
+    | 'displayName'
+    | 'handleName'
+    | 'avatarFileId'
+    | 'password'
+    | 'privileges'
+    | 'verification'
+    | 'isActivated'
+  >
+>;
