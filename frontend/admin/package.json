@@ -5,6 +5,7 @@
   "author": "Ihcaer (https://github.com/Ihcaer)",
   "license": "UNLICENSED",
   "scripts": {
+    "postinstall": "npm run generate-api",
     "serve": "npx nx serve admin-panel",
     "test": "npx nx run-many --target=test --all",
     "test:parallel": "nx run-many --target=test --all --parallel",
@@ -15,6 +16,7 @@
     "test:e2e": "nx e2e admin-panel-e2e",
     "test:e2e:local:ui": "nx e2e admin-panel-e2e --ui --skip-nx-cache",
     "build:prod": "nx build admin-panel -c production --skip-nx-cache",
+    "generate-api": "nx run api-client:generate",
     "targets": "npx nx show project admin-panel"
   },
   "private": true,
@@ -79,6 +81,7 @@
     "jiti": "2.4.2",
     "jsdom": "~22.1.0",
     "nx": "22.5.2",
+    "orval": "^8.24.0",
     "prettier": "~3.6.2",
     "prettier-plugin-tailwindcss": "^0.4.1",
     "tslib": "^2.3.0",

@@ -4,9 +4,11 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm ci
+RUN npm ci --ignore-scripts
 
 COPY . .
+
+RUN npm run generate-api
 
 RUN npm run build:prod
 

@@ -22,7 +22,6 @@ describe('apiPrefixInterceptor', () => {
     vi.spyOn(environment, 'api', 'get').mockReturnValue({
       domain: '',
       baseUrl: '/api/v1',
-      endpoints: { public: 'public', admin: 'admin' },
     });
   });
 
@@ -33,7 +32,7 @@ describe('apiPrefixInterceptor', () => {
 
   it('should add a prefix with predictable environment values', () => {
     const mockRequestPath = '/users';
-    const expectedRequestPath = '/api/v1/public' + mockRequestPath;
+    const expectedRequestPath = '/api/v1' + mockRequestPath;
 
     http.get(mockRequestPath).subscribe();
 
@@ -49,13 +48,11 @@ describe('apiPrefixInterceptor', () => {
     ({ domain, expectedProtocol }) => {
       const mockRequestPath = 'users';
       const baseUrl = 'api/v1';
-      const publicEndpoint = 'public';
-      const expectedRequestPath = `${expectedProtocol}://${domain}/${baseUrl}/${publicEndpoint}/${mockRequestPath}`;
+      const expectedRequestPath = `${expectedProtocol}://${domain}/${baseUrl}/${mockRequestPath}`;
 
       vi.spyOn(environment, 'api', 'get').mockReturnValue({
         domain: domain,
         baseUrl: baseUrl,
-        endpoints: { public: publicEndpoint, admin: 'admin' },
       });
 
       http.get(mockRequestPath).subscribe();
