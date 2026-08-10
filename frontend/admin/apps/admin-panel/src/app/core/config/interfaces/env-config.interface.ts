@@ -3,7 +3,6 @@ export interface EnvConfig {
   readonly api: {
     readonly domain: string;
     readonly baseUrl: string;
-    readonly endpoints: { readonly public: string; readonly admin: string };
   };
   readonly coreFeatures: {};
   readonly addonFeatures: {};

@@ -1,12 +1,7 @@
-import {
-  AdminAvatarUrlField,
-  AdminData,
-  AdminPrivilegeTranslatedField,
-} from '../types/admin.types';
+import { AdminDto } from './admin.dto';
 
-export type LoginResponseDto = {
-  readonly accessToken: string;
-  readonly adminData: Omit<AdminData, 'privileges' | 'avatarFileId'> &
-    AdminPrivilegeTranslatedField &
-    AdminAvatarUrlField;
-};
+export class LoginResponseDto {
+  readonly accessToken!: string;
+
+  readonly adminData!: AdminDto;
+}

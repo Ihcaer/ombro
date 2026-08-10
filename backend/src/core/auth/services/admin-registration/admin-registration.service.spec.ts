@@ -6,6 +6,7 @@ import { OneTimeTokenContext } from '@core/auth/types/one-time-token.types';
 import { BadRequestException } from '@nestjs/common';
 import { AuthAdmin, AuthOneTimeToken } from '@generated/prisma-client';
 import {
+  ConfirmAdminAccountFormFieldResponseDto,
   ConfirmAdminRequestDto,
   CreateAdminRequestDto,
   CreateAdminResponseDto,
@@ -154,7 +155,7 @@ describe('AdminRegistrationService', () => {
             handleName: 'handle',
           },
         };
-        const expectedResult = ['password'];
+        const expectedResult: ConfirmAdminAccountFormFieldResponseDto = { fields: ['password'] };
 
         mockFindToken(tokenContext);
 

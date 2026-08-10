@@ -4,6 +4,9 @@ dist
 # dependencies
 node_modules
 
+# generated code
+generated/
+
 # IDE - VSCode
 .vscode/*
 !.vscode/settings.json
@@ -16,8 +19,8 @@ node_modules
 .env.local
 .env.test
 
-# Prisma
-generated/
+# backend
+/backend/src/metadata.ts
 
 # gateway
 **/nginx/ssl/certificates/

@@ -14,7 +14,11 @@ export type AdminData = Pick<
   | 'isActivated'
 >;
 
+export type AdminWithPassword = Readonly<AdminData & Pick<AuthAdmin, 'password'>>;
+
 export type AdminPrivilegesTranslated = Exclude<keyof typeof AdminPrivileges, 'NONE'>;
-export type AdminPrivilegeTranslatedField = { privileges: AdminPrivilegesTranslated[] };
+export interface AdminPrivilegeTranslatedField {
+  privileges: AdminPrivilegesTranslated[];
+}
 
 export type AdminAvatarUrlField = { avatarUrl: string | null };

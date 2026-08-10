@@ -3,10 +3,6 @@ import { OneTimeTokenStore } from '@ombro/admin-panel/app/shared/data-access/one
 import { AuthPageBase } from '../auth-page-base';
 import { ActivatedRoute } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import {
-  FinalizeAdminRegistrationRequestDto,
-  RegistrationEligibilityResponseDto,
-} from '@ombro/admin-panel/app/core/auth/dto/admin-register.dtos';
 import { PASSWORD_STRENGTH_THRESHOLD } from '@ombro/admin-panel/app/core/tokens/security.tokens';
 import { PasswordStrengthScore } from '@ombro/shared/utils/password-strength';
 import {
@@ -19,6 +15,10 @@ import { AuthWrapperComponent } from '../../components/auth-wrapper/auth-wrapper
 import { FormButtonsComponent } from '../../components/form-buttons/form-buttons.component';
 import { REGEX_PATTERNS } from '@ombro/admin-panel/app/shared/tokens/pattern.tokens';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import {
+  ConfirmAdminAccountFormFieldResponseDto,
+  ConfirmAdminRequestDto,
+} from '@ombro/shared/data-access/api-client';
 
 @Component({
   selector: 'app-finalize-registration',
@@ -45,7 +45,7 @@ export class FinalizeRegistrationComponent extends AuthPageBase implements OnIni
   protected progressSpinnerAriaLabel = signal<string>('Ładowanie');
 
   protected registrationForm = new FormGroup({});
-  protected neededFormFields: RegistrationEligibilityResponseDto = [];
+  protected neededFormFields: ConfirmAdminAccountFormFieldResponseDto['fields'] = [];
   protected readonly CONFIRM_PASSWORD_FIELD_NAME = 'confirmPassword';
 
   private passwordStrengthScore: PasswordStrengthScore = 0;
@@ -66,7 +66,7 @@ export class FinalizeRegistrationComponent extends AuthPageBase implements OnIni
       this.authStore.finalizeAdminRegistration({
         oneTimeToken: token,
         ...formPayload,
-      } as FinalizeAdminRegistrationRequestDto);
+      } as ConfirmAdminRequestDto);
     } else {
       this.registrationForm.markAllAsTouched();
     }
@@ -81,7 +81,10 @@ export class FinalizeRegistrationComponent extends AuthPageBase implements OnIni
     if (this.tokenStore.hasToken() && this.tokenStore.type() === 'url_magic_link') {
       const token: string = this.tokenStore.oneTimeToken()!;
       this.authStore.checkRegistrationEligibility(token).then((res) => {
-        this.neededFormFields.push(...res!);
+        if (res?.fields) {
+          const clonedFields = structuredClone(res.fields);
+          this.neededFormFields.push(...clonedFields);
+        }
       });
     }
   }

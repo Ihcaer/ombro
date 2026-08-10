@@ -1,6 +1,7 @@
 import { AuthAdmin } from '@generated/prisma-client';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { IsOneTimeToken } from '../decorators';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class ResetPasswordRequestDto implements Pick<AuthAdmin, 'password'> {
   @IsString()
@@ -9,6 +10,7 @@ export class ResetPasswordRequestDto implements Pick<AuthAdmin, 'password'> {
   readonly token!: Base64URLString;
 
   // password strength is checked in the service
+  @ApiProperty({ format: 'password' })
   @IsString()
   @IsNotEmpty()
   readonly password!: string;

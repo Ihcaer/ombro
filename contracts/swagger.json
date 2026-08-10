@@ -1,0 +1,566 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/public/auth/login": {
+      "post": {
+        "operationId": "AuthPublicController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Admin has been logged",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data (DTO validation)."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "INVALID_CREDENTIALS": {
+                    "value": {
+                      "errorCode": "INVALID_CREDENTIALS",
+                      "message": "Invalid credentials."
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "EMAIL_NOT_VERIFIED": {
+                    "value": {
+                      "errorCode": "EMAIL_NOT_VERIFIED",
+                      "message": "Your email address has not been verified. Please check your inbox for the verification link."
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "Logs in the admin user.",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/admin/auth/refresh": {
+      "post": {
+        "operationId": "AuthRefreshController_refreshTokens",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Refreshed the admin session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data (DTO validation)."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "INVALID_CREDENTIALS": {
+                    "value": {
+                      "errorCode": "INVALID_CREDENTIALS",
+                      "message": "Invalid credentials."
+                    }
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "description": "Not verified email."
+          }
+        },
+        "security": [
+          {
+            "refresh_token": []
+          }
+        ],
+        "summary": "Refreshes the admin session.",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/admin/auth/logout": {
+      "post": {
+        "operationId": "AuthRefreshController_logout",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": "The admin has been successfully logged out"
+          },
+          "400": {
+            "description": "Invalid input data (DTO validation)."
+          }
+        },
+        "security": [
+          {
+            "refresh_token": []
+          }
+        ],
+        "summary": "Admin log out.",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/public/auth/register/invite/{token}": {
+      "get": {
+        "operationId": "RegistrationPublicController_getFieldsToConfirmAccount",
+        "parameters": [
+          {
+            "name": "token",
+            "required": true,
+            "in": "path",
+            "description": "One time token",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfirmAdminAccountFormFieldResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Sends form fields needed to finalize registration.",
+        "tags": [
+          "AuthRegistration"
+        ]
+      }
+    },
+    "/public/auth/register/confirm": {
+      "patch": {
+        "operationId": "RegistrationPublicController_confirmAdmin",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmAdminRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Account confirmed"
+          },
+          "400": {
+            "description": "Password does not meet the requirements."
+          },
+          "500": {
+            "description": "Unexpected server error."
+          }
+        },
+        "summary": "Confirms admin account.",
+        "tags": [
+          "AuthRegistration"
+        ]
+      }
+    },
+    "/admin/auth/register/create-admin": {
+      "post": {
+        "operationId": "RegistrationAdminController_createAdmin",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAdminRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created admin account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateAdminResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Email in use."
+          },
+          "500": {
+            "description": "Unexpected server error."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Creates admin account.",
+        "tags": [
+          "AuthRegistration"
+        ]
+      }
+    },
+    "/public/auth/recovery/forgot": {
+      "post": {
+        "operationId": "PasswordResetController_requestPasswordReset",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForgotPasswordRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "An email with a link has been sent if the account exists in the system"
+          },
+          "500": {
+            "description": "Unexpected server error."
+          }
+        },
+        "summary": "Requests the password reset.",
+        "tags": [
+          "AuthPasswordReset"
+        ]
+      }
+    },
+    "/public/auth/recovery/reset": {
+      "post": {
+        "operationId": "PasswordResetController_passwordReset",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Password reset"
+          },
+          "422": {
+            "description": "Password does not meet the requirements.",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "WEAK_PASSWORD": {
+                    "value": {
+                      "errorCode": "WEAK_PASSWORD",
+                      "message": "We encountered an unexpected problem while resetting your password. Please try again later. If the issue persists, contact our support team."
+                    }
+                  },
+                  "Error_2": {
+                    "value": {
+                      "message": "The password is too weak or contains data from an email, handle or display name."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected server error."
+          }
+        },
+        "summary": "Resets password.",
+        "tags": [
+          "AuthPasswordReset"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "API documentation",
+    "description": "REST API documentation for the application.",
+    "version": "0.1",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      },
+      "refresh_token": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "refresh_token",
+        "description": "Cookie with refresh token"
+      }
+    },
+    "schemas": {
+      "LoginRequestDto": {
+        "type": "object",
+        "properties": {
+          "identifier": {
+            "type": "string",
+            "description": "Email or handle"
+          },
+          "password": {
+            "type": "string",
+            "format": "password"
+          }
+        },
+        "required": [
+          "identifier",
+          "password"
+        ]
+      },
+      "AdminDto": {
+        "type": "object",
+        "properties": {
+          "avatarUrl": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri-reference",
+            "example": null
+          },
+          "id": {
+            "type": "number"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "handleName": {
+            "type": "string"
+          },
+          "privileges": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "ADMINS_MANAGE",
+                "FILE_MANAGE",
+                "BLOG_MANAGE",
+                "SUPER_ADMIN",
+                "OWNER"
+              ]
+            }
+          },
+          "verification": {
+            "type": "string",
+            "enum": [
+              "VERIFIED",
+              "WAITING",
+              "NON_VERIFIED"
+            ]
+          },
+          "isActivated": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "avatarUrl",
+          "id",
+          "displayName",
+          "handleName",
+          "privileges",
+          "verification",
+          "isActivated"
+        ]
+      },
+      "LoginResponseDto": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string"
+          },
+          "adminData": {
+            "$ref": "#/components/schemas/AdminDto"
+          }
+        },
+        "required": [
+          "accessToken",
+          "adminData"
+        ]
+      },
+      "ConfirmAdminAccountFormFieldResponseDto": {
+        "type": "object",
+        "properties": {
+          "fields": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "handleName",
+                "password"
+              ]
+            }
+          }
+        },
+        "required": [
+          "fields"
+        ]
+      },
+      "ConfirmAdminRequestDto": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string",
+            "maxLength": 256,
+            "format": "password"
+          },
+          "oneTimeToken": {
+            "type": "string"
+          },
+          "handleName": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "password",
+          "oneTimeToken"
+        ]
+      },
+      "CreateAdminRequestDto": {
+        "type": "object",
+        "properties": {
+          "privileges": {
+            "type": "array",
+            "minimum": 0,
+            "example": [
+              "ADMINS_MANAGE",
+              "BLOG_MANAGE"
+            ],
+            "items": {
+              "type": "string",
+              "enum": [
+                "ADMINS_MANAGE",
+                "FILE_MANAGE",
+                "BLOG_MANAGE",
+                "SUPER_ADMIN",
+                "OWNER"
+              ]
+            }
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "handleName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          }
+        },
+        "required": [
+          "privileges",
+          "displayName",
+          "email"
+        ]
+      },
+      "CreateAdminResponseDto": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "privileges": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "ADMINS_MANAGE",
+                "FILE_MANAGE",
+                "BLOG_MANAGE",
+                "SUPER_ADMIN",
+                "OWNER"
+              ]
+            }
+          }
+        },
+        "required": [
+          "displayName",
+          "email",
+          "privileges"
+        ]
+      },
+      "ForgotPasswordRequestDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "ResetPasswordRequestDto": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string",
+            "format": "password"
+          },
+          "token": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "password",
+          "token"
+        ]
+      }
+    }
+  }
+}

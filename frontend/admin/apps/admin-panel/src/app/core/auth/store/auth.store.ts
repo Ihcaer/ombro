@@ -8,9 +8,18 @@ import {
   withState,
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { AuthService } from '../auth.service';
+import {
+  AuthPasswordResetService,
+  AuthRegistrationService,
+  AuthService,
+  ConfirmAdminAccountFormFieldResponseDto,
+  ConfirmAdminRequestDto,
+  ForgotPasswordRequestDto,
+  LoginRequestDto,
+  LoginResponseDto,
+  ResetPasswordRequestDto,
+} from '@ombro/shared/data-access/api-client';
 import { computed, inject } from '@angular/core';
-import { LoginRequestDto, LoginResponseDto } from '../dto/login.dtos';
 import {
   catchError,
   EMPTY,
@@ -27,16 +36,7 @@ import { tapResponse } from '@ngrx/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthStateInternalError, initialState } from './auth.state';
 import { getAccessTokenExpirationTimeMs, loginPagePath } from './common';
-import {
-  RequestPasswordResetRequestDto,
-  ResetPasswordRequestDto,
-} from '../dto/reset-password.dtos';
 import { isActive, NavigationEnd, Router } from '@angular/router';
-import {
-  FinalizeAdminRegistrationRequestDto,
-  RegistrationEligibilityRequestDto,
-  RegistrationEligibilityResponseDto,
-} from '../dto/admin-register.dtos';
 import { AdminPrivileges } from '../types/admin-data.types';
 import { PANEL_PATHS } from '@ombro/admin-panel/app/features/panel/panel-paths';
 import { AUTH_PAGE_PATHS, AUTH_PATH_SLUG } from '@ombro/admin-panel/app/features/auth/auth-paths';
@@ -48,6 +48,8 @@ export const AuthStore = signalStore(
   withState(getInitialState),
   withProps(() => {
     const authService = inject(AuthService);
+    const authPasswordResetService = inject(AuthPasswordResetService);
+    const authRegistrationService = inject(AuthRegistrationService);
     const router = inject(Router);
 
     const authPath = '/' + AUTH_PATH_SLUG;
@@ -65,7 +67,14 @@ export const AuthStore = signalStore(
       fragment: 'ignored',
     });
 
-    return { authService, router, isAuthPage, isLoginPage };
+    return {
+      authService,
+      authPasswordResetService,
+      authRegistrationService,
+      router,
+      isAuthPage,
+      isLoginPage,
+    };
   }),
   withMethods((store) => ({
     _updateAuthState(response: LoginResponseDto): void {
@@ -107,6 +116,8 @@ export const AuthStore = signalStore(
   withMethods(
     ({
       authService,
+      authPasswordResetService,
+      authRegistrationService,
       router,
       isLoading,
       admin,
@@ -138,7 +149,7 @@ export const AuthStore = signalStore(
 
         _startRequest();
 
-        return authService.refreshToken().pipe(
+        return authService.refreshTokens().pipe(
           tapResponse({
             next: (res) => _updateAuthState(res),
             error: (error) => {
@@ -168,11 +179,11 @@ export const AuthStore = signalStore(
         ),
       ),
       // Reset password methods
-      requestPasswordReset: rxMethod<RequestPasswordResetRequestDto>(
+      requestPasswordReset: rxMethod<ForgotPasswordRequestDto>(
         pipe(
           tap(() => _startRequest()),
           exhaustMap((data) =>
-            authService.requestPasswordReset(data).pipe(
+            authPasswordResetService.requestPasswordReset(data).pipe(
               tapResponse({
                 next: () => _cancelLoading(),
                 error: (err: HttpErrorResponse) => _setResponseError(err),
@@ -185,7 +196,7 @@ export const AuthStore = signalStore(
         pipe(
           tap(() => _startRequest()),
           exhaustMap((data) =>
-            authService.resetPassword(data).pipe(
+            authPasswordResetService.passwordReset(data).pipe(
               tapResponse({
                 next: () => _cancelLoading(),
                 error: (err: HttpErrorResponse) => _setResponseError(err),
@@ -196,22 +207,22 @@ export const AuthStore = signalStore(
       ),
       // Finalize registration methods
       async checkRegistrationEligibility(
-        payload: RegistrationEligibilityRequestDto,
-      ): Promise<RegistrationEligibilityResponseDto | undefined> {
+        token: string,
+      ): Promise<ConfirmAdminAccountFormFieldResponseDto | undefined> {
         _startRequest();
 
         try {
-          return await firstValueFrom(authService.checkRegistrationEligibility(payload));
+          return await firstValueFrom(authRegistrationService.getFieldsToConfirmAccount(token));
         } catch (error: unknown) {
           if (error instanceof HttpErrorResponse) _setResponseError(error);
           return;
         }
       },
-      finalizeAdminRegistration: rxMethod<FinalizeAdminRegistrationRequestDto>(
+      finalizeAdminRegistration: rxMethod<ConfirmAdminRequestDto>(
         pipe(
           tap(() => _startRequest()),
           exhaustMap((payload) =>
-            authService.finalizeAdminRegistration(payload).pipe(
+            authRegistrationService.confirmAdmin(payload).pipe(
               tapResponse({
                 next: () => _cancelLoading(),
                 error: (err: HttpErrorResponse) => _setResponseError(err),

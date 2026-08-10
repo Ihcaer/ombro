@@ -1,13 +1,15 @@
-export type AdminPrivilege =
+/* export type AdminPrivilege =
   | 'ADMINS_MANAGE'
   | 'FILE_MANAGE'
   | 'BLOG_MANAGE'
   | 'SUPER_ADMIN'
-  | 'OWNER';
+  | 'OWNER'; */
 
-export type AdminPrivileges = Set<AdminPrivilege>;
+import { AdminDtoPrivilegesItem } from '@ombro/shared/data-access/api-client';
 
-export type AdminVerification = 'VERIFIED' | 'WAITING' | 'NON_VERIFIED';
+export type AdminPrivileges = Set<AdminDtoPrivilegesItem>;
+
+/* export type AdminVerification = 'VERIFIED' | 'WAITING' | 'NON_VERIFIED';
 
 export type Admin = {
   id: number;
@@ -18,6 +20,6 @@ export type Admin = {
   verification: AdminVerification;
   isActivated: boolean;
   email?: string;
-};
+}; */
 
 export type AdminPassword = string;

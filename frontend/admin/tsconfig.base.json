@@ -18,15 +18,14 @@
       "@ombro/admin-panel/*": ["./apps/admin-panel/src/*"],
       "@ombro/themes": ["./libs/themes/src/index.ts"],
       "@ombro/shared/breadcrumb": ["./libs/shared/breadcrumb/src/index.ts"],
-      // Util libs
       "@ombro/shared/utils/util-id": ["./libs/shared/utils/util-id/src/index.ts"],
       "@ombro/shared/utils/password-strength": [
         "./libs/shared/utils/password-strength/src/index.ts"
       ],
-      // UI libs
       "@ombro/shared/ui/ui-forms": ["./libs/shared/ui/ui-forms/src/index.ts"],
       "@ombro/shared/ui/ui-icons": ["./libs/shared/ui/ui-icons/src/index.ts"],
-      "@ombro/shared/ui/ui-primitives": ["./libs/shared/ui/ui-primitives/src/index.ts"]
+      "@ombro/shared/ui/ui-primitives": ["./libs/shared/ui/ui-primitives/src/index.ts"],
+      "@ombro/shared/data-access/api-client": ["./libs/shared/data-access/api-client/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

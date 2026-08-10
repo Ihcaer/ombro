@@ -1,10 +1,10 @@
 import { RegexPatternRule } from '@ombro/shared/ui/ui-forms';
-import { Admin } from '../../core/auth/types/admin-data.types';
 import { InjectionToken } from '@angular/core';
+import { AdminDto } from '@ombro/shared/data-access/api-client';
 
 type RegexMap<T> = Partial<Record<keyof T, RegexPatternRule>>;
 
-const AUTH_PATTERNS: RegexMap<Admin> = {
+const AUTH_PATTERNS: RegexMap<AdminDto & { email: string }> = {
   email: { forbiddenChars: [' '], regex: /^\S*$/ },
   handleName: { forbiddenChars: ['@', ' '], regex: /^[^@ ]*$/ },
 } as const;

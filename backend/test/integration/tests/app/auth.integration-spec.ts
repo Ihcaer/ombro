@@ -1,5 +1,6 @@
 import request from 'supertest';
 import {
+  ConfirmAdminAccountFormFieldResponseDto,
   ConfirmAdminRequestDto,
   CreateAdminRequestDto,
   LoginRequestDto,
@@ -111,9 +112,11 @@ describe('Auth Module', () => {
 
       const isHashedPasswordIsValid: boolean = adminSavedPassword!.password!.startsWith('$2b$');
 
+      const expectedFormFields: ConfirmAdminAccountFormFieldResponseDto = { fields: ['password'] };
+
       expect(newAdmin).toBeDefined();
       expect(token).toBeDefined();
-      expect(confirmAccountFormRes.body).toEqual(['password']);
+      expect(confirmAccountFormRes.body).toEqual(expectedFormFields);
       expect(loginResCookies).toBeDefined();
       expect(loginResCookies!.some((cookie) => cookie.includes('refresh_token'))).toBe(true);
       expect(loginResBody.adminData).toEqual(loginExpectedBody.adminData);

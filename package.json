@@ -21,6 +21,7 @@
     "posttest:e2e:admin": "docker compose -p ombro-e2e-test down -v",
     "pretest:e2e:local:ui:admin": "docker compose -p ombro-e2e-test-local --env-file .env.test -f docker-compose.yml -f docker-compose.test.yml up -d --wait",
     "test:e2e:local:ui:admin": "npm run test:e2e:local:ui --prefix frontend/admin",
-    "posttest:e2e:local:ui:admin": "docker compose -p ombro-e2e-test-local down -v"
+    "posttest:e2e:local:ui:admin": "docker compose -p ombro-e2e-test-local down -v",
+    "swagger:generate": "npm run swagger:generate --prefix backend"
   }
 }

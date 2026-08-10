@@ -4,6 +4,10 @@ import { Trim } from '@shared/decorators';
 import { AuthAdmin } from '@generated/prisma-client';
 import { Transform } from 'class-transformer';
 import { PrivilegesUtils } from '../utils/privileges.utils';
+import { ApiProperty } from '@nestjs/swagger';
+import { enumKeysWithout } from '@shared/swagger/enum-keys-without.helper';
+import { AdminDto } from './admin.dto';
+import { AdminPrivileges } from '../enums/admin-privileges';
 
 export class CreateAdminRequestDto
   implements
@@ -26,6 +30,11 @@ export class CreateAdminRequestDto
   @Trim()
   readonly email!: string;
 
+  @ApiProperty({
+    enum: enumKeysWithout(AdminPrivileges, AdminDto.EXCLUDED_PRIVILEGES),
+    isArray: true,
+    example: AdminDto.SAMPLE_ADMIN_PRIVILEGES,
+  })
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   @Transform(({ value }) => PrivilegesUtils.arrayToBitmask(value), { toClassOnly: true })
   @IsInt({
