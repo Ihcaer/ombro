@@ -13,7 +13,7 @@ import { RxMethod } from '@ngrx/signals/rxjs-interop';
 import { Router } from '@angular/router';
 import { firstValueFrom, of, throwError } from 'rxjs';
 import { AuthStoreInstance, AuthStore } from '../../store';
-import { LoginRequestDto, LoginResponseDto } from '../../dto/login.dtos';
+import { LoginRequestDto, LoginResponseDto } from '@ombro/shared/data-access/api-client';
 import { AUTH_PAGE_PATHS } from '@ombro/admin-panel/app/features/auth/auth-paths';
 
 describe('authInterceptor', () => {
@@ -32,7 +32,7 @@ describe('authInterceptor', () => {
         expiresAtMs: signal<number | null>(null),
       }),
       isLoading: signal(false),
-      lastErrorResponse: signal(null),
+      lastResponseError: signal(null),
       login: vi.fn() as unknown as RxMethod<LoginRequestDto>,
       refreshTokens: vi.fn(),
     };
@@ -103,12 +103,12 @@ describe('authInterceptor', () => {
     'should send $expectedCallCount requests for scenario: $desc',
     async ({ endpoint, authorized, expectedCallCount }) => {
       const mockRefreshTokenResponse: LoginResponseDto = {
-        jwt: 'accessToken',
+        accessToken: 'accessToken',
         adminData: {
           id: 1,
           displayName: 'displayName',
           handleName: 'handleName',
-          avatarId: null,
+          avatarUrl: null,
           privileges: ['ADMINS_MANAGE'],
           verification: 'VERIFIED',
           isActivated: true,
