@@ -1,6 +1,4 @@
-import { PossibleFieldsToFill } from '../types/common.types';
-
-// export type ConfirmAdminAccountFormFieldResponseDto = (keyof PossibleFieldsToFill)[];
+import { PossibleFieldsToFill } from '../../types/common.types';
 
 const _POSSIBLE_FIELDS = [
   'password',

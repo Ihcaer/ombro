@@ -28,14 +28,14 @@ model AuthAdmin {
   password     String?
   privileges   Int
   lastLogged   DateTime?        @db.Timestamptz(3)
-  verification AuthVerification @default(WAITING)
+  verification AuthVerification @default(NON_VERIFIED)
   isActivated  Boolean          @default(true)
+  preferences  Json             @default("{}") @db.JsonB
   createdAt    DateTime         @default(now()) @db.Timestamptz(3)
   updatedAt    DateTime         @updatedAt @db.Timestamptz(3)
 
   oneTimeTokens             AuthOneTimeToken[]
   refreshTokens             AuthRefreshToken[]
-  preferences               AuthPreferences?
   actionLogs                AuditAdminLogs[]
   approvalRequests          TeamApprovalRequest[]
   approvalResponses         TeamApprovalResponses[]
@@ -81,15 +81,5 @@ model AuthRefreshToken {
 
   @@index([expiresAt])
   @@map("refresh_tokens")
-  @@schema("auth")
-}
-
-model AuthPreferences {
-  adminId     Int  @id @unique
-  preferences Json
-
-  admin AuthAdmin @relation(fields: [adminId], references: [id], onDelete: Cascade)
-
-  @@map("preferences")
   @@schema("auth")
 }

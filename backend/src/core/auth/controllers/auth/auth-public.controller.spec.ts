@@ -6,6 +6,7 @@ import { AuthService } from '@core/auth/services/auth/auth.service';
 import { Response } from 'express';
 import serverConfig from '@core/config/envs/server.config';
 import { createServerConfigMock } from '@mocks/config/server.config.mock';
+import { DEFAULT_ADMIN_PREFERENCES } from '@core/auth/auth.constants';
 
 describe('LoginPublicController', () => {
   let controller: AuthPublicController;
@@ -50,6 +51,7 @@ describe('LoginPublicController', () => {
             privileges: ['ADMINS_MANAGE'],
             verification: 'VERIFIED',
             isActivated: true,
+            preferences: DEFAULT_ADMIN_PREFERENCES,
           },
         },
         refreshTokenData: {

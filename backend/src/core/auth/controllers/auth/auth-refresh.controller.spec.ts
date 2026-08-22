@@ -6,6 +6,7 @@ import { Response } from 'express';
 import serverConfig from '@core/config/envs/server.config';
 import { createServerConfigMock } from '@mocks/config/server.config.mock';
 import { RefreshTokenWithAdmin } from '@core/auth/types/jwt.types';
+import { DEFAULT_ADMIN_PREFERENCES } from '@core/auth/auth.constants';
 
 describe('AuthRefreshController', () => {
   let controller: AuthRefreshController;
@@ -54,6 +55,7 @@ describe('AuthRefreshController', () => {
             privileges: ['ADMINS_MANAGE'],
             verification: 'VERIFIED',
             isActivated: true,
+            preferences: DEFAULT_ADMIN_PREFERENCES,
           },
         },
         refreshTokenData: {

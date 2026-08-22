@@ -79,8 +79,9 @@ CREATE TABLE "auth"."admins" (
     "password" TEXT,
     "privileges" INTEGER NOT NULL,
     "lastLogged" TIMESTAMPTZ(3),
-    "verification" "auth"."Verification" NOT NULL DEFAULT 'WAITING',
+    "verification" "auth"."Verification" NOT NULL DEFAULT 'NON_VERIFIED',
     "isActivated" BOOLEAN NOT NULL DEFAULT true,
+    "preferences" JSONB NOT NULL DEFAULT '{}',
     "createdAt" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMPTZ(3) NOT NULL,
 
@@ -106,14 +107,6 @@ CREATE TABLE "auth"."refresh_tokens" (
     "expiresAt" TIMESTAMPTZ(3) NOT NULL,
 
     CONSTRAINT "refresh_tokens_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "auth"."preferences" (
-    "adminId" INTEGER NOT NULL,
-    "preferences" JSONB NOT NULL,
-
-    CONSTRAINT "preferences_pkey" PRIMARY KEY ("adminId")
 );
 
 -- CreateTable
@@ -285,9 +278,6 @@ CREATE UNIQUE INDEX "refresh_tokens_refreshTokenHash_key" ON "auth"."refresh_tok
 CREATE INDEX "refresh_tokens_expiresAt_idx" ON "auth"."refresh_tokens"("expiresAt");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "preferences_adminId_key" ON "auth"."preferences"("adminId");
-
--- CreateIndex
 CREATE UNIQUE INDEX "posts_categoryId_slug_key" ON "blog"."posts"("categoryId", "slug");
 
 -- CreateIndex
@@ -343,9 +333,6 @@ ALTER TABLE "auth"."one_time_tokens" ADD CONSTRAINT "one_time_tokens_adminId_fke
 
 -- AddForeignKey
 ALTER TABLE "auth"."refresh_tokens" ADD CONSTRAINT "refresh_tokens_adminId_fkey" FOREIGN KEY ("adminId") REFERENCES "auth"."admins"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "auth"."preferences" ADD CONSTRAINT "preferences_adminId_fkey" FOREIGN KEY ("adminId") REFERENCES "auth"."admins"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "blog"."posts" ADD CONSTRAINT "posts_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "blog"."categories"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

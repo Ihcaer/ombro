@@ -1,7 +1,7 @@
 import { AUTH_ROUTE_PREFIX } from '@core/auth/auth.constants';
 import { PublicController } from '@core/auth/decorators';
 import { ResetPasswordRequestDto } from '@core/auth/dto';
-import { ForgotPasswordRequestDto } from '@core/auth/dto/forgot-password-request.dto';
+import { ForgotPasswordRequestDto } from '@core/auth/dto/requests/forgot-password-request.dto';
 import { PasswordResetService } from '@core/auth/services/password-reset/password-reset.service';
 import { Body, HttpCode, Post } from '@nestjs/common';
 import {

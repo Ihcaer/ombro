@@ -7,7 +7,7 @@ import {
 import { AdminConfirmationData } from '@core/auth/interfaces/admin-registration.interfaces';
 import { OneTimeTokenContext } from '@core/auth/types/one-time-token.types';
 import { PrismaService } from '@core/database/prisma/prisma.service';
-import { AuthAdmin, AuthVerification, Prisma } from '@generated/prisma-client';
+import { AuthVerification, Prisma } from '@generated/prisma-client';
 import {
   BadRequestException,
   Inject,
@@ -26,6 +26,8 @@ import { AuthAdminRepository } from '@core/auth/auth-admin.repository';
 import { PrivilegesUtils } from '@core/auth/utils/privileges.utils';
 import { PASSWORD_STRENGTH_VALIDATOR } from '@core/auth/providers/password-strength.provider';
 import type { PasswordStrengthValidatorFn } from '@core/auth/providers/password-strength.provider';
+import { AdminWithoutPreferences } from '@core/auth/types/admin.types';
+import { AdminPreferences } from '@core/auth/dto/models/adminPreferences.dto';
 
 @Injectable()
 export class AdminRegistrationService {
@@ -67,7 +69,7 @@ export class AdminRegistrationService {
             hashedToken: token.hashedToken,
             type: 'REGISTER',
             expiresAt,
-            admin: { create: dto },
+            admin: { create: { ...dto, verification: 'WAITING' } },
           },
           select: {
             admin: {
@@ -160,9 +162,13 @@ export class AdminRegistrationService {
   }
 
   async accountConfirmation(dto: ConfirmAdminRequestDto): Promise<void> {
-    const { oneTimeToken, ...fieldsToFill } = dto;
+    const { oneTimeToken, language, ...fieldsToFill } = dto;
 
-    const adminFields: Readonly<keyof AuthAdmin>[] = ['email', 'handleName', 'displayName'];
+    const adminFields: Readonly<keyof AdminWithoutPreferences>[] = [
+      'email',
+      'handleName',
+      'displayName',
+    ];
     const tokenContext: OneTimeTokenContext = await this.tokenService.fetchTokenContext(
       oneTimeToken,
       'REGISTER',
@@ -172,7 +178,7 @@ export class AdminRegistrationService {
 
     await this.tokenService.validateOneTimeToken(tokenContext, 'REGISTER');
 
-    const admin: Partial<AuthAdmin> = { ...tokenContext.admin, handleName };
+    const admin: Partial<AdminWithoutPreferences> = { ...tokenContext.admin, handleName };
     const adminInfo: Readonly<string>[] = adminFields.map((key) => {
       const value = admin[key];
       if (typeof value === 'boolean' || value === null || typeof value === 'undefined') return '';
@@ -191,6 +197,7 @@ export class AdminRegistrationService {
       password: hashedPassword,
       id: tokenContext.adminId,
       refreshTokenId: tokenContext.id,
+      preferences: { language },
     };
     await this.updateAdminVerification(adminData);
   }
@@ -199,19 +206,32 @@ export class AdminRegistrationService {
     adminData: AdminConfirmationData,
     wantedVerificationStatus: AuthVerification = AuthVerification.VERIFIED,
   ): Promise<void> {
-    const { id, refreshTokenId, ...dataToUpdate } = adminData;
+    const { id, refreshTokenId, preferences, ...dataToUpdate } = adminData;
 
     try {
-      await this.prismaService.$transaction([
-        this.prismaService.authOneTimeToken.delete({
-          where: { id: refreshTokenId },
-        }),
-        this.prismaService.authAdmin.update({
+      await this.prismaService.$transaction(async (tx) => {
+        const currentAdmin = await tx.authAdmin.findUnique({
           where: { id },
-          data: { ...dataToUpdate, verification: wantedVerificationStatus },
-          select: { verification: true },
-        }),
-      ]);
+          select: { preferences: true },
+        });
+
+        if (!currentAdmin) throw new Error('Admin not found');
+
+        const mergedPreferences = {
+          ...(currentAdmin.preferences as unknown as AdminPreferences),
+          ...preferences,
+        };
+
+        await tx.authOneTimeToken.delete({ where: { id: refreshTokenId } });
+        await tx.authAdmin.update({
+          where: { id },
+          data: {
+            ...dataToUpdate,
+            preferences: mergedPreferences,
+            verification: wantedVerificationStatus,
+          },
+        });
+      });
     } catch (error) {
       const cause = error instanceof Error ? error.message : String(error);
       this.logger.error(

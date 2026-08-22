@@ -17,6 +17,8 @@ import { plainToInstance } from 'class-transformer';
 import { AuthAdminRepository } from '@core/auth/auth-admin.repository';
 import { PrivilegesUtils } from '@core/auth/utils/privileges.utils';
 import { PASSWORD_STRENGTH_VALIDATOR } from '@core/auth/providers/password-strength.provider';
+import { DEFAULT_ADMIN_PREFERENCES } from '@core/auth/auth.constants';
+import { JsonValue } from '@generated/prisma-client/runtime/client';
 
 describe('AdminRegistrationService', () => {
   let service: AdminRegistrationService;
@@ -45,6 +47,7 @@ describe('AdminRegistrationService', () => {
               create: jest.fn(),
             },
             authAdmin: {
+              findUnique: jest.fn(),
               update: jest.fn(),
             },
           },
@@ -75,7 +78,9 @@ describe('AdminRegistrationService', () => {
     tokenService = module.get(AuthTokenService);
     // authAdminRepository = module.get(AuthAdminRepository);
     eventEmitter = module.get(EventEmitter2);
+  });
 
+  afterEach(() => {
     jest.clearAllMocks();
   });
 
@@ -165,7 +170,9 @@ describe('AdminRegistrationService', () => {
     describe('.accountConfirmation()', () => {
       let hashedToken: string;
       let hashedPassword: string;
-      let deleteValueMock: AuthOneTimeToken, updateValueMock: Partial<AuthAdmin>;
+      let findAdminMock: Pick<AuthAdmin, 'preferences'>,
+        deleteValueMock: AuthOneTimeToken,
+        updateValueMock: Partial<AuthAdmin>;
       let parameters: ConfirmAdminRequestDto;
 
       beforeEach(() => {
@@ -191,6 +198,8 @@ describe('AdminRegistrationService', () => {
           },
         };
         hashedPassword = 'hashedPassword';
+
+        findAdminMock = { preferences: DEFAULT_ADMIN_PREFERENCES as unknown as JsonValue };
         deleteValueMock = {
           id: 1,
           adminId: tokenContext.adminId,
@@ -199,24 +208,28 @@ describe('AdminRegistrationService', () => {
           expiresAt: tokenContext.expiresAt,
         };
         updateValueMock = { verification: 'VERIFIED' };
-        parameters = { oneTimeToken: 'token', password: 'password' };
 
-        const mockDelete = (prismaService.authOneTimeToken.delete as jest.Mock).mockReturnValue(
-          deleteValueMock,
-        );
-        const mockUpdate = (prismaService.authAdmin.update as jest.Mock).mockReturnValue(
-          updateValueMock,
-        );
+        parameters = {
+          oneTimeToken: 'token',
+          password: 'password',
+          language: DEFAULT_ADMIN_PREFERENCES.language,
+        };
 
         mockFindToken(tokenContext);
         hashService.hashBcrypt.mockResolvedValue(hashedPassword);
-        prismaService.$transaction.mockResolvedValue([mockDelete, mockUpdate]);
+        jest
+          .spyOn(prismaService.authAdmin, 'findUnique')
+          .mockResolvedValue(findAdminMock as AuthAdmin);
+        jest.spyOn(prismaService.authOneTimeToken, 'delete').mockResolvedValue(deleteValueMock);
+        jest
+          .spyOn(prismaService.authAdmin, 'update')
+          .mockResolvedValue(updateValueMock as AuthAdmin);
 
         await expect(service.accountConfirmation(parameters)).resolves.not.toThrow();
         // eslint-disable-next-line @typescript-eslint/unbound-method
         expect(prismaService.$transaction).toHaveBeenCalledTimes(1);
         // eslint-disable-next-line @typescript-eslint/unbound-method
-        expect(prismaService.$transaction).toHaveBeenCalledWith([deleteValueMock, updateValueMock]);
+        expect(prismaService.$transaction).toHaveBeenCalledWith(expect.any(Function));
       });
     });
   });

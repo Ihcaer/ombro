@@ -1,5 +1,6 @@
 import { AuthAdmin } from '@generated/prisma-client';
 import { AdminPrivileges } from '../enums/admin-privileges';
+import { AdminPreferences } from '../dto/models/adminPreferences.dto';
 
 export type Identifier = keyof Pick<AuthAdmin, 'email' | 'handleName'>;
 
@@ -12,7 +13,9 @@ export type AdminData = Pick<
   | 'privileges'
   | 'verification'
   | 'isActivated'
->;
+> & { preferences: AdminPreferences };
+
+export type AdminWithoutPreferences = Omit<AuthAdmin, 'preferences'>;
 
 export type AdminWithPassword = Readonly<AdminData & Pick<AuthAdmin, 'password'>>;
 

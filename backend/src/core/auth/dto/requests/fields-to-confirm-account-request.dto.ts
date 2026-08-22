@@ -1,5 +1,5 @@
+import { IsOneTimeToken } from '@core/auth/decorators';
 import { IsNotEmpty, IsString } from 'class-validator';
-import { IsOneTimeToken } from '../decorators';
 
 export class FieldsToConfirmAccountRequestDto {
   @IsString()

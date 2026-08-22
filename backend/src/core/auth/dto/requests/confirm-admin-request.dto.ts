@@ -1,8 +1,11 @@
 import { Trim } from '@shared/decorators';
 import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
-import { IsOneTimeToken } from '../decorators';
-import { PossibleFieldsToFill } from '../types/common.types';
+import { IsOneTimeToken } from '../../decorators';
+import { PossibleFieldsToFill } from '../../types/common.types';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsLanguage } from '@core/auth/decorators/is-language.decorator';
+import { Language } from '@core/auth/auth.constants';
+import { AdminPreferences } from '../models/adminPreferences.dto';
 
 export class ConfirmAdminRequestDto implements PossibleFieldsToFill {
   @IsString()
@@ -21,4 +24,8 @@ export class ConfirmAdminRequestDto implements PossibleFieldsToFill {
   @IsNotEmpty()
   @MaxLength(256, { message: 'Password is too long. Maximum length is 128 characters.' })
   readonly password!: string;
+
+  @IsLanguage(Language.EN)
+  @IsNotEmpty()
+  readonly language!: AdminPreferences['language'];
 }

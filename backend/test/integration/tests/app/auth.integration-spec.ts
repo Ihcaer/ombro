@@ -10,8 +10,8 @@ import {
 import { AdminRegistrationService } from '@core/auth/services/admin-registration/admin-registration.service';
 import { TestContext } from '../../helpers';
 import { AuthAdmin } from '@generated/prisma-client';
-import { AUTH_ROUTE_PREFIX } from '@core/auth/auth.constants';
-import { ForgotPasswordRequestDto } from '@core/auth/dto/forgot-password-request.dto';
+import { AUTH_ROUTE_PREFIX, DEFAULT_ADMIN_PREFERENCES } from '@core/auth/auth.constants';
+import { ForgotPasswordRequestDto } from '@core/auth/dto/requests/forgot-password-request.dto';
 import { AUTH_SLUGS as EMAIL_AUTH_SLUGS } from '@modules/notifications/frontend-paths.constants';
 import { PrivilegesUtils } from '@core/auth/utils/privileges.utils';
 import { AdminPrivileges } from '@core/auth/enums/admin-privileges';
@@ -73,6 +73,7 @@ describe('Auth Module', () => {
       const confirmAccountBody: ConfirmAdminRequestDto = {
         oneTimeToken: token,
         password: newPassword,
+        language: DEFAULT_ADMIN_PREFERENCES.language,
       };
       const loginCredentials: LoginRequestDto = {
         identifier: newAdminData.handleName!,
@@ -102,6 +103,7 @@ describe('Auth Module', () => {
           avatarUrl: null,
           verification: 'VERIFIED',
           isActivated: true,
+          preferences: DEFAULT_ADMIN_PREFERENCES,
         },
       };
 
