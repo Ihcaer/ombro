@@ -13,6 +13,7 @@ import { MessageModule } from 'primeng/message';
 import { FormButtonsComponent } from '../../../components/form-buttons/form-buttons.component';
 import { PasswordStrengthScore } from '@ombro/shared/utils/password-strength';
 import { PASSWORD_STRENGTH_THRESHOLD } from '@ombro/admin-panel/app/core/tokens/security.tokens';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 type ResetPasswordForm = {
   newPassword: FormControl<string>;
@@ -28,6 +29,7 @@ type ResetPasswordForm = {
     ReactiveFormsModule,
     InputTextComponent,
     FormButtonsComponent,
+    TranslocoDirective,
   ],
   providers: [OneTimeTokenStore],
   templateUrl: './reset-password.component.html',

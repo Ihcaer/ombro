@@ -135,6 +135,8 @@ services:
       context: ./frontend/admin
       dockerfile: Dockerfile
       target: final
+      additional_contexts:
+        contracts: ./contracts
     restart: unless-stopped
     networks:
       - frontend_admin_net

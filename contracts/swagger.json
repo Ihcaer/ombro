@@ -360,6 +360,21 @@
           "password"
         ]
       },
+      "AdminPreferences": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "enum": [
+              "en",
+              "pl"
+            ]
+          }
+        },
+        "required": [
+          "language"
+        ]
+      },
       "AdminDto": {
         "type": "object",
         "properties": {
@@ -401,6 +416,9 @@
           },
           "isActivated": {
             "type": "boolean"
+          },
+          "preferences": {
+            "$ref": "#/components/schemas/AdminPreferences"
           }
         },
         "required": [
@@ -410,7 +428,8 @@
           "handleName",
           "privileges",
           "verification",
-          "isActivated"
+          "isActivated",
+          "preferences"
         ]
       },
       "LoginResponseDto": {
@@ -459,11 +478,19 @@
           },
           "handleName": {
             "type": "string"
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "en",
+              "pl"
+            ]
           }
         },
         "required": [
           "password",
-          "oneTimeToken"
+          "oneTimeToken",
+          "language"
         ]
       },
       "CreateAdminRequestDto": {

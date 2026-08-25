@@ -38,6 +38,8 @@ export class SelectComponent extends BaseCvaComponent<unknown> {
   labelIcon = input<IconName>();
   placeholder = input<string>();
   options = input.required<unknown[]>();
+  optionLabel = input<string>();
+  optionValue = input<string>();
   showClear = input<boolean>(false);
   virtualScroll = input<boolean>(false);
   virtualScrollItemSize = input<number>();

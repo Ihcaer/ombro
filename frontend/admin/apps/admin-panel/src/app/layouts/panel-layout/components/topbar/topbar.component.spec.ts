@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TopbarComponent } from './topbar.component';
+import { getTranslocoTestingModule } from '@ombro/admin-panel/app/shared/testing/transloco-testing-module';
 
 describe('TopbarComponent', () => {
   let component: TopbarComponent;
@@ -7,7 +8,7 @@ describe('TopbarComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TopbarComponent],
+      imports: [TopbarComponent, getTranslocoTestingModule()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TopbarComponent);

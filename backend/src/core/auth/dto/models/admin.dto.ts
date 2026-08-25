@@ -1,11 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { AdminPrivileges } from '../enums/admin-privileges';
+import { AdminPrivileges } from '../../enums/admin-privileges';
 import {
   AdminData,
   AdminPrivilegeTranslatedField,
   AdminAvatarUrlField,
   AdminPrivilegesTranslated,
-} from '../types/admin.types';
+} from '../../types/admin.types';
+import { AdminPreferences } from './adminPreferences.dto';
 
 export class AdminDto
   implements
@@ -33,4 +34,5 @@ export class AdminDto
     example: null,
   })
   readonly avatarUrl!: AdminAvatarUrlField['avatarUrl'];
+  readonly preferences!: AdminPreferences;
 }

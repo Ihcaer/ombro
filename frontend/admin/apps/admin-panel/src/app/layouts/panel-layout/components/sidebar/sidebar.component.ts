@@ -7,10 +7,11 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs';
 import { AuthStore } from '@ombro/admin-panel/app/core/auth/store';
 import { NgTemplateOutlet } from '@angular/common';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-panel-layout-sidebar',
-  imports: [IconComponent, LogoComponent, NgTemplateOutlet, RouterLink],
+  imports: [IconComponent, LogoComponent, NgTemplateOutlet, RouterLink, TranslocoDirective],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

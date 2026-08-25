@@ -2,11 +2,14 @@ FROM node:24-alpine AS builder
 
 WORKDIR /app
 
+ENV SWAGGER_FILE_PATH=/app/contracts/swagger.json
+
 COPY package*.json ./
 
 RUN npm ci --ignore-scripts
 
 COPY . .
+COPY --from=contracts swagger.json ./contracts/swagger.json
 
 RUN npm run generate-api
 

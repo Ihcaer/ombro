@@ -6,7 +6,7 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { AuthTokenService } from '../auth-token/auth-token.service';
-import { AuthAdmin, Prisma } from '@generated/prisma-client';
+import { Prisma } from '@generated/prisma-client';
 import { PrismaService } from '@core/database/prisma/prisma.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AdminPasswordResetRequestEvent } from '@core/auth/events/admin-password-reset-request.event';
@@ -16,6 +16,7 @@ import { HashService } from '@shared/hash/hash.service';
 import { PASSWORD_SALT_ROUNDS } from '@core/auth/auth.constants';
 import { PASSWORD_STRENGTH_VALIDATOR } from '@core/auth/providers/password-strength.provider';
 import type { PasswordStrengthValidatorFn } from '@core/auth/providers/password-strength.provider';
+import { AdminWithoutPreferences } from '@core/auth/types/admin.types';
 
 @Injectable()
 export class PasswordResetService {
@@ -107,7 +108,11 @@ export class PasswordResetService {
   }
 
   async resetPasswordByToken(dto: ResetPasswordRequestDto): Promise<void> {
-    const adminFields: Readonly<keyof AuthAdmin>[] = ['email', 'handleName', 'displayName'];
+    const adminFields: Readonly<keyof AdminWithoutPreferences>[] = [
+      'email',
+      'handleName',
+      'displayName',
+    ];
 
     const tokenContext: OneTimeTokenContext = await this.tokenService.fetchTokenContext(
       dto.token,

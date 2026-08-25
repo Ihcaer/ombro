@@ -4,6 +4,7 @@ import { AuthStore, AuthStoreInstance } from '@ombro/admin-panel/app/core/auth/s
 import { signal } from '@angular/core';
 import { COMMON_TESTING_PROVIDERS } from '@ombro/admin-panel/app/shared/testing/common-testing-providers';
 import { Mocked } from 'vitest';
+import { getTranslocoTestingModule } from '@ombro/admin-panel/app/shared/testing/transloco-testing-module';
 
 describe('AuthWrapperComponent', () => {
   let component: AuthWrapperComponent;
@@ -13,7 +14,7 @@ describe('AuthWrapperComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AuthWrapperComponent],
+      imports: [AuthWrapperComponent, getTranslocoTestingModule()],
       providers: [
         ...COMMON_TESTING_PROVIDERS,
         { provide: AuthStore, useValue: { lastResponseError: mockLastResponseErrorSignal } },

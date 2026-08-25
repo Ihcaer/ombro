@@ -1,0 +1,19 @@
+{
+  "actions": { "signOut": "Sign out" },
+  "pages": {
+    "dashboard": "Dashboard",
+    "team": "team",
+    "files": "Files",
+    "blog": "Blog",
+    "account": "Account",
+    "settings": "Settings"
+  },
+  "breadcrumbs": {},
+  "dialogs": {
+    "sessionExpired": {
+      "heading": "Session expired",
+      "content": "Your session has expired for security reasons. You have been logged out to protect your data.",
+      "buttons": { "primary": "Go to login" }
+    }
+  }
+}

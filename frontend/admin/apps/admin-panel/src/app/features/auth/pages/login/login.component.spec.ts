@@ -5,6 +5,7 @@ import { AuthStore, AuthStoreInstance } from '@ombro/admin-panel/app/core/auth/s
 import { Mocked } from 'vitest';
 import { signal } from '@angular/core';
 import { AUTH_PAGE_BASE_TESTING_PROVIDERS } from '../auth-page-base-testing-providers';
+import { getTranslocoTestingModule } from '@ombro/admin-panel/app/shared/testing/transloco-testing-module';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -19,7 +20,7 @@ describe('LoginComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LoginComponent],
+      imports: [LoginComponent, getTranslocoTestingModule()],
       providers: [...COMMON_TESTING_PROVIDERS, ...AUTH_PAGE_BASE_TESTING_PROVIDERS],
     }).compileComponents();
 

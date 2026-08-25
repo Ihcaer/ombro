@@ -1,0 +1,28 @@
+{
+  "signInPage": {
+    "title": "Sign in",
+    "form": {
+      "submitBtn": "Sign in",
+      "forgotPasswordLink": "Forgot password?"
+    }
+  },
+  "forgotPasswordPage": {
+    "title": "Reset your password",
+    "form": { "submitBtn": "Send link" },
+    "messages": {
+      "success": "Done! Password reset instructions are on their way to your inbox."
+    },
+    "additional": {
+      "resendEmail": {
+        "label": "E-mail nie przyszedł?",
+        "button": "Send again",
+        "lead": "Resend available in:"
+      }
+    }
+  },
+  "resetPasswordPage": {
+    "title": "Set a new password",
+    "messages": { "success": "Success! Your password has been changed." }
+  },
+  "confirmAccountPage": { "title": "Confirm your account" }
+}

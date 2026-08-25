@@ -1,13 +1,13 @@
 import { IsEmail, IsInt, IsNotEmpty, IsOptional, IsString, Min } from 'class-validator';
-import { IsValidPrivilege } from '../decorators/is-valid-privilege.decorator';
 import { Trim } from '@shared/decorators';
 import { AuthAdmin } from '@generated/prisma-client';
 import { Transform } from 'class-transformer';
-import { PrivilegesUtils } from '../utils/privileges.utils';
 import { ApiProperty } from '@nestjs/swagger';
 import { enumKeysWithout } from '@shared/swagger/enum-keys-without.helper';
-import { AdminDto } from './admin.dto';
-import { AdminPrivileges } from '../enums/admin-privileges';
+import { IsValidPrivilege } from '@core/auth/decorators';
+import { AdminPrivileges } from '@core/auth/enums/admin-privileges';
+import { PrivilegesUtils } from '@core/auth/utils/privileges.utils';
+import { AdminDto } from '../models/admin.dto';
 
 export class CreateAdminRequestDto
   implements

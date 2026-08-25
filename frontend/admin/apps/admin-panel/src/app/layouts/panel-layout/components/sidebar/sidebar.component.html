@@ -1,4 +1,7 @@
-<aside class="panel py-(--p-spacing-5) px-(--p-spacing-2) flex h-full flex-col items-center">
+<aside
+  class="panel py-(--p-spacing-5) px-(--p-spacing-2) flex h-full flex-col items-center"
+  *transloco="let t"
+>
   <app-logo
     [variant]="isCollapsed() ? 'lettermark' : 'wordmark'"
     class="mb-(--p-spacing-6) min-h-[25px]"
@@ -11,13 +14,17 @@
       @for (item of menuItems(); track $index) {
         <li>
           @if (item.isActive) {
-            <ng-container *ngTemplateOutlet="itemTemplate; context: { $implicit: item }" />
+            <ng-container
+              *ngTemplateOutlet="itemTemplate; context: { $implicit: t, menuItem: item }"
+            />
           } @else {
             <a
               [routerLink]="item.link"
               class="text-(--p-text-color-subtle) hover:no-underline! block"
             >
-              <ng-container *ngTemplateOutlet="itemTemplate; context: { $implicit: item }" />
+              <ng-container
+                *ngTemplateOutlet="itemTemplate; context: { $implicit: t, menuItem: item }"
+              />
             </a>
           }
         </li>
@@ -38,7 +45,7 @@
   </button>
 </aside>
 
-<ng-template #itemTemplate let-item>
+<ng-template #itemTemplate let-t let-item="menuItem">
   @let icon = item.icon;
   @let iconSize = 20;
   @let animationDurationMs = 200;
@@ -67,7 +74,7 @@
             : 'itemTextTransitionDelay opacity-[100] max-w-[10rem]'
         "
       >
-        {{ item.name }}
+        {{ t(item.name) }}
       </span>
     </div>
   </div>

@@ -1,17 +1,22 @@
 import { AdminPrivileges } from '@core/auth/enums/admin-privileges';
 import { PrismaService } from '@core/database/prisma/prisma.service';
 import { AuthAdmin } from '@generated/prisma-client';
-import { PrismaClientKnownRequestError } from '@generated/prisma-client/runtime/client';
+import {
+  InputJsonValue,
+  PrismaClientKnownRequestError,
+} from '@generated/prisma-client/runtime/client';
 import { Logger } from '@nestjs/common';
 import { HashService } from '@shared/hash/hash.service';
 import { CommandRunner, InquirerService, Option, SubCommand } from 'nest-commander';
 import { validateEmail } from '../functions/validate-email';
+import { AdminPreferences } from '@core/auth/dto/models/adminPreferences.dto';
+import { DEFAULT_ADMIN_PREFERENCES } from '@core/auth/auth.constants';
 
 type SeedAdminCommandOptions = { email: string; password: string };
 type AdminCreationData = Omit<
   AuthAdmin,
-  'id' | 'avatarFileId' | 'lastLogged' | 'createdAt' | 'updatedAt'
->;
+  'id' | 'avatarFileId' | 'lastLogged' | 'createdAt' | 'updatedAt' | 'preferences'
+> & { preferences: AdminPreferences };
 
 @SubCommand({
   name: 'admin',
@@ -63,8 +68,11 @@ export class SeedAdminSubCommand extends CommandRunner {
         privileges: AdminPrivileges.OWNER,
         verification: 'VERIFIED',
         isActivated: true,
+        preferences: DEFAULT_ADMIN_PREFERENCES,
       };
-      await adminTable.create({ data: adminData });
+      await adminTable.create({
+        data: { ...adminData, preferences: adminData.preferences as unknown as InputJsonValue },
+      });
       this.logger.verbose('Admin (user) has been successfully added.');
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {

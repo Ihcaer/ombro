@@ -1,0 +1,16 @@
+{
+  "common": {
+    "nav": { "signInPage": "Sign in page" },
+    "entities": { "user": { "handle": "Handle", "password": "Password", "email": "Email" } },
+    "buttons": { "cancel": "Cancel", "confirm": "Confirm" },
+    "forms": {
+      "labels": {
+        "handleOrEmail": "Handle or email",
+        "newPassword": "New password",
+        "repeatNewPassword": "Repeat new password",
+        "newHandle": "New handle"
+      },
+      "buttons": { "changePassword": "Change password" }
+    }
+  }
+}

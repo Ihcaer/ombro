@@ -3,6 +3,7 @@ import { FinalizeRegistrationComponent } from './finalize-registration.component
 import { COMMON_TESTING_PROVIDERS } from '@ombro/admin-panel/app/shared/testing/common-testing-providers';
 import { AuthStore } from '@ombro/admin-panel/app/core/auth/store';
 import { signal } from '@angular/core';
+import { getTranslocoTestingModule } from '@ombro/admin-panel/app/shared/testing/transloco-testing-module';
 
 describe('FinalizeRegistrationComponent', () => {
   let component: FinalizeRegistrationComponent;
@@ -10,7 +11,7 @@ describe('FinalizeRegistrationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FinalizeRegistrationComponent],
+      imports: [FinalizeRegistrationComponent, getTranslocoTestingModule()],
       providers: [
         ...COMMON_TESTING_PROVIDERS,
         { provider: AuthStore, useValue: { isLoading: signal<boolean>(false) } },

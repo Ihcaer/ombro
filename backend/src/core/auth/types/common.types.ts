@@ -1,5 +1,5 @@
 import { AuthAdmin } from '@generated/prisma-client';
-import { LoginResponseDto } from '../dto/login-response.dto';
+import { LoginResponseDto } from '../dto';
 
 export type SignInResponse = {
   readonly adminData: LoginResponseDto;

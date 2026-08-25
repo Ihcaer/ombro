@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AvatarPopoverComponent } from './avatar-popover.component';
+import { getTranslocoTestingModule } from '@ombro/admin-panel/app/shared/testing/transloco-testing-module';
 
 describe('AvatarPopoverComponent', () => {
   let component: AvatarPopoverComponent;
@@ -7,7 +8,7 @@ describe('AvatarPopoverComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AvatarPopoverComponent],
+      imports: [AvatarPopoverComponent, getTranslocoTestingModule()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AvatarPopoverComponent);
