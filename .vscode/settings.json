@@ -11,6 +11,7 @@
     "healthcheck",
     "HSTS",
     "Ihcaer",
+    "jsverse",
     "lettermark",
     "mailpit",
     "ngrx",
@@ -24,6 +25,7 @@
     "swcrc",
     "Timestamptz",
     "topbar",
+    "transloco",
     "wordmark",
     "zxcvbn"
   ],

@@ -19,6 +19,7 @@ import {
   ConfirmAdminAccountFormFieldResponseDto,
   ConfirmAdminRequestDto,
 } from '@ombro/shared/data-access/api-client';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-finalize-registration',
@@ -28,6 +29,7 @@ import {
     InputTextComponent,
     FormButtonsComponent,
     ProgressSpinnerModule,
+    TranslocoDirective,
   ],
   providers: [OneTimeTokenStore],
   templateUrl: './finalize-registration.component.html',
@@ -40,6 +42,7 @@ export class FinalizeRegistrationComponent extends AuthPageBase implements OnIni
   protected readonly minPasswordStrength = inject(PASSWORD_STRENGTH_THRESHOLD);
   private readonly tokenStore = inject(OneTimeTokenStore);
   private readonly route = inject(ActivatedRoute);
+  private readonly transloco = inject(TranslocoService);
   private readonly regexAuthPatterns = inject(REGEX_PATTERNS).auth;
 
   protected progressSpinnerAriaLabel = signal<string>('Ładowanie');
@@ -59,12 +62,14 @@ export class FinalizeRegistrationComponent extends AuthPageBase implements OnIni
   protected override onSubmit(): void {
     if (this.registrationForm.valid && this.tokenStore.hasToken()) {
       const token = this.tokenStore.oneTimeToken();
+      const language = this.transloco.getActiveLang();
 
       const formValue = this.registrationForm.value as Record<string, any>;
       const { [this.CONFIRM_PASSWORD_FIELD_NAME]: _, ...formPayload } = formValue;
 
       this.authStore.finalizeAdminRegistration({
         oneTimeToken: token,
+        language,
         ...formPayload,
       } as ConfirmAdminRequestDto);
     } else {

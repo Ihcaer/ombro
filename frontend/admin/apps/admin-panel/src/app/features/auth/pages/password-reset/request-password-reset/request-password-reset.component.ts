@@ -9,6 +9,7 @@ import { PasswordResetBase } from '../password-reset-base';
 import { ButtonDirective } from 'primeng/button';
 import { takeWhile, tap, timer } from 'rxjs';
 import { DatePipe } from '@angular/common';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-request-password-reset',
@@ -20,6 +21,7 @@ import { DatePipe } from '@angular/common';
     MessageModule,
     ButtonDirective,
     DatePipe,
+    TranslocoDirective,
   ],
   templateUrl: './request-password-reset.component.html',
   styles: `

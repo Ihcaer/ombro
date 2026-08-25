@@ -1,5 +1,5 @@
-<app-auth-wrapper icon="verified_user">
-  <ng-container heading>Potwierdź swoje konto</ng-container>
+<app-auth-wrapper icon="verified_user" *transloco="let t">
+  <ng-container heading>{{ t('auth.confirmAccountPage.title') }}</ng-container>
   <ng-container>
     @if (neededFormFields.length > 0) {
       <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
@@ -7,12 +7,15 @@
           @for (field of neededFormFields; track field) {
             @switch (field) {
               @case ('handleName') {
-                <ombro-input-text label="Nowa nazwa użytkownika" [formControlName]="field" />
+                <ombro-input-text
+                  [label]="t('common.forms.labels.newHandle')"
+                  [formControlName]="field"
+                />
               }
               @case ('password') {
                 <ombro-input-text
                   type="password"
-                  label="Nowe hasło"
+                  [label]="t('common.forms.labels.newPassword')"
                   [showPasswordStrength]="true"
                   [allowedPasswordScore]="minPasswordStrength"
                   (passwordStrengthScore)="handlePasswordStrength($event)"
@@ -20,14 +23,16 @@
                 />
                 <ombro-input-text
                   type="password"
-                  label="Potwierdź nowe hasło"
+                  [label]="t('common.forms.labels.repeatNewPassword')"
                   [formControlName]="CONFIRM_PASSWORD_FIELD_NAME"
                 />
               }
             }
           }
         </div>
-        <app-auth-form-buttons [isDisabled]="isLoading()">Zatwierdź</app-auth-form-buttons>
+        <app-auth-form-buttons [isDisabled]="isLoading()">{{
+          t('common.buttons.confirm')
+        }}</app-auth-form-buttons>
       </form>
     } @else if (neededFormFields.length === 0 && isLoading()) {
       <div class="flex justify-center">

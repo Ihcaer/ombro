@@ -7,6 +7,7 @@ import { MessageModule } from 'primeng/message';
 import { Router, RouterLink } from '@angular/router';
 import { AUTH_PAGE_PATHS, AUTH_PATH_SLUG } from '../../auth-paths';
 import { AuthPageBase } from '../auth-page-base';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 type LoginForm = { login: FormControl<string>; password: FormControl<string> };
 
@@ -19,6 +20,7 @@ type LoginForm = { login: FormControl<string>; password: FormControl<string> };
     ReactiveFormsModule,
     MessageModule,
     RouterLink,
+    TranslocoDirective,
   ],
   templateUrl: './login.component.html',
   styles: `

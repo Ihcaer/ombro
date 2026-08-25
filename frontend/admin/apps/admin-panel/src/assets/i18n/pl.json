@@ -1,0 +1,18 @@
+{
+  "common": {
+    "nav": { "signInPage": "Strona logowania" },
+    "entities": {
+      "user": { "handle": "Nazwa użytkownika", "password": "Hasło", "email": "E-mail" }
+    },
+    "buttons": { "cancel": "Anuluj", "confirm": "Zatwierdź" },
+    "forms": {
+      "labels": {
+        "handleOrEmail": "Nazwa użytkownika lub e-mail",
+        "newPassword": "Nowe hasło",
+        "repeatNewPassword": "Powtórz nowe hasło",
+        "newHandle": "Nowa nazwa użytkownika"
+      },
+      "buttons": { "changePassword": "Zmień hasło" }
+    }
+  }
+}

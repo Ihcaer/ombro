@@ -13,10 +13,11 @@ import { RouterLink } from '@angular/router';
 import { IconComponent } from '@ombro/shared/ui/ui-icons';
 import { BreadcrumbService } from './breadcrumb.service';
 import { NgTemplateOutlet } from '@angular/common';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 @Component({
   selector: 'ombro-breadcrumb',
-  imports: [BreadcrumbModule, RouterLink, IconComponent, NgTemplateOutlet],
+  imports: [BreadcrumbModule, RouterLink, IconComponent, NgTemplateOutlet, TranslocoPipe],
   templateUrl: './breadcrumb.component.html',
   styleUrl: './breadcrumb.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,9 +28,8 @@ export class BreadcrumbComponent {
   homeUrl = input<string>('/');
   separatorItem = input<string>('/');
 
-  items: Signal<BreadcrumbItem[]> = this.service.getBreadcrumbs();
-
   protected navAriaLabel = signal<string>('Ścieżka nawigacji');
+  private items: Signal<BreadcrumbItem[]> = this.service.getBreadcrumbs();
 
   private homeItem: BreadcrumbItem = { label: 'home', url: this.homeUrl(), id: 'home' };
 

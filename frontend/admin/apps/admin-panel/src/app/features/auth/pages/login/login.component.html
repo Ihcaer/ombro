@@ -1,27 +1,29 @@
-<app-auth-wrapper icon="login">
-  <ng-container heading>Logowanie</ng-container>
+<app-auth-wrapper icon="login" *transloco="let t">
+  <ng-container heading>{{ t('auth.signInPage.title') }}</ng-container>
   <ng-container>
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <div>
         <div class="form-fields">
           <ombro-input-text
-            label="Nazwa użytkownika lub e-mail"
+            [label]="t('common.forms.labels.handleOrEmail')"
             autocomplete="username"
             formControlName="login"
             (keydown.space)="$event.preventDefault()"
           />
           <ombro-input-text
-            label="Hasło"
+            [label]="t('common.entities.user.password')"
             type="password"
             autocomplete="current-password"
             formControlName="password"
           />
         </div>
         <div class="mt-(--p-spacing-2) text-right">
-          <a [routerLink]="passwordResetLink">Nie pamiętasz hasła?</a>
+          <a [routerLink]="passwordResetLink">{{ t('auth.signInPage.form.forgotPasswordLink') }}</a>
         </div>
       </div>
-      <app-auth-form-buttons [isDisabled]="isLoading()">Zaloguj się</app-auth-form-buttons>
+      <app-auth-form-buttons [isDisabled]="isLoading()">{{
+        t('auth.signInPage.form.submitBtn')
+      }}</app-auth-form-buttons>
     </form>
   </ng-container>
 </app-auth-wrapper>

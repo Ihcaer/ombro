@@ -23,5 +23,5 @@
   <div class="p-breadcrumb-item-label home-label"><ombro-icon name="home" [size]="15" /></div>
 </ng-template>
 <ng-template #defaultItem let-item="data">
-  <span class="p-breadcrumb-item-label">{{ item.label }}</span>
+  <span class="p-breadcrumb-item-label">{{ item.label | transloco }}</span>
 </ng-template>

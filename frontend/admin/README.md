@@ -68,11 +68,47 @@ Application state is managed using the modern, functional NgRx SignalStore, leve
 4.  **Store method (Success/Failure):** Updates the state directly using the patch state utility (`patchState(store, ...)`).
 5.  **Component:** Automatically reacts to the state changes by reading the store's signals or computed signals directly in the template.
 
-## 3. Testing
+## 3. Internalization (i18n)
+
+The application uses **Transloco** to support multilingualism. The default and fallback application language is **English (`en`)**.
+
+### 3.1 Supported languages
+
+| Code | Language | Status               |
+| :--- | :------- | :------------------- |
+| `en` | English  | 100% (Base language) |
+| `pl` | Polish   | 100%                 |
+
+### 3.2 File structure
+
+All translation files are located in the `src/assets/i18n/` directory:
+
+```text
+src/assets/i18n/
+├── auth/
+│   ├── en.json
+│   └── pl.json
+├── panel/
+│   ├── en.json
+│   ├── pl.json
+│   └── other folders (scopes)...
+├── en.json
+└── pl.json
+```
+
+### 3.3 How do I add a new language?
+
+1. **Create a files:** Copy currently existing translation files and name them language code according to the ISO 639-1 standard (e.g. `en` for English).
+1. **Translate values:** Replace text values, keeping keys and variables in parentheses intact (e.g. `{{count}}`).
+1. **Register Language:** Add a new language code (and name if needed) to the supported list in the following files:
+   - [`transloco.config.ts`](./transloco.config.ts)
+   - [`i18n.config.ts`](./apps/admin-panel/src/app/core/config/i18n/i18n.config.ts)
+
+## 4. Testing
 
 We utilize industry-standard tools integrated via Nx.
 
-### 3.1. Unit testing (Vitest)
+### 4.1. Unit testing (Vitest)
 
 We use **Vitest** for fast and efficient unit testing of Services, Reducers, Effects, and utility functions.
 
@@ -85,7 +121,7 @@ We use **Vitest** for fast and efficient unit testing of Services, Reducers, Eff
   npm run test:watch
   ```
 
-### 3.2. End-to-End (E2E) Testing (Playwright)
+### 4.2. End-to-End (E2E) Testing (Playwright)
 
 **Playwright** is used for robust, browser-level testing of the user workflow.
 

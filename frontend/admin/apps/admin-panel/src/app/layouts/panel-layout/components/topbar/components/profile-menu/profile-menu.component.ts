@@ -2,10 +2,11 @@ import { ChangeDetectionStrategy, Component, input, output, signal } from '@angu
 import { IconName, IconComponent } from '@ombro/shared/ui/ui-icons';
 import { RouterLink } from '@angular/router';
 import { NgTemplateOutlet } from '@angular/common';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-profile-menu',
-  imports: [RouterLink, IconComponent, NgTemplateOutlet],
+  imports: [RouterLink, IconComponent, NgTemplateOutlet, TranslocoDirective],
   templateUrl: './profile-menu.component.html',
   styleUrl: './profile-menu.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,7 +19,7 @@ export class ProfileMenuComponent {
   protected ariaLabel = signal<string>('Menu profilu');
 
   protected navItems: { name: string; icon: IconName; path?: string; action?: () => void }[] = [
-    { name: 'Wyloguj', icon: 'logout', action: () => this.handleLogoutButtonClick() },
+    { name: 'panel.actions.signOut', icon: 'logout', action: () => this.handleLogoutButtonClick() },
   ];
 
   private handleLogoutButtonClick(): void {

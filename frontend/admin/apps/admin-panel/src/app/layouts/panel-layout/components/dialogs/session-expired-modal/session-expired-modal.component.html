@@ -9,11 +9,10 @@
   headerIcon="account_circle_off"
   [severity]="severity()"
   (onHide)="close()"
+  *transloco="let t"
 >
-  <span header>Sesja wygasła</span>
-  <p>
-    Twoja sesja wygasła ze względów bezpieczeństwa. Zostałeś wylogowany, aby chronić Twoje dane.
-  </p>
+  <span header>{{ t('panel.dialogs.sessionExpired.heading') }}</span>
+  <p>{{ t('panel.dialogs.sessionExpired.content') }}</p>
   <button
     footer
     pButton
@@ -22,6 +21,6 @@
     (click)="close()"
     class="text-(length:--p-dialog-additional-button-font-size)"
   >
-    Przejdź do logowania
+    {{ t('panel.dialogs.sessionExpired.buttons.primary') }}
   </button>
 </ombro-primitive-dialog>
