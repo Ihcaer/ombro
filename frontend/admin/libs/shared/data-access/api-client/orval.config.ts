@@ -2,7 +2,7 @@ import { defineConfig } from 'orval';
 
 export default defineConfig({
   mainApi: {
-    input: { target: '../../../../../../contracts/swagger.json' },
+    input: { target: process.env.SWAGGER_FILE_PATH || '../../../../../../contracts/swagger.json' },
     output: {
       mode: 'tags-split',
       workspace: 'src/lib/generated',

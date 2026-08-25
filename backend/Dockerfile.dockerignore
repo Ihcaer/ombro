@@ -17,3 +17,6 @@ README.md
 
 # Prisma
 /src/prisma/client
+
+# Swagger
+/src/metadata.ts
