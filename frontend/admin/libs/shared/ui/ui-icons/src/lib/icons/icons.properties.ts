@@ -11,7 +11,7 @@
  * [20, 24, 24, 32] -> OK (Duplicates are fine, but not recommended)
  */
 export const iconProperties = {
-  size: [20, 24] as const,
+  size: [20, 24, 32] as const,
   weight: [400, 500, 600] as const,
   fill: [0, 1] as const,
   grade: [0] as const,

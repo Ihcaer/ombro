@@ -77,6 +77,7 @@ const systemIconsSet = [
   'open_in_new',
   'event',
   'commit',
+  'language',
 ] as const;
 
 export const MATERIAL_ICONS = [

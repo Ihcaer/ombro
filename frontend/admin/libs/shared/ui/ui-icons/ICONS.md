@@ -79,6 +79,7 @@ This list contains all icons available in this library.
 | **System**            | Open in New        |         ![open_in_new](https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/open_in_new/default/40px.svg)         | `"open_in_new"`         |
 | **System**            | Event              |               ![event](https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/event/default/40px.svg)               | `"event"`               |
 | **System**            | Commit             |              ![commit](https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/commit/default/40px.svg)              | `"commit"`              |
+| **System**            | Language           |            ![language](https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/language/default/40px.svg)            | `"language"`            |
 
 ### B. Custom icons (SVG)
 
