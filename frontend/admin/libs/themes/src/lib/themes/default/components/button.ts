@@ -1,9 +1,9 @@
 export const button = {
   root: {
-    borderRadius: '{radius.md}',
-    gap: '{spacing.2}',
-    paddingX: '{spacing.4}',
-    paddingY: '{spacing.2}',
+    borderRadius: '{borderRadius.md}',
+    gap: '{customPrimitive.spacing.2}',
+    paddingX: '{customPrimitive.spacing.4}',
+    paddingY: '{customPrimitive.spacing.2}',
   },
   colorScheme: {
     dark: {
@@ -11,7 +11,7 @@ export const button = {
         // severity="primary"
         primary: {
           background: '{primary.300}',
-          color: '{grey.700}',
+          color: '{customPrimitive.color.grey.700}',
           borderColor: '{primary.300}',
 
           hoverBackground: '{primary.200}',
@@ -22,56 +22,56 @@ export const button = {
         },
         // severity="secondary"
         secondary: {
-          background: '{grey.300}',
-          color: '{grey.700}',
-          borderColor: '{grey.300}',
+          background: '{customPrimitive.color.grey.300}',
+          color: '{customPrimitive.color.grey.700}',
+          borderColor: '{customPrimitive.color.grey.300}',
 
-          hoverBackground: '{grey.200}',
-          hoverBorderColor: '{grey.200}',
+          hoverBackground: '{customPrimitive.color.grey.200}',
+          hoverBorderColor: '{customPrimitive.color.grey.200}',
 
-          activeBackground: '{grey.100}',
-          activeBorderColor: '{grey.100}',
+          activeBackground: '{customPrimitive.color.grey.100}',
+          activeBorderColor: '{customPrimitive.color.grey.100}',
         },
         // severity="success"
         success: {
-          background: '{sageGreen.400}',
-          color: '{grey.700}',
-          borderColor: '{sageGreen.400}',
+          background: '{customPrimitive.color.sageGreen.400}',
+          color: '{customPrimitive.color.grey.700}',
+          borderColor: '{customPrimitive.color.sageGreen.400}',
 
-          hoverBackground: '{sageGreen.300}',
-          hoverBorderColor: '{sageGreen.300}',
+          hoverBackground: '{customPrimitive.color.sageGreen.300}',
+          hoverBorderColor: '{customPrimitive.color.sageGreen.300}',
 
-          activeBackground: '{sageGreen.200}',
-          activeBorderColor: '{sageGreen.200}',
+          activeBackground: '{customPrimitive.color.sageGreen.200}',
+          activeBorderColor: '{customPrimitive.color.sageGreen.200}',
         },
         // severity="warn"
         warn: {
-          background: '{amberEarth.300}',
-          color: '{grey.700}',
-          borderColor: '{amberEarth.300}',
+          background: '{customPrimitive.color.amberEarth.300}',
+          color: '{customPrimitive.color.grey.700}',
+          borderColor: '{customPrimitive.color.amberEarth.300}',
 
-          hoverBackground: '{amberEarth.200}',
-          hoverBorderColor: '{amberEarth.200}',
+          hoverBackground: '{customPrimitive.color.amberEarth.200}',
+          hoverBorderColor: '{customPrimitive.color.amberEarth.200}',
 
-          activeBackground: '{amberEarth.100}',
-          activeBorderColor: '{amberEarth.100}',
+          activeBackground: '{customPrimitive.color.amberEarth.100}',
+          activeBorderColor: '{customPrimitive.color.amberEarth.100}',
         },
         // severity="danger"
         danger: {
-          background: '{dustyRose.500}',
-          color: '{grey.700}',
-          borderColor: '{dustyRose.500}',
+          background: '{customPrimitive.color.dustyRose.500}',
+          color: '{customPrimitive.color.grey.700}',
+          borderColor: '{customPrimitive.color.dustyRose.500}',
 
-          hoverBackground: '{dustyRose.400}',
-          hoverBorderColor: '{dustyRose.400}',
+          hoverBackground: '{customPrimitive.color.dustyRose.400}',
+          hoverBorderColor: '{customPrimitive.color.dustyRose.400}',
 
-          activeBackground: '{dustyRose.300}',
-          activeBorderColor: '{dustyRose.300}',
+          activeBackground: '{customPrimitive.color.dustyRose.300}',
+          activeBorderColor: '{customPrimitive.color.dustyRose.300}',
         },
       },
       text: {
         primary: { color: '{primary.300}' },
-        secondary: { color: '{grey.300}' },
+        secondary: { color: '{customPrimitive.color.grey.300}' },
       },
     },
   },

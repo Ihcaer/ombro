@@ -4,13 +4,18 @@
   "sourceRoot": "libs/shared/breadcrumb/src",
   "prefix": "ombro",
   "projectType": "library",
-  "tags": ["scope:shared", "type:feature"],
+  "tags": [
+    "scope:shared",
+    "type:feature"
+  ],
   "targets": {
     "test": {
       "executor": "@nx/vitest:test",
-      "outputs": ["{options.reportsDirectory}"],
+      "outputs": [
+        "{options.reportsDirectory}"
+      ],
       "options": {
-        "reportsDirectory": "../../../coverage/libs/shared/breadcrumb"
+        "reportsDirectory": "{projectRoot}/../../../coverage/libs/shared/breadcrumb"
       }
     },
     "lint": {

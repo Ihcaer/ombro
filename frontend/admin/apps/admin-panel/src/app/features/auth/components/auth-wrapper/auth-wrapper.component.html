@@ -1,12 +1,8 @@
 <main class="flex h-screen flex-col items-center justify-center px-4">
-  <header class="mb-auto mt-[24px] grid h-[25px] w-full grid-cols-2 lg:grid-cols-3">
-    <app-logo variant="wordmark" class="lg:col-2 lg:justify-self-center" />
-    <div class="lg:col-3 justify-self-end">
-      <ombro-icon
-        name="language"
-        [size]="32"
-        class="text-(--p-text-color-muted) mr-(--p-spacing-2)"
-      />
+  <header class="mt-[24px] mb-auto grid h-[25px] w-full grid-cols-2 lg:grid-cols-3">
+    <app-logo variant="wordmark" class="max-h-[3rem] lg:col-2 lg:justify-self-center" />
+    <div class="flex items-start gap-(--p-custom-primitive-spacing-2) justify-self-end lg:col-3">
+      <ombro-icon name="language" [size]="40" class="text-(--p-text-color-muted)" />
       <ombro-select
         [options]="languagesList()"
         [optionLabel]="languageObjectKeys.label"
@@ -14,11 +10,12 @@
         [(ngModel)]="selectedLang"
         (ngModelChange)="onLanguageChange($event)"
         optionValue="code"
+        class="min-w-[9rem]"
       />
     </div>
   </header>
   <section
-    class="bg-(--p-surface-secondary-bg-color) rounded-(--p-radius-lg) border-(length:--p-border-width-md) border-(--p-grey-400) mb-auto w-full max-w-[25rem] p-[32px] shadow-[0_8px_30px_rgba(0,0,0,0.4)]"
+    class="mb-auto w-full max-w-[25rem] rounded-(--p-border-radius-lg) border-(length:--p-custom-primitive-border-width-md) border-(--p-custom-primitive-color-grey-400) bg-(--p-custom-semantic-surface-secondary-bg-color) p-[32px] shadow-[0_8px_30px_rgba(0,0,0,0.4)]"
   >
     <div class="heading flex flex-col justify-center gap-[6px] text-center">
       @if (icon()) {
@@ -26,15 +23,15 @@
           [name]="icon()!"
           [weight]="600"
           [size]="24"
-          class="text-(--p-misc-vivid-color)"
+          class="text-(--p-custom-semantic-misc-vivid-color)"
         />
       }
       <h1><ng-content select="[heading]" /></h1>
     </div>
     <div class="w-full">
       @if (errorMessage(); as message) {
-        <div class="mb-(--p-spacing-4) flex items-center justify-center">
-          <p-message severity="error" styleClass="min-w-0">
+        <div class="mb-(--p-custom-primitive-spacing-4) flex items-center justify-center">
+          <p-message severity="error" class="min-w-0">
             {{ message }}
           </p-message>
         </div>

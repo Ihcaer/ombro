@@ -4,13 +4,18 @@
   "sourceRoot": "libs/shared/ui/ui-primitives/src",
   "prefix": "ombro-primitive",
   "projectType": "library",
-  "tags": ["scope:shared", "type:ui"],
+  "tags": [
+    "scope:shared",
+    "type:ui"
+  ],
   "targets": {
     "test": {
       "executor": "@nx/vitest:test",
-      "outputs": ["{options.reportsDirectory}"],
+      "outputs": [
+        "{options.reportsDirectory}"
+      ],
       "options": {
-        "reportsDirectory": "../../../../coverage/libs/shared/ui/ui-primitives"
+        "reportsDirectory": "{projectRoot}/../../../../coverage/libs/shared/ui/ui-primitives"
       }
     },
     "lint": {

@@ -6,13 +6,14 @@ import {
   input,
   output,
   signal,
-  viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { IconName } from '@ombro/shared/ui/ui-icons';
+import { IconComponent, IconName } from '@ombro/shared/ui/ui-icons';
 import { IdGeneratorService } from '@ombro/shared/utils/util-id';
 import { InputTextModule } from 'primeng/inputtext';
-import { Password, PasswordModule } from 'primeng/password';
+import { InputPasswordModule } from 'primeng/inputpassword';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 import { LabelComponent } from '../label/label.component';
 import { BaseCvaComponent } from '../base-cva-component';
 import { ProgressBarModule } from 'primeng/progressbar';
@@ -29,7 +30,10 @@ import { passwordStrengthErrorMessage } from './password-strength-error-message'
   imports: [
     FormsModule,
     InputTextModule,
-    PasswordModule,
+    InputPasswordModule,
+    IconFieldModule,
+    InputIconModule,
+    IconComponent,
     LabelComponent,
     ProgressBarModule,
     NgClass,
@@ -43,7 +47,6 @@ import { passwordStrengthErrorMessage } from './password-strength-error-message'
 export class InputTextComponent extends BaseCvaComponent<string> {
   private readonly idGeneratorService = inject(IdGeneratorService);
   private readonly passwordStrengthService = inject(PasswordStrengthService);
-  private readonly passwordComponent = viewChild<Password>('passwordInput');
 
   readonly type = input<'text' | 'email' | 'password'>('text');
   readonly autocomplete = input<string>('on');
@@ -57,9 +60,9 @@ export class InputTextComponent extends BaseCvaComponent<string> {
   readonly allowedPasswordScore = input<PasswordStrengthScore>(2);
   sendPasswordStrengthScore = output<PasswordStrengthScore>({ alias: 'passwordStrengthScore' });
 
-  protected isLabelHovered = signal<boolean>(false);
   protected readonly actualPasswordStrengthScore = signal<PasswordStrengthScore>(0);
   protected readonly actualPasswordPercentageStrength = signal<number>(0);
+  readonly mask = signal<boolean>(true);
 
   protected readonly inputId = this.idGeneratorService.generate('inputText');
 
@@ -70,20 +73,11 @@ export class InputTextComponent extends BaseCvaComponent<string> {
     return message[passwordScore] || undefined;
   });
 
-  protected onLabelClick(): void {
-    const passwordInput = this.passwordComponent();
-    if (passwordInput) {
-      const input = passwordInput.el.nativeElement.querySelector('input');
-      input.focus();
-    }
-  }
+  protected onInput(input: Event): void {
+    const value = (input.target as HTMLInputElement).value;
 
-  protected onInputFromEvent(event: Event): void {
-    this.onInput((event.target as HTMLInputElement).value);
-  }
-
-  protected onInput(value: string): void {
     if (this.type() === 'password') this.onPasswordInput(value);
+
     this.setValue(value ?? '');
   }
 

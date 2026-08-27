@@ -26,7 +26,11 @@
       "@ombro/shared/ui/ui-icons": ["./libs/shared/ui/ui-icons/src/index.ts"],
       "@ombro/shared/ui/ui-primitives": ["./libs/shared/ui/ui-primitives/src/index.ts"],
       "@ombro/shared/data-access/api-client": ["./libs/shared/data-access/api-client/src/index.ts"]
-    }
+    },
+    "strict": false,
+    "noUncheckedSideEffectImports": false,
+    "types": ["*"],
+    "esModuleInterop": false
   },
   "exclude": ["node_modules", "tmp"]
 }

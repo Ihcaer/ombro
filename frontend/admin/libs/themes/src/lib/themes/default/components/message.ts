@@ -4,14 +4,14 @@ export const message: MessageDesignTokens = {
   colorScheme: {
     dark: {
       error: {
-        background: '{dustyRose.700}',
-        borderColor: '{dustyRose.300}',
-        color: '{dustyRose.300}',
+        background: '{customPrimitive.color.dustyRose.700}',
+        borderColor: '{customPrimitive.color.dustyRose.300}',
+        color: '{customPrimitive.color.dustyRose.300}',
       },
       success: {
-        background: '{sageGreen.700}',
-        borderColor: '{sageGreen.300}',
-        color: '{sageGreen.300}',
+        background: '{customPrimitive.color.sageGreen.700}',
+        borderColor: '{customPrimitive.color.sageGreen.300}',
+        color: '{customPrimitive.color.sageGreen.300}',
       },
     },
   },

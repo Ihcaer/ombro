@@ -5,28 +5,29 @@
       [disabled]="isDisabled()"
       [iconName]="labelIcon()"
       [attr.inert]="isDisabled() ? '' : null"
-      (click)="onLabelClick()"
-      (mouseenter)="isLabelHovered.set(true)"
-      (mouseleave)="isLabelHovered.set(false)"
       >{{ label() }}</ombro-input-label
     >
   }
   @if (type() === 'password') {
-    <p-password
-      #passwordInput
-      [id]="inputId"
-      [feedback]="false"
-      [disabled]="isDisabled()"
-      [toggleMask]="true"
-      [autocomplete]="autocomplete()"
-      [placeholder]="placeholder()"
-      [invalid]="!!errorState()"
-      [ngModel]="value()"
-      (ngModelChange)="onInput($event)"
-      (onBlur)="handleBlur()"
-      [class.force-hover]="isLabelHovered()"
-      fluid
-    />
+    <p-iconfield>
+      <input
+        pInputPassword
+        [id]="inputId"
+        class="w-full"
+        [type]="type()"
+        [value]="value()"
+        [disabled]="isDisabled()"
+        (input)="onInput($event)"
+        (blur)="handleBlur()"
+        [autocomplete]="autocomplete()"
+        [placeholder]="placeholder()"
+        [invalid]="!!errorState()"
+        [mask]="mask()"
+      />
+      <p-inputicon (click)="mask.update((v) => !v)" class="cursor-pointer">
+        <ombro-icon [name]="mask() ? 'visibility' : 'visibility_off'" [size]="16" />
+      </p-inputicon>
+    </p-iconfield>
   } @else {
     <input
       pInputText
@@ -34,7 +35,7 @@
       [type]="type()"
       [value]="value()"
       [disabled]="isDisabled()"
-      (input)="onInputFromEvent($event)"
+      (input)="onInput($event)"
       (blur)="handleBlur()"
       [autocomplete]="autocomplete()"
       [placeholder]="placeholder()"

@@ -21,6 +21,7 @@ import {
   defaultLanguage,
   LOCAL_STORAGE_LANGUAGE_KEY,
 } from './core/config/i18n/i18n.config';
+import { environment } from '../environments/environment.example';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -41,6 +42,7 @@ export const appConfig: ApplicationConfig = {
           },
         },
       },
+      license: environment.primeUiLicenseKey,
     }),
     provideMaterialSymbols(),
     provideTransloco({

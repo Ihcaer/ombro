@@ -43,6 +43,7 @@ export class SelectComponent extends BaseCvaComponent<unknown> {
   showClear = input<boolean>(false);
   virtualScroll = input<boolean>(false);
   virtualScrollItemSize = input<number>();
+  multiple = input<boolean>(false);
 
   protected labelId = this.idGeneratorService.generate('select-label');
   protected isLabelHovered = signal<boolean>(false);

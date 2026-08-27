@@ -5,4 +5,5 @@ export const environment: EnvConfig = {
   api: { domain: '', baseUrl: '/api/v1' },
   coreFeatures: {},
   addonFeatures: {},
+  primeUiLicenseKey: '',
 } as const;

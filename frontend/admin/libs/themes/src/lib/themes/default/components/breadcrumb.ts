@@ -5,13 +5,13 @@ export const breadcrumb: BreadcrumbDesignTokens & {
 } = {
   colorScheme: {
     dark: {
-      root: { background: '{surface.panel.bg-color}' },
+      root: { background: '{customPrimitive.surface.panel.bg-color}' },
       item: {
         color: '{primary.400}',
         colorCurrent: '{primary.300}',
         hoverColor: '{primary.300}',
       },
-      separator: { color: '{grey.400}' },
+      separator: { color: '{customPrimitive.color.grey.400}' },
     },
   },
 } as const;

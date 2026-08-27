@@ -31,7 +31,7 @@ export class AvatarPopoverComponent {
   });
 
   private setAvatarSize(): void {
-    const sizeVariable = '--p-size-32';
+    const sizeVariable = '--p-custom-primitive-size-32';
 
     const rootStyles = getComputedStyle(document.documentElement);
     const size = rootStyles.getPropertyValue(sizeVariable).trim();

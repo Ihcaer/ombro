@@ -9,12 +9,12 @@
   [appendTo]="appendTo()"
   [blockScroll]="blockScroll()"
   [closeAriaLabel]="closeAriaLabel()"
-  styleClass="backdrop-blur-(--p-dialog-additional-backdrop-blur) m-(--p-dialog-additional-margin)"
+  class="m-(--p-dialog-additional-margin) backdrop-blur-(--p-dialog-additional-backdrop-blur)"
   maskStyleClass="bg-(--p-dialog-additional-mask-background)"
   contentStyleClass="text-(length:--p-dialog-additional-content-font-size)"
 >
   <ng-template #header>
-    <div class="gap-(--p-spacing-2) flex items-center">
+    <div class="flex items-center gap-(--p-custom-primitive-spacing-2)">
       @if (headerIcon()) {
         <ombro-icon
           [name]="headerIcon()!"

@@ -68,6 +68,7 @@ This list contains all icons available in this library.
 | **Status & Security** | Shield Question    |    ![shield_question](https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/shield_with_heart/default/40px.svg)    | `"shield_question"`     |
 | **Status & Security** | Bad Security       |             ![gpp_bad](https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/gpp_bad/default/40px.svg)             | `"gpp_bad"`             |
 | **Status & Security** | Visibility         |          ![visibility](https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/visibility/default/40px.svg)          | `"visibility"`          |
+| **Status & Security** | Visibility Off     |      ![visibility_off](https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/visibility_off/default/40px.svg)      | `"visibility_off"`      |
 | **Status & Security** | Preview            |             ![preview](https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/preview/default/40px.svg)             | `"preview"`             |
 | **Status & Security** | Label Important    |     ![label_important](https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/label_important/default/40px.svg)     | `"label_important"`     |
 | **Status & Security** | Crown              |           ![crown](https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/rewarded_ads/default/40px.svg)            | `"crown"`               |

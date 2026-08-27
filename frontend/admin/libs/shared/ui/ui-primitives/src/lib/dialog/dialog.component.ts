@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, input, model, output, signal } from
 import { DialogModule } from 'primeng/dialog';
 import { IconComponent, IconName } from '@ombro/shared/ui/ui-icons';
 import { ButtonSeverity } from 'primeng/button';
+import { AppendTo } from 'primeng/types/shared';
 
 @Component({
   selector: 'ombro-primitive-dialog',
@@ -26,7 +27,7 @@ export class DialogComponent {
   draggable = input<boolean>(true);
   focusOnShow = input<boolean>(false);
   blockScroll = input<boolean>(false);
-  appendTo = input<string>('body');
+  appendTo = input<AppendTo>('body');
 
   onHide = output<void>();
 

@@ -6,4 +6,5 @@ export interface EnvConfig {
   };
   readonly coreFeatures: {};
   readonly addonFeatures: {};
+  readonly primeUiLicenseKey: string;
 }

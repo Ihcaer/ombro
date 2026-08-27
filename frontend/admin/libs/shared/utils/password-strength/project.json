@@ -4,13 +4,18 @@
   "sourceRoot": "libs/shared/utils/password-strength/src",
   "prefix": "ombro",
   "projectType": "library",
-  "tags": ["scope:shared", "type:util"],
+  "tags": [
+    "scope:shared",
+    "type:util"
+  ],
   "targets": {
     "test": {
       "executor": "@nx/vitest:test",
-      "outputs": ["{options.reportsDirectory}"],
+      "outputs": [
+        "{options.reportsDirectory}"
+      ],
       "options": {
-        "reportsDirectory": "../../../../coverage/libs/shared/utils/password-strength"
+        "reportsDirectory": "{projectRoot}/../../../../coverage/libs/shared/utils/password-strength"
       }
     },
     "lint": {

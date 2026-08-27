@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IdGeneratorService } from '@ombro/shared/utils/util-id';
-import { DatePicker, DatePickerModule } from 'primeng/datepicker';
+import { DatePickerModule, DatePickerSelectionMode } from 'primeng/datepicker';
 import { InputMaskModule } from 'primeng/inputmask';
 import { LabelComponent } from '../label/label.component';
 import { IconName } from '@ombro/shared/ui/ui-icons';
 import { BaseCvaComponent } from '../base-cva-component';
 import { ErrorMessageComponent } from '../error-message/error-message.component';
 
-type DatepickerSelectionMode = DatePicker['selectionMode'];
+type DatepickerSelectionMode = DatePickerSelectionMode;
 
 @Component({
   selector: 'ombro-datepicker',

@@ -1,11 +1,11 @@
 @use '../../styles/common.scss';
 
 $statusColors: (
-  '0': var(--p-meter-color-fill-low),
-  '1': var(--p-meter-color-fill-low),
-  '2': var(--p-meter-color-fill-medium),
-  '3': var(--p-meter-color-fill-high),
-  '4': var(--p-meter-color-fill-very-high),
+  '0': var(--p-custom-semantic-meter-color-fill-low),
+  '1': var(--p-custom-semantic-meter-color-fill-low),
+  '2': var(--p-custom-semantic-meter-color-fill-medium),
+  '3': var(--p-custom-semantic-meter-color-fill-high),
+  '4': var(--p-custom-semantic-meter-color-fill-very-high),
 );
 
 @each $name, $color in $statusColors {
