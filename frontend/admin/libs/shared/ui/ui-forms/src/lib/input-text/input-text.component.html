@@ -1,12 +1,8 @@
 <div class="container">
   @if (label()) {
-    <ombro-input-label
-      [inputId]="inputId"
-      [disabled]="isDisabled()"
-      [iconName]="labelIcon()"
-      [attr.inert]="isDisabled() ? '' : null"
-      >{{ label() }}</ombro-input-label
-    >
+    <ombro-input-label [inputId]="inputId" [disabled]="disabled()" [iconName]="labelIcon()">{{
+      label()
+    }}</ombro-input-label>
   }
   @if (type() === 'password') {
     <p-iconfield>
@@ -16,12 +12,12 @@
         class="w-full"
         [type]="type()"
         [value]="value()"
-        [disabled]="isDisabled()"
+        [disabled]="disabled()"
         (input)="onInput($event)"
-        (blur)="handleBlur()"
+        (blur)="touch.emit()"
         [autocomplete]="autocomplete()"
         [placeholder]="placeholder()"
-        [invalid]="!!errorState()"
+        [invalid]="hasError()"
         [mask]="mask()"
       />
       <p-inputicon (click)="mask.update((v) => !v)" class="cursor-pointer">
@@ -34,21 +30,23 @@
       [id]="inputId"
       [type]="type()"
       [value]="value()"
-      [disabled]="isDisabled()"
+      [disabled]="disabled()"
       (input)="onInput($event)"
-      (blur)="handleBlur()"
+      (blur)="touch.emit()"
       [autocomplete]="autocomplete()"
       [placeholder]="placeholder()"
-      [invalid]="!!errorState()"
+      [invalid]="hasError()"
     />
   }
-  <ombro-input-error-message [errorMessage]="errorState()" />
+  <ombro-input-error-message [errorMessage]="errorState()" [translateError]="translateError()" />
   @if (type() === 'password' && showPasswordStrength()) {
     <div class="mb-[1rem]">
-      <div class="flex justify-between">
-        <span class="text-(--p-text-color-emphasis)">Siła hasła</span>
+      <div class="flex justify-between" *transloco="let t">
+        <span class="text-(--p-text-color-emphasis)">{{
+          t('common.forms.misc.passwordStrength.label')
+        }}</span>
         <span [ngClass]="'strength-message-' + actualPasswordStrengthScore()">
-          {{ passwordStrengthMessage() }}
+          {{ passwordStrengthMessage() ? t(passwordStrengthMessage()!) : undefined }}
         </span>
       </div>
       <p-progressbar

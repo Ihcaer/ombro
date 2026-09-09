@@ -12,6 +12,8 @@ describe('DatepickerComponent', () => {
 
     fixture = TestBed.createComponent(DatepickerComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('value', null);
+
     await fixture.whenStable();
   });
 

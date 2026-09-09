@@ -16,6 +16,7 @@ import { adminTokenInterceptor } from './core/auth/interceptors/admin-token/admi
 import { TranslocoHttpLoader } from './transloco-loader';
 import { provideTransloco } from '@jsverse/transloco';
 import { provideTranslocoPersistLang } from '@jsverse/transloco-persist-lang';
+import { provideTranslocoMessageformat } from '@jsverse/transloco-messageformat';
 import {
   availableLanguagesCodes,
   defaultLanguage,
@@ -60,5 +61,6 @@ export const appConfig: ApplicationConfig = {
       storageKey: LOCAL_STORAGE_LANGUAGE_KEY,
       storage: { useValue: localStorage },
     }),
+    provideTranslocoMessageformat(),
   ],
 };

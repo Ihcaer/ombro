@@ -12,6 +12,8 @@ describe('InputTextComponent', () => {
 
     fixture = TestBed.createComponent(InputTextComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('value', '');
+
     await fixture.whenStable();
   });
 

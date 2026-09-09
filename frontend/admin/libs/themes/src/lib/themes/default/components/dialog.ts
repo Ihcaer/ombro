@@ -18,7 +18,7 @@ const gap = '{customPrimitive.spacing.4}';
 export const dialog: DialogDesignTokens & AdditionalDialogDesignTokens = {
   root: {
     background: 'rgb(32 32 34 / 0.3)',
-    borderColor: '{customPrimitive.surface.panel.border.color}',
+    borderColor: '{customSemantic.surface.panel.border.color}',
     color: '{text.color}',
     borderRadius: '{borderRadius.2xl}',
     shadow:
@@ -26,7 +26,7 @@ export const dialog: DialogDesignTokens & AdditionalDialogDesignTokens = {
   },
   header: { padding: `${padding} ${padding} 0`, gap: '{customPrimitive.spacing.2}' },
   title: {
-    fontSize: '{customPrimitive.fontSize.heading.lg}',
+    fontSize: '{customSemantic.fontSize.heading.lg}',
     fontWeight: '{customPrimitive.fontWeight.600}',
   },
   content: { padding: `${gap} ${padding}` },
@@ -36,8 +36,8 @@ export const dialog: DialogDesignTokens & AdditionalDialogDesignTokens = {
     headerIconSize: '{customPrimitive.fontSize.28}',
     titleColor: '{text.colorEmphasis}',
     maskBackground: 'rgba(0, 0, 0, 0.5)',
-    contentFontSize: '{customPrimitive.fontSize.body.md}',
+    contentFontSize: '{customSemantic.fontSize.body.md}',
     margin: '{customPrimitive.spacing.5}',
-    buttonFontSize: '{customPrimitive.fontSize.body.md}',
+    buttonFontSize: '{customSemantic.fontSize.body.md}',
   },
 };

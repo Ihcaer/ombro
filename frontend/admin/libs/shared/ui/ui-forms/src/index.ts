@@ -3,4 +3,4 @@ export * from './lib/select/select.component';
 export * from './lib/checkbox/checkbox.component';
 export * from './lib/datepicker/datepicker.component';
 export * from './lib/toggle-switch/toggle-switch.component';
-export * from './lib/customReactiveValidators/index';
+export * from './lib/common/validating/index';

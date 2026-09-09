@@ -2,14 +2,14 @@
   <ng-container heading>{{ t('auth.confirmAccountPage.title') }}</ng-container>
   <ng-container>
     @if (neededFormFields.length > 0) {
-      <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+      <form [formRoot]="form">
         <div class="form-fields">
           @for (field of neededFormFields; track field) {
             @switch (field) {
               @case ('handleName') {
                 <ombro-input-text
                   [label]="t('common.forms.labels.newHandle')"
-                  [formControlName]="field"
+                  [formField]="form.handleName!"
                 />
               }
               @case ('password') {
@@ -19,12 +19,12 @@
                   [showPasswordStrength]="true"
                   [allowedPasswordScore]="minPasswordStrength"
                   (passwordStrengthScore)="handlePasswordStrength($event)"
-                  [formControlName]="field"
+                  [formField]="form.password!"
                 />
                 <ombro-input-text
                   type="password"
                   [label]="t('common.forms.labels.repeatNewPassword')"
-                  [formControlName]="CONFIRM_PASSWORD_FIELD_NAME"
+                  [formField]="form.confirmPassword!"
                 />
               }
             }

@@ -1,10 +1,9 @@
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { IdGeneratorService } from '@ombro/shared/utils/util-id';
-import { CheckboxChangeEvent, CheckboxModule } from 'primeng/checkbox';
-import { LabelComponent } from '../label/label.component';
-import { BaseCvaComponent } from '../base-cva-component';
-import { ErrorMessageComponent } from '../error-message/error-message.component';
+import { CheckboxModule } from 'primeng/checkbox';
+import { LabelComponent } from '../common/label/label.component';
+import { ErrorMessageComponent } from '../common/validating/error-message.component';
+import { BaseToggleControl } from '../base-toggle-control';
 
 @Component({
   selector: 'ombro-checkbox',
@@ -13,20 +12,9 @@ import { ErrorMessageComponent } from '../error-message/error-message.component'
   styleUrl: './checkbox.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CheckboxComponent extends BaseCvaComponent<boolean> {
-  private readonly idGeneratorService = inject(IdGeneratorService);
-
+export class CheckboxComponent extends BaseToggleControl {
   readonly label = input<string>();
   readonly binary = input<boolean>(true);
   readonly valueAttribute = input<unknown>();
-  readonly inputId = this.idGeneratorService.generate('checkbox');
-
-  handleCheckboxChange(event: CheckboxChangeEvent): void {
-    const newValue = event.checked !== undefined ? event.checked : event;
-    if (this.value() !== newValue) this.setValue(newValue);
-  }
-
-  protected handleBlur(): void {
-    this.markAsTouched();
-  }
+  readonly translateError = input<boolean>(true);
 }

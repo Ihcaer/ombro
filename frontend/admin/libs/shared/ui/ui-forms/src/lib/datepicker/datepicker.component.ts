@@ -1,12 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { IdGeneratorService } from '@ombro/shared/utils/util-id';
 import { DatePickerModule, DatePickerSelectionMode } from 'primeng/datepicker';
 import { InputMaskModule } from 'primeng/inputmask';
-import { LabelComponent } from '../label/label.component';
+import { LabelComponent } from '../common/label/label.component';
 import { IconName } from '@ombro/shared/ui/ui-icons';
-import { BaseCvaComponent } from '../base-cva-component';
-import { ErrorMessageComponent } from '../error-message/error-message.component';
+import { BaseInputControl } from '../base-input-control';
+import { ErrorMessageComponent } from '../common/validating/error-message.component';
 
 type DatepickerSelectionMode = DatePickerSelectionMode;
 
@@ -19,9 +18,7 @@ type DatepickerSelectionMode = DatePickerSelectionMode;
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DatepickerComponent extends BaseCvaComponent<Date | Date[] | null> {
-  private readonly idGeneratorService = inject(IdGeneratorService);
-
+export class DatepickerComponent extends BaseInputControl<Date | Date[] | null> {
   label = input<string>();
   labelIcon = input<IconName>();
   dateFormat = input<string>('dd.mm.yy');
@@ -36,18 +33,4 @@ export class DatepickerComponent extends BaseCvaComponent<Date | Date[] | null> 
   selectionMode = input<DatepickerSelectionMode>('single');
   showTime = input<boolean>(false);
   onlyTime = input<boolean>(false);
-
-  protected readonly inputId = this.idGeneratorService.generate('datepicker');
-
-  override writeValue(value: Date | null): void {
-    this.value.set(value);
-  }
-
-  protected handleDateChange(value: Date | null): void {
-    this.setValue(value);
-  }
-
-  protected handleBlur(): void {
-    this.markAsTouched();
-  }
 }

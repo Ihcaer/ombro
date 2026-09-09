@@ -10,7 +10,29 @@
         "repeatNewPassword": "Repeat new password",
         "newHandle": "New handle"
       },
-      "buttons": { "changePassword": "Change password" }
-    }
+      "buttons": { "changePassword": "Change password" },
+      "errors": {
+        "required": "This field is required",
+        "minLength": "Must be at least {count} {count, plural, one {character} other {characters}} long",
+        "invalidPattern": "Incorrect syntax",
+        "email": "Incorrect email format",
+        "forbiddenChars": "The field contains invalid characters: {{chars}}",
+        "matchFields": "The value must match the {{fieldName}} field",
+        "weakPassword": "Password is too weak"
+      },
+      "misc": {
+        "passwordStrength": {
+          "label": "Password strength",
+          "score": {
+            "0": "Very weak",
+            "1": "Weak",
+            "2": "Medium",
+            "3": "Strong",
+            "4": "Very strong"
+          }
+        }
+      }
+    },
+    "dialogs": { "languageChange": { "heading": "Selected language" } }
   }
 }

@@ -5,7 +5,7 @@ export const breadcrumb: BreadcrumbDesignTokens & {
 } = {
   colorScheme: {
     dark: {
-      root: { background: '{customPrimitive.surface.panel.bg-color}' },
+      root: { background: '{customSemantic.surface.panel.bg-color}' },
       item: {
         color: '{primary.400}',
         colorCurrent: '{primary.300}',

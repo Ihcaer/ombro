@@ -12,6 +12,8 @@ describe('CheckboxComponent', () => {
 
     fixture = TestBed.createComponent(CheckboxComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('checked', false);
+
     await fixture.whenStable();
   });
 

@@ -9,13 +9,12 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { LabelComponent } from '../label/label.component';
-import { IdGeneratorService } from '@ombro/shared/utils/util-id';
+import { LabelComponent } from '../common/label/label.component';
 import { FormsModule } from '@angular/forms';
-import { SelectChangeEvent, SelectModule } from 'primeng/select';
+import { Select, SelectModule } from 'primeng/select';
 import { IconName } from '@ombro/shared/ui/ui-icons';
-import { BaseCvaComponent } from '../base-cva-component';
-import { ErrorMessageComponent } from '../error-message/error-message.component';
+import { BaseInputControl } from '../base-input-control';
+import { ErrorMessageComponent } from '../common/validating/error-message.component';
 
 @Component({
   selector: 'ombro-select',
@@ -29,9 +28,10 @@ import { ErrorMessageComponent } from '../error-message/error-message.component'
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SelectComponent extends BaseCvaComponent<unknown> {
-  private idGeneratorService = inject(IdGeneratorService);
+export class SelectComponent extends BaseInputControl<unknown> {
   private renderer = inject(Renderer2);
+
+  readonly select = viewChild.required<Select>('select');
   private labelComponent = viewChild(LabelComponent, { read: ElementRef });
 
   label = input<string>();
@@ -45,7 +45,6 @@ export class SelectComponent extends BaseCvaComponent<unknown> {
   virtualScrollItemSize = input<number>();
   multiple = input<boolean>(false);
 
-  protected labelId = this.idGeneratorService.generate('select-label');
   protected isLabelHovered = signal<boolean>(false);
 
   constructor() {
@@ -61,15 +60,7 @@ export class SelectComponent extends BaseCvaComponent<unknown> {
     });
   }
 
-  protected handleSelectChange(event: SelectChangeEvent): void {
-    const newValue = event.value !== undefined ? event.value : event;
-
-    if (this.value() !== newValue) {
-      this.setValue(newValue);
-    }
-  }
-
-  protected handleBlur(): void {
-    this.markAsTouched();
+  open(): void {
+    this.select().show();
   }
 }

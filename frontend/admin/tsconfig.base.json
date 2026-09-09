@@ -25,12 +25,14 @@
       "@ombro/shared/ui/ui-forms": ["./libs/shared/ui/ui-forms/src/index.ts"],
       "@ombro/shared/ui/ui-icons": ["./libs/shared/ui/ui-icons/src/index.ts"],
       "@ombro/shared/ui/ui-primitives": ["./libs/shared/ui/ui-primitives/src/index.ts"],
-      "@ombro/shared/data-access/api-client": ["./libs/shared/data-access/api-client/src/index.ts"]
+      "@ombro/shared/data-access/api-client": ["./libs/shared/data-access/api-client/src/index.ts"],
+      "@ombro/shared/utils/translation-utils": [
+        "./libs/shared/utils/translation-utils/src/index.ts"
+      ]
     },
     "strict": false,
     "noUncheckedSideEffectImports": false,
-    "types": ["*"],
-    "esModuleInterop": false
+    "types": ["*"]
   },
   "exclude": ["node_modules", "tmp"]
 }

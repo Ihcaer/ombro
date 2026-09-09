@@ -1,42 +1,62 @@
-<main class="flex h-screen flex-col items-center justify-center px-4">
-  <header class="mt-[24px] mb-auto grid h-[25px] w-full grid-cols-2 lg:grid-cols-3">
-    <app-logo variant="wordmark" class="max-h-[3rem] lg:col-2 lg:justify-self-center" />
-    <div class="flex items-start gap-(--p-custom-primitive-spacing-2) justify-self-end lg:col-3">
-      <ombro-icon name="language" [size]="40" class="text-(--p-text-color-muted)" />
+<div class="flex h-screen flex-col items-center justify-center px-4">
+  <header class="mt-[24px] mb-auto grid h-[25px] w-full grid-cols-2 sm:grid-cols-3">
+    <app-logo variant="wordmark" class="max-h-[3rem] sm:col-2 sm:justify-self-center" />
+    <div class="flex items-start gap-(--p-custom-primitive-spacing-2) justify-self-end sm:col-3">
+      <!-- Mobile button -->
+      <button
+        class="flex cursor-pointer rounded-(--p-border-radius-lg) border border-(--p-custom-semantic-surface-secondary-border-color) bg-[rgb(255_255_255_/_5%)] p-(--p-custom-primitive-spacing-1) sm:hidden"
+        (click)="isLanguageDialogOpen.set(true)"
+      >
+        <ng-container [ngTemplateOutlet]="languageIcon"></ng-container>
+      </button>
+      <!-- Desktop icon (button) -->
+      <button class="cursor-pointer max-sm:hidden" (click)="select.open()">
+        <ng-container [ngTemplateOutlet]="languageIcon"></ng-container>
+      </button>
       <ombro-select
+        #select
         [options]="languagesList()"
         [optionLabel]="languageObjectKeys.label"
         [optionValue]="languageObjectKeys.code"
-        [(ngModel)]="selectedLang"
+        [ngModel]="selectedLang()"
         (ngModelChange)="onLanguageChange($event)"
-        optionValue="code"
-        class="min-w-[9rem]"
+        [optionValue]="languageObjectKeys.code"
+        class="hidden! min-w-[9rem] sm:inline-block!"
+        [value]="undefined"
       />
     </div>
   </header>
-  <section
-    class="mb-auto w-full max-w-[25rem] rounded-(--p-border-radius-lg) border-(length:--p-custom-primitive-border-width-md) border-(--p-custom-primitive-color-grey-400) bg-(--p-custom-semantic-surface-secondary-bg-color) p-[32px] shadow-[0_8px_30px_rgba(0,0,0,0.4)]"
-  >
-    <div class="heading flex flex-col justify-center gap-[6px] text-center">
-      @if (icon()) {
-        <ombro-icon
-          [name]="icon()!"
-          [weight]="600"
-          [size]="24"
-          class="text-(--p-custom-semantic-misc-vivid-color)"
-        />
-      }
-      <h1><ng-content select="[heading]" /></h1>
-    </div>
-    <div class="w-full">
-      @if (errorMessage(); as message) {
-        <div class="mb-(--p-custom-primitive-spacing-4) flex items-center justify-center">
-          <p-message severity="error" class="min-w-0">
-            {{ message }}
-          </p-message>
-        </div>
-      }
-      <ng-content />
-    </div>
-  </section>
-</main>
+  <main class="mb-auto flex w-full items-center justify-center">
+    <section
+      class="w-full max-w-[25rem] rounded-(--p-border-radius-lg) border-(length:--p-custom-primitive-border-width-md) border-(--p-custom-primitive-color-grey-400) bg-(--p-custom-semantic-surface-secondary-bg-color) p-[32px] shadow-[0_8px_30px_rgba(0,0,0,0.4)]"
+    >
+      <div class="heading flex flex-col justify-center gap-[6px] text-center">
+        @if (icon()) {
+          <ombro-icon
+            [name]="icon()!"
+            [weight]="600"
+            [size]="24"
+            class="text-(--p-custom-semantic-misc-vivid-color)"
+          />
+        }
+        <h1><ng-content select="[heading]" /></h1>
+      </div>
+      <div class="w-full">
+        @if (errorMessage(); as message) {
+          <div class="mb-(--p-custom-primitive-spacing-4) flex items-center justify-center">
+            <p-message severity="error" class="min-w-0">
+              {{ message }}
+            </p-message>
+          </div>
+        }
+        <ng-content />
+      </div>
+    </section>
+  </main>
+</div>
+
+<ng-template #languageIcon>
+  <ombro-icon name="language" [size]="40" class="text-(--p-text-color-muted)" />
+</ng-template>
+
+<app-language-change-dialog [(isVisible)]="isLanguageDialogOpen" />

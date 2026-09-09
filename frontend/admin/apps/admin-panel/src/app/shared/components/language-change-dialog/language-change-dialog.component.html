@@ -1,0 +1,17 @@
+<ombro-primitive-dialog [(isVisible)]="isVisible" [draggable]="false" maxWidth="16rem">
+  <span header>{{ 'common.dialogs.languageChange.heading' | transloco }}</span>
+  <div class="flex flex-col">
+    @for (language of languages; track language.code) {
+      <div class="flex min-h-[3rem] items-center gap-(--p-custom-primitive-spacing-2)">
+        @let languageCode = language.code;
+        <p-radiobutton
+          [inputId]="getRadioId(languageCode)"
+          [value]="languageCode"
+          [ngModel]="selectedLang()"
+          (ngModelChange)="onLanguageChange($event)"
+        />
+        <label [for]="getRadioId(languageCode)">{{ language.label }}</label>
+      </div>
+    }
+  </div>
+</ombro-primitive-dialog>

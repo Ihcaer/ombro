@@ -34,11 +34,16 @@ export default [
             // ARCHITECTURAL LAYER BOUNDARIES
             {
               sourceTag: 'type:app',
-              onlyDependOnLibsWithTags: ['type:feature', 'type:ui', 'type:util'],
+              onlyDependOnLibsWithTags: [
+                'type:feature',
+                'type:ui',
+                'type:util',
+                'type:data-access',
+              ],
             },
             {
               sourceTag: 'type:feature',
-              onlyDependOnLibsWithTags: ['type:ui', 'type:util'],
+              onlyDependOnLibsWithTags: ['type:ui', 'type:util', 'type:data-access'],
             },
             {
               sourceTag: 'type:ui',

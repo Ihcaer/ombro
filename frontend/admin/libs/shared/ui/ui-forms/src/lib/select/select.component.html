@@ -2,10 +2,10 @@
   @if (label()) {
     <ombro-input-label
       [inputId]="''"
-      [id]="labelId"
-      [disabled]="isDisabled()"
+      [id]="inputId"
+      [disabled]="disabled()"
       [iconName]="labelIcon()"
-      [attr.inert]="isDisabled() ? '' : null"
+      [attr.inert]="disabled() ? '' : null"
       (click)="select.focus(); select.show()"
       (mouseenter)="isLabelHovered.set(true)"
       (mouseleave)="isLabelHovered.set(false)"
@@ -14,20 +14,20 @@
   }
   <p-select
     #select
-    [ariaLabelledBy]="labelId"
+    [ariaLabelledBy]="inputId"
     [options]="options()"
     [ngModel]="value()"
     [optionLabel]="optionLabel()"
     [optionValue]="optionValue()"
-    (onChange)="handleSelectChange($event)"
+    (onChange)="value.set($event.value)"
     [placeholder]="placeholder()"
-    [disabled]="isDisabled()"
+    [disabled]="disabled()"
     [showClear]="showClear()"
     [multiple]="multiple()"
     [virtualScroll]="virtualScroll()"
     [virtualScrollItemSize]="virtualScrollItemSize()"
     [class.force-hover]="isLabelHovered()"
-    (onHide)="handleBlur()"
+    (onHide)="touch.emit()"
   />
   @if (errorState(); as message) {
     <small>{{ message }}</small>

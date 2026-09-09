@@ -2,17 +2,16 @@
   <div class="checkbox-input">
     <p-checkbox
       [inputId]="inputId"
-      [disabled]="isDisabled()"
-      [ngModel]="value()"
-      (ngModelChange)="handleCheckboxChange($event)"
+      [disabled]="disabled()"
+      [ngModel]="checked()"
+      (ngModelChange)="checked.set($event)"
       [binary]="binary()"
-      [disabled]="isDisabled()"
-      (onBlur)="handleBlur()"
-      [class.p-invalid]="!!errorState()"
+      (onBlur)="touch.emit()"
+      [class.p-invalid]="errorState()"
     />
     @if (label()) {
       <ombro-input-label [inputId]="inputId">{{ label() }}</ombro-input-label>
     }
   </div>
-  <ombro-input-error-message [errorMessage]="errorState()" />
+  <ombro-input-error-message [errorMessage]="errorState()" [translateError]="translateError()" />
 </div>
