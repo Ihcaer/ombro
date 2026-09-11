@@ -108,9 +108,6 @@
         "staticFilePath": "dist/apps/admin-panel/browser",
         "spa": true
       }
-    },
-    "transloco:optimize": {
-      "command": "transloco-optimize /dist/admin-panel/browser/assets/i18n"
     }
   }
 }

@@ -5,7 +5,7 @@ test.describe('Login page', () => {
   test.beforeEach(async ({ page }) => await page.goto('/admin/auth/login'));
 
   test('has title', async ({ page }) => {
-    expect(await page.locator('h1').innerText()).toContain('Logowanie');
+    expect(await page.locator('h1').innerText()).toContain('Sign in');
   });
 
   test.describe('Login mechanism', () => {
@@ -16,9 +16,9 @@ test.describe('Login page', () => {
     test('should move admin to panel after successful login', async ({ page }) => {
       const loginCredentials = { ...firstAdminCredentials };
 
-      const identifierField = page.getByRole('textbox', { name: 'Nazwa użytkownika lub e-mail' });
+      const identifierField = page.getByRole('textbox', { name: 'Handle or email' });
       const passwordField = page.locator('input[type="password"]');
-      const submitLoginButton = page.getByRole('button', { name: 'Zaloguj się' });
+      const submitLoginButton = page.getByRole('button', { name: 'Sign in' });
 
       await identifierField.click();
       await identifierField.fill(loginCredentials.email);
