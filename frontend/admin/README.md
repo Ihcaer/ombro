@@ -41,7 +41,7 @@ This guide is for running the Admin Panel locally. For a complete system environ
   ```bash
   npm run serve
   ```
-- **Access:** When running the full stack via Docker Compose, access the panel via the Reverse Proxy URL: `http://localhost/admin`
+- **Access:** When running the full stack via Docker Compose, access the panel via the reverse proxy URL: `http://localhost/admin`
 
 ## 2. Architecture and state management
 
@@ -92,6 +92,9 @@ src/assets/i18n/
 │   ├── en.json
 │   ├── pl.json
 │   └── other folders (scopes)...
+├── primeng/
+│   ├── en.json
+│   └── pl.json
 ├── en.json
 └── pl.json
 ```
