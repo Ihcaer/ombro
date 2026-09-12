@@ -2,6 +2,8 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  debounced,
+  effect,
   inject,
   input,
   output,
@@ -46,6 +48,8 @@ import { TranslocoDirective } from '@jsverse/transloco';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InputTextComponent extends BaseInputControl<string> {
+  private static readonly passwordDebounceTimeMs = 300;
+
   private readonly passwordStrengthService = inject(PasswordStrengthService);
 
   readonly type = input<'text' | 'email' | 'password'>('text');
@@ -56,7 +60,6 @@ export class InputTextComponent extends BaseInputControl<string> {
    * Description: {@link IconComponent}
    */
   readonly labelIcon = input<IconName>();
-  readonly translateError = input<boolean>(true);
   readonly showPasswordStrength = input<boolean>(false);
   readonly allowedPasswordScore = input<PasswordStrengthScore>(2);
   sendPasswordStrengthScore = output<PasswordStrengthScore>({ alias: 'passwordStrengthScore' });
@@ -64,6 +67,15 @@ export class InputTextComponent extends BaseInputControl<string> {
   protected readonly actualPasswordStrengthScore = signal<PasswordStrengthScore>(0);
   protected readonly actualPasswordPercentageStrength = signal<number>(0);
   readonly mask = signal<boolean>(true);
+
+  private debouncedValue = debounced(this.value, InputTextComponent.passwordDebounceTimeMs);
+
+  private _passwordDebounce = effect(() => {
+    if (this.type() !== 'password') return;
+
+    const password = this.debouncedValue.value();
+    this.onPasswordInput(password);
+  });
 
   protected readonly passwordStrengthMessage = computed<string | undefined>(() => {
     const passwordScore: PasswordStrengthScore = this.actualPasswordStrengthScore();
@@ -74,13 +86,17 @@ export class InputTextComponent extends BaseInputControl<string> {
 
   protected onInput(input: Event): void {
     const inputValue = (input.target as HTMLInputElement).value;
-
-    if (this.type() === 'password') this.onPasswordInput(inputValue);
-
     this.value.set(inputValue);
   }
 
   private async onPasswordInput(password: string): Promise<void> {
+    if (!password) {
+      this.actualPasswordStrengthScore.set(0);
+      this.actualPasswordPercentageStrength.set(0);
+      this.sendPasswordStrengthScore.emit(0);
+      return;
+    }
+
     const zxcvbn = await this.passwordStrengthService.getValidator();
     const result = zxcvbn(password);
     const score = result.score;
