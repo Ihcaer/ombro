@@ -2,7 +2,6 @@ import { Component, DestroyRef, DOCUMENT, effect, inject, OnInit, Renderer2 } fr
 import { RouterOutlet } from '@angular/router';
 import { TranslocoService } from '@jsverse/transloco';
 import { PrimeNG } from 'primeng/config';
-import { PRIMENG_SCOPE } from './core/config/i18n/i18n.config';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -31,8 +30,9 @@ export class App implements OnInit {
       .load(this.transloco.getActiveLang())
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe();
+    // Primeng scope is auto detected
     this.transloco
-      .selectTranslateObject('', {}, PRIMENG_SCOPE)
+      .selectTranslateObject('')
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((translations) => {
         if (translations) this.primengConfig.setTranslation(translations);

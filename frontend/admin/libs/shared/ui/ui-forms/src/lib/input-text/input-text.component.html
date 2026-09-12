@@ -38,13 +38,13 @@
       [invalid]="hasError()"
     />
   }
-  <ombro-input-error-message [errorMessage]="errorState()" [translateError]="translateError()" />
+  <ombro-input-error-message [errorMessage]="errorState()" />
   @if (type() === 'password' && showPasswordStrength()) {
     <div class="mb-[1rem]">
       <div class="flex justify-between" *transloco="let t">
-        <span class="text-(--p-text-color-emphasis)">{{
-          t('common.forms.misc.passwordStrength.label')
-        }}</span>
+        <span class="text-(--p-text-color-emphasis)">
+          {{ t('common.forms.misc.passwordStrength.label') }}
+        </span>
         <span [ngClass]="'strength-message-' + actualPasswordStrengthScore()">
           {{ passwordStrengthMessage() ? t(passwordStrengthMessage()!) : undefined }}
         </span>

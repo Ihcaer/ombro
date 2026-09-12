@@ -16,5 +16,4 @@ export class CheckboxComponent extends BaseToggleControl {
   readonly label = input<string>();
   readonly binary = input<boolean>(true);
   readonly valueAttribute = input<unknown>();
-  readonly translateError = input<boolean>(true);
 }

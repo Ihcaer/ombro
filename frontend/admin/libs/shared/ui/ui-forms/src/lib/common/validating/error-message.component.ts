@@ -6,11 +6,11 @@ import { parseTranslationMessage } from '@ombro/shared/utils/translation-utils';
   selector: 'ombro-input-error-message',
   imports: [TranslocoPipe],
   template: `<small class="error-message" [class.active]="!!errorMessage()">
-    @if (translateError() && translatedMessage(); as message) {
-      {{ message.key | transloco: message.params }}
-    } @else {
-      {{ errorMessage() ?? '&nbsp;' }}
-    }
+    {{
+      translatedMessage()
+        ? (translatedMessage()!.key | transloco: translatedMessage()?.params)
+        : '&nbsp;'
+    }}
   </small>`,
   styles: `
     $errorTextColor: var(--p-form-field-invalid-border-color);
@@ -26,7 +26,6 @@ import { parseTranslationMessage } from '@ombro/shared/utils/translation-utils';
 })
 export class ErrorMessageComponent {
   readonly errorMessage = input.required<string | null>();
-  readonly translateError = input<boolean>(true);
 
   protected translatedMessage = computed(() => {
     const errorMessage = this.errorMessage();
