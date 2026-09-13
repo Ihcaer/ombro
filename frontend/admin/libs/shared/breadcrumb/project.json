@@ -4,22 +4,29 @@
   "sourceRoot": "libs/shared/breadcrumb/src",
   "prefix": "ombro",
   "projectType": "library",
-  "tags": [
-    "scope:shared",
-    "type:feature"
-  ],
+  "tags": ["scope:shared", "type:feature"],
   "targets": {
     "test": {
-      "executor": "@nx/vitest:test",
       "outputs": [
-        "{options.reportsDirectory}"
+        "{projectRoot}/{options.coverage.reportsDirectory}",
+        "{workspaceRoot}/coverage/libs/shared/breadcrumb"
       ],
       "options": {
-        "reportsDirectory": "{projectRoot}/../../../coverage/libs/shared/breadcrumb"
+        "coverage.reportsDirectory": "../../../../../coverage/libs/shared/breadcrumb"
       }
     },
     "lint": {
-      "executor": "@nx/eslint:lint"
+      "inputs": [
+        "default",
+        "^default",
+        "{workspaceRoot}/.eslintrc.json",
+        "{workspaceRoot}/.eslintignore",
+        "{workspaceRoot}/eslint.config.mjs",
+        "{workspaceRoot}/tools/eslint-rules/**/*",
+        {
+          "externalDependencies": ["eslint"]
+        }
+      ]
     }
   }
 }

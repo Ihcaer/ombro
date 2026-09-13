@@ -4,22 +4,29 @@
   "sourceRoot": "libs/shared/ui/ui-icons/src",
   "prefix": "ombro",
   "projectType": "library",
-  "tags": [
-    "scope:shared",
-    "type:ui"
-  ],
+  "tags": ["scope:shared", "type:ui"],
   "targets": {
     "test": {
-      "executor": "@nx/vitest:test",
       "outputs": [
-        "{options.reportsDirectory}"
+        "{projectRoot}/{options.coverage.reportsDirectory}",
+        "{workspaceRoot}/coverage/libs/shared/ui/icons"
       ],
       "options": {
-        "reportsDirectory": "{projectRoot}/../../../../coverage/libs/shared/ui/ui-icons"
+        "coverage.reportsDirectory": "../../../../../../../coverage/libs/shared/ui/ui-icons"
       }
     },
     "lint": {
-      "executor": "@nx/eslint:lint"
+      "inputs": [
+        "default",
+        "^default",
+        "{workspaceRoot}/.eslintrc.json",
+        "{workspaceRoot}/.eslintignore",
+        "{workspaceRoot}/eslint.config.mjs",
+        "{workspaceRoot}/tools/eslint-rules/**/*",
+        {
+          "externalDependencies": ["eslint"]
+        }
+      ]
     }
   }
 }

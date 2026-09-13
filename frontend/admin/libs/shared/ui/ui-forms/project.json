@@ -7,14 +7,26 @@
   "tags": ["scope:shared", "type:ui"],
   "targets": {
     "test": {
-      "executor": "@nx/vitest:test",
-      "outputs": ["{options.reportsDirectory}"],
+      "outputs": [
+        "{projectRoot}/{options.coverage.reportsDirectory}",
+        "{workspaceRoot}/libs/coverage/libs/shared/ui-forms"
+      ],
       "options": {
-        "reportsDirectory": "{projectRoot}/../../../../coverage/libs/shared/ui/ui-forms"
+        "coverage.reportsDirectory": "../../../../../../../coverage/libs/shared/ui/ui-forms"
       }
     },
     "lint": {
-      "executor": "@nx/eslint:lint"
+      "inputs": [
+        "default",
+        "^default",
+        "{workspaceRoot}/.eslintrc.json",
+        "{workspaceRoot}/.eslintignore",
+        "{workspaceRoot}/eslint.config.mjs",
+        "{workspaceRoot}/tools/eslint-rules/**/*",
+        {
+          "externalDependencies": ["eslint"]
+        }
+      ]
     }
   }
 }

@@ -4,22 +4,29 @@
   "sourceRoot": "libs/shared/ui/ui-primitives/src",
   "prefix": "ombro-primitive",
   "projectType": "library",
-  "tags": [
-    "scope:shared",
-    "type:ui"
-  ],
+  "tags": ["scope:shared", "type:ui"],
   "targets": {
     "test": {
-      "executor": "@nx/vitest:test",
       "outputs": [
-        "{options.reportsDirectory}"
+        "{projectRoot}/{options.coverage.reportsDirectory}",
+        "{workspaceRoot}/libs/coverage/libs/shared/ui-primitives"
       ],
       "options": {
-        "reportsDirectory": "{projectRoot}/../../../../coverage/libs/shared/ui/ui-primitives"
+        "coverage.reportsDirectory": "../../../../../../../coverage/libs/shared/ui/ui-primitives"
       }
     },
     "lint": {
-      "executor": "@nx/eslint:lint"
+      "inputs": [
+        "default",
+        "^default",
+        "{workspaceRoot}/.eslintrc.json",
+        "{workspaceRoot}/.eslintignore",
+        "{workspaceRoot}/eslint.config.mjs",
+        "{workspaceRoot}/tools/eslint-rules/**/*",
+        {
+          "externalDependencies": ["eslint"]
+        }
+      ]
     }
   }
 }

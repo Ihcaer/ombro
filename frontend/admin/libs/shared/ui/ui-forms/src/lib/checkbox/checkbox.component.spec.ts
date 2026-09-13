@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CheckboxComponent } from './checkbox.component';
+import { provideDumbTranslocoForTests } from '@ombro/shared/utils/translation-utils';
 
 describe('CheckboxComponent', () => {
   let component: CheckboxComponent;
@@ -8,6 +9,7 @@ describe('CheckboxComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [CheckboxComponent],
+      providers: [provideDumbTranslocoForTests()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CheckboxComponent);
