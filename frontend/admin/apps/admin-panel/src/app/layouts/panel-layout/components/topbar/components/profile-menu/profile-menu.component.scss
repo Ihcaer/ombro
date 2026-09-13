@@ -1,10 +1,10 @@
 @use '../../../../shared/menu-items.scss';
 
-$bgColor: var(--p-grey-700) 60%;
-$shadowOffsetX: var(--p-shadow-offset--2);
-$shadowOffsetY: var(--p-shadow-offset-4);
-$shadowBlur: var(--p-blur-lg);
-$shadowColor: var(--p-misc-shadow-color-default);
+$bgColor: var(--p-custom-primitive-color-grey-700) 60%;
+$shadowOffsetX: var(--p-custom-primitive-shadow-offset--2);
+$shadowOffsetY: var(--p-custom-primitive-shadow-offset-4);
+$shadowBlur: var(--p-custom-primitive-blur-lg);
+$shadowColor: var(--p-custom-semantic-misc-shadow-color-default);
 
 :host {
   background-color: color-mix(in srgb, $bgColor, transparent);
@@ -12,7 +12,7 @@ $shadowColor: var(--p-misc-shadow-color-default);
 }
 
 .item {
-  border-radius: var(--p-radius-lg);
+  border-radius: var(--p-border-radius-lg);
   min-height: 3rem;
   padding-inline: 0.5rem;
   cursor: pointer;

@@ -1,15 +1,15 @@
 <div class="container">
   @if (label()) {
-    <ombro-input-label [inputId]="inputId" [disabled]="isDisabled()" [iconName]="labelIcon()">{{
+    <ombro-input-label [inputId]="inputId" [disabled]="disabled()" [iconName]="labelIcon()">{{
       label()
     }}</ombro-input-label>
   }
   <p-datepicker
     [inputId]="inputId"
     [ngModel]="value()"
-    (onSelect)="handleDateChange($event)"
-    (onHide)="handleBlur()"
-    [disabled]="isDisabled()"
+    (onSelect)="value.set($event)"
+    (onHide)="touch.emit()"
+    [disabled]="disabled()"
     [dateFormat]="dateFormat()"
     [showIcon]="showIcon()"
     [iconDisplay]="'input'"

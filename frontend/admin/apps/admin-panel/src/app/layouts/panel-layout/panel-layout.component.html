@@ -1,6 +1,6 @@
 <div
   [class]="isSideMenuCollapsed() ? 'grid-cols-[4.25rem_1fr]' : 'grid-cols-[13.5rem_1fr]'"
-  class="layout p-(--p-surface-primary-padding) transition-grid-cols duration-(--transition-duration) gap-y-(--p-surface-primary-gap-vertical) gap-x-(--p-surface-primary-gap-horizontal) h-dvh grid w-screen grid-rows-[6.25rem_1fr] ease-out"
+  class="layout transition-grid-cols grid h-dvh w-screen grid-rows-[6.25rem_1fr] gap-x-(--p-custom-semantic-surface-primary-gap-horizontal) gap-y-(--p-custom-semantic-surface-primary-gap-vertical) p-(--p-custom-semantic-surface-primary-padding) duration-(--transition-duration) ease-out"
 >
   <ng-container>
     <app-panel-layout-sidebar [(isCollapsed)]="isSideMenuCollapsed" class="row-span-full" />

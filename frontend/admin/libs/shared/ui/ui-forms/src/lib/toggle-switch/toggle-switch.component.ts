@@ -1,8 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
-import { IdGeneratorService } from '@ombro/shared/utils/util-id';
-import { BaseCvaComponent } from '../base-cva-component';
+import { BaseToggleControl } from '../base-toggle-control';
 
 @Component({
   selector: 'ombro-toggle-switch',
@@ -13,13 +12,4 @@ import { BaseCvaComponent } from '../base-cva-component';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ToggleSwitchComponent extends BaseCvaComponent<boolean> {
-  private idGeneratorService = inject(IdGeneratorService);
-
-  inputId = this.idGeneratorService.generate('toggle-switch');
-
-  handleToggleChange(value: boolean): void {
-    this.setValue(value);
-    this.markAsTouched();
-  }
-}
+export class ToggleSwitchComponent extends BaseToggleControl {}

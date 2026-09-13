@@ -20,11 +20,3 @@ export const defaultLanguage: Language['code'] =
   availableLanguagesCodes.find((lang) => lang === getBrowserLang()) ?? availableLanguagesCodes[0];
 
 export const LOCAL_STORAGE_LANGUAGE_KEY: string = 'lang';
-
-/**
- * Name of primeng translation scope.
- *
- * @remarks
- * **Important:** This name must match the folder with primeng translations name.
- */
-export const PRIMENG_SCOPE = 'primeng';

@@ -41,6 +41,8 @@ const userAuthIconsSet = [
   'lock_open',
   'lock_open_right',
   'user_attributes',
+
+  'visibility_off',
 ] as const;
 const filesContentIconsSet = [
   'folder',
@@ -64,6 +66,7 @@ const statusInfoIconsSet = [
   'shield_question',
   'gpp_bad',
   'visibility',
+  'visibility_off',
   'preview',
   'label_important',
   'crown',

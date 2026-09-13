@@ -22,14 +22,12 @@
       "cache": true,
       "inputs": [
         "default",
+        "^default",
         "{workspaceRoot}/.eslintrc.json",
         "{workspaceRoot}/.eslintignore",
-        "{workspaceRoot}/eslint.config.mjs"
+        "{workspaceRoot}/eslint.config.mjs",
+        "{workspaceRoot}/tools/eslint-rules/**/*"
       ]
-    },
-    "@nx/vitest:test": {
-      "cache": true,
-      "inputs": ["default", "^production"]
     }
   },
   "plugins": [
@@ -44,6 +42,22 @@
       "options": {
         "targetName": "lint"
       }
+    },
+    {
+      "plugin": "@nx/vitest",
+      "options": {
+        "testMode": "watch",
+        "testTargetName": "test"
+      },
+      "include": [
+        "apps/admin-panel/**/*",
+        "libs/shared/breadcrumb/**/*",
+        "libs/shared/ui/ui-forms/**/*",
+        "libs/shared/ui/ui-icons/**/*",
+        "libs/shared/ui/ui-primitives/**/*",
+        "libs/shared/utils/password-strength/**/*",
+        "libs/shared/utils/translation-utils/**/*"
+      ]
     }
   ],
   "generators": {
@@ -60,5 +74,6 @@
     "@nx/angular:component": {
       "style": "scss"
     }
-  }
+  },
+  "analytics": false
 }

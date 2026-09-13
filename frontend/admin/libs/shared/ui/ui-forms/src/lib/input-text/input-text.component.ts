@@ -2,48 +2,55 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  debounced,
+  effect,
   inject,
   input,
   output,
   signal,
-  viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { IconName } from '@ombro/shared/ui/ui-icons';
-import { IdGeneratorService } from '@ombro/shared/utils/util-id';
+import { IconComponent, IconName } from '@ombro/shared/ui/ui-icons';
 import { InputTextModule } from 'primeng/inputtext';
-import { Password, PasswordModule } from 'primeng/password';
-import { LabelComponent } from '../label/label.component';
-import { BaseCvaComponent } from '../base-cva-component';
+import { InputPasswordModule } from 'primeng/inputpassword';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { LabelComponent } from '../common/label/label.component';
+import { BaseInputControl } from '../base-input-control';
 import { ProgressBarModule } from 'primeng/progressbar';
 import {
   PasswordStrengthScore,
   PasswordStrengthService,
 } from '@ombro/shared/utils/password-strength';
 import { NgClass } from '@angular/common';
-import { ErrorMessageComponent } from '../error-message/error-message.component';
+import { ErrorMessageComponent } from '../common/validating/error-message.component';
 import { passwordStrengthErrorMessage } from './password-strength-error-message';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
   selector: 'ombro-input-text',
   imports: [
     FormsModule,
     InputTextModule,
-    PasswordModule,
+    InputPasswordModule,
+    IconFieldModule,
+    InputIconModule,
+    IconComponent,
     LabelComponent,
     ProgressBarModule,
     NgClass,
     ErrorMessageComponent,
+    TranslocoDirective,
   ],
   providers: [PasswordStrengthService],
   templateUrl: './input-text.component.html',
   styleUrl: './input-text.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class InputTextComponent extends BaseCvaComponent<string> {
-  private readonly idGeneratorService = inject(IdGeneratorService);
+export class InputTextComponent extends BaseInputControl<string> {
+  private static readonly passwordDebounceTimeMs = 300;
+
   private readonly passwordStrengthService = inject(PasswordStrengthService);
-  private readonly passwordComponent = viewChild<Password>('passwordInput');
 
   readonly type = input<'text' | 'email' | 'password'>('text');
   readonly autocomplete = input<string>('on');
@@ -57,11 +64,18 @@ export class InputTextComponent extends BaseCvaComponent<string> {
   readonly allowedPasswordScore = input<PasswordStrengthScore>(2);
   sendPasswordStrengthScore = output<PasswordStrengthScore>({ alias: 'passwordStrengthScore' });
 
-  protected isLabelHovered = signal<boolean>(false);
   protected readonly actualPasswordStrengthScore = signal<PasswordStrengthScore>(0);
   protected readonly actualPasswordPercentageStrength = signal<number>(0);
+  readonly mask = signal<boolean>(true);
 
-  protected readonly inputId = this.idGeneratorService.generate('inputText');
+  private debouncedValue = debounced(this.value, InputTextComponent.passwordDebounceTimeMs);
+
+  private _passwordDebounce = effect(() => {
+    if (this.type() !== 'password') return;
+
+    const password = this.debouncedValue.value();
+    this.onPasswordInput(password);
+  });
 
   protected readonly passwordStrengthMessage = computed<string | undefined>(() => {
     const passwordScore: PasswordStrengthScore = this.actualPasswordStrengthScore();
@@ -70,28 +84,19 @@ export class InputTextComponent extends BaseCvaComponent<string> {
     return message[passwordScore] || undefined;
   });
 
-  protected onLabelClick(): void {
-    const passwordInput = this.passwordComponent();
-    if (passwordInput) {
-      const input = passwordInput.el.nativeElement.querySelector('input');
-      input.focus();
-    }
-  }
-
-  protected onInputFromEvent(event: Event): void {
-    this.onInput((event.target as HTMLInputElement).value);
-  }
-
-  protected onInput(value: string): void {
-    if (this.type() === 'password') this.onPasswordInput(value);
-    this.setValue(value ?? '');
-  }
-
-  protected handleBlur(): void {
-    this.markAsTouched();
+  protected onInput(input: Event): void {
+    const inputValue = (input.target as HTMLInputElement).value;
+    this.value.set(inputValue);
   }
 
   private async onPasswordInput(password: string): Promise<void> {
+    if (!password) {
+      this.actualPasswordStrengthScore.set(0);
+      this.actualPasswordPercentageStrength.set(0);
+      this.sendPasswordStrengthScore.emit(0);
+      return;
+    }
+
     const zxcvbn = await this.passwordStrengthService.getValidator();
     const result = zxcvbn(password);
     const score = result.score;

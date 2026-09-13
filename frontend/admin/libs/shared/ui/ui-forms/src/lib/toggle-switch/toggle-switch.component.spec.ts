@@ -12,6 +12,8 @@ describe('ToggleSwitchComponent', () => {
 
     fixture = TestBed.createComponent(ToggleSwitchComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('checked', false);
+
     await fixture.whenStable();
   });
 

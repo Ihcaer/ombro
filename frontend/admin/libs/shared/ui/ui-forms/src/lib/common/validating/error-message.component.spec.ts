@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ErrorMessageComponent } from './error-message.component';
+import { provideDumbTranslocoForTests } from '@ombro/shared/utils/translation-utils';
 
 describe('ErrorMessageComponent', () => {
   let component: ErrorMessageComponent;
@@ -8,6 +9,7 @@ describe('ErrorMessageComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ErrorMessageComponent],
+      providers: [provideDumbTranslocoForTests()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ErrorMessageComponent);

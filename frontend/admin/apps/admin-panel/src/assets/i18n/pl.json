@@ -12,7 +12,29 @@
         "repeatNewPassword": "Powtórz nowe hasło",
         "newHandle": "Nowa nazwa użytkownika"
       },
-      "buttons": { "changePassword": "Zmień hasło" }
-    }
+      "buttons": { "changePassword": "Zmień hasło" },
+      "errors": {
+        "required": "Pole jest wymagane",
+        "minLength": "Musi zawierać co najmniej {count} {count, plural, one {znak} few {znaki} many {znaków} other {znaków}}",
+        "invalidPattern": "Nieprawidłowa składnia",
+        "email": "Niepoprawny format e-mail",
+        "forbiddenChars": "Pole zawiera niedozwolone znaki: {{chars}}",
+        "matchFields": "Wartość musi być taka sama jak w polu {{fieldName}}",
+        "weakPassword": "Wprowadzone hasło jest za słabe"
+      },
+      "misc": {
+        "passwordStrength": {
+          "label": "Siła hasła",
+          "score": {
+            "0": "Bardzo słabe",
+            "1": "Słabe",
+            "2": "Średnie",
+            "3": "Mocne",
+            "4": "Bardzo mocne"
+          }
+        }
+      }
+    },
+    "dialogs": { "languageChange": { "heading": "Wybrany język" } }
   }
 }

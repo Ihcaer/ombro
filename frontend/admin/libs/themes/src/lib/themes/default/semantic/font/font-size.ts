@@ -1,14 +1,14 @@
 export const fontSize = {
   heading: {
-    xl: '{size.24}',
-    lg: '{size.18}',
-    md: '{size.16}',
-    sm: '{size.14}',
+    xl: '{customPrimitive.fontSize.24}',
+    lg: '{customPrimitive.fontSize.18}',
+    md: '{customPrimitive.fontSize.16}',
+    sm: '{customPrimitive.fontSize.14}',
   },
   body: {
-    md: '{size.14}',
+    md: '{customPrimitive.fontSize.14}',
   },
   label: {
-    md: '{size.12}',
+    md: '{customPrimitive.fontSize.12}',
   },
 } as const;

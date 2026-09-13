@@ -1,12 +1,13 @@
-$border: var(--p-surface-panel-border-width) var(--p-surface-panel-border-style)
-  var(--p-surface-panel-border-color);
-$fontSize: var(--p-font-size-label-md);
-$bgBlur: blur(var(--p-surface-panel-bg-blur));
+$border: var(--p-custom-semantic-surface-panel-border-width)
+  var(--p-custom-semantic-surface-panel-border-style)
+  var(--p-custom-semantic-surface-panel-border-color);
+$fontSize: var(--p-custom-semantic-font-size-label-md);
+$bgBlur: blur(var(--p-custom-semantic-surface-panel-bg-blur));
 
 :host ::ng-deep .p-breadcrumb {
   display: inline-flex;
   border: $border;
-  border-radius: var(--p-radius-lg);
+  border-radius: var(--p-border-radius-lg);
   padding: 0.5rem;
   backdrop-filter: $bgBlur;
 }

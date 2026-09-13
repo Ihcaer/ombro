@@ -8,10 +8,22 @@
   "targets": {
     "generate": {
       "executor": "nx:run-commands",
-      "options": { "command": "orval --config libs/shared/data-access/api-client/orval.config.ts" }
+      "options": {
+        "command": "orval --config libs/shared/data-access/api-client/orval.config.ts"
+      }
     },
     "lint": {
-      "executor": "@nx/eslint:lint"
+      "inputs": [
+        "default",
+        "^default",
+        "{workspaceRoot}/.eslintrc.json",
+        "{workspaceRoot}/.eslintignore",
+        "{workspaceRoot}/eslint.config.mjs",
+        "{workspaceRoot}/tools/eslint-rules/**/*",
+        {
+          "externalDependencies": ["eslint"]
+        }
+      ]
     }
   }
 }

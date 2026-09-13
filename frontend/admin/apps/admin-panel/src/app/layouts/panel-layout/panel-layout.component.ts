@@ -8,7 +8,7 @@ import { TopbarComponent } from './components/topbar/topbar.component';
 import { BreadcrumbComponent } from '@ombro/shared/breadcrumb';
 import { AuthStore, loginPagePath } from '../../core/auth/store';
 import { SessionExpiredModalComponent } from './components/dialogs/session-expired-modal/session-expired-modal.component';
-import { TranslocoService } from '@jsverse/transloco';
+import { provideTranslocoScope, TranslocoService } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-panel-layout',
@@ -19,6 +19,7 @@ import { TranslocoService } from '@jsverse/transloco';
     BreadcrumbComponent,
     SessionExpiredModalComponent,
   ],
+  providers: [provideTranslocoScope('panel')],
   templateUrl: './panel-layout.component.html',
   styleUrl: './panel-layout.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

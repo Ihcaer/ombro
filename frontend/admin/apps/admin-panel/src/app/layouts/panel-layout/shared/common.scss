@@ -1,9 +1,9 @@
-$panelBackground: var(--p-surface-panel-bg-color);
-$panelBorderWidth: var(--p-surface-panel-border-width);
-$panelBorderStyle: var(--p-surface-panel-border-style);
-$panelBorderColor: var(--p-surface-panel-border-color);
-$panelBorderRadius: var(--p-surface-panel-border-radius);
-$panelBgBlur: blur(var(--p-surface-panel-bg-blur));
+$panelBackground: var(--p-custom-semantic-surface-panel-bg-color);
+$panelBorderWidth: var(--p-custom-semantic-surface-panel-border-width);
+$panelBorderStyle: var(--p-custom-semantic-surface-panel-border-style);
+$panelBorderColor: var(--p-custom-semantic-surface-panel-bg-color);
+$panelBorderRadius: var(--p-custom-semantic-surface-panel-border-radius);
+$panelBgBlur: blur(var(--p-custom-semantic-surface-panel-bg-blur));
 $transitionDuration: 350ms;
 
 .layout,

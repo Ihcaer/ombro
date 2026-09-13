@@ -1,17 +1,23 @@
 <nav
-  class="p-(--p-spacing-4) rounded-(--p-radius-xl)"
+  class="rounded-(--p-border-radius-xl) p-(--p-custom-primitive-spacing-4)"
   [aria-label]="ariaLabel()"
   *transloco="let t"
 >
-  <div class="gap-(--p-spacing-1-5) flex flex-col">
-    <span class="text-(--p-primary-100) text-(length:--p-size-14) font-(--p-font-weight-600)">
+  <div class="flex flex-col gap-(--p-custom-primitive-spacing-1-5)">
+    <span
+      class="text-(length:--p-custom-primitive-size-14) font-(--p-custom-primitive-font-weight-600) text-(--p-primary-100)"
+    >
       {{ displayName() ?? '' }}
     </span>
-    <span class="text-(--p-muted-blue-300) text-(length:--p-size-12)">
+    <span
+      class="text-(length:--p-custom-primitive-size-12) text-(--p-custom-primitive-color-muted-blue-300)"
+    >
       {{ handleName() !== null ? '@' + handleName() : '' }}
     </span>
   </div>
-  <ul class="mt-(--p-spacing-3) gap-(--p-spacing-1) flex flex-col">
+  <ul
+    class="mt-(--p-custom-primitive-spacing-3) flex flex-col gap-(--p-custom-primitive-spacing-1)"
+  >
     @for (item of navItems; track $index) {
       <li>
         @if (item.path) {
@@ -40,7 +46,13 @@
 
 <ng-template #itemTemplate let-t let-item="menuItem">
   @if (item.icon) {
-    <ombro-icon [name]="item.icon" [size]="20" class="text-(--p-muted-blue-300)" />
+    <ombro-icon
+      [name]="item.icon"
+      [size]="20"
+      class="text-(--p-custom-primitive-color-muted-blue-300)"
+    />
   }
-  <span class="text-(length:--p-size-13) text-(--p-primary-100)">{{ t(item.name) }}</span>
+  <span class="text-(length:--p-custom-primitive-size-13) text-(--p-primary-100)">{{
+    t(item.name)
+  }}</span>
 </ng-template>

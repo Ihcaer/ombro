@@ -14,13 +14,15 @@ import { authInterceptor } from './core/auth/interceptors/auth/auth.interceptor'
 import { apiPrefixInterceptor } from './core/auth/interceptors/api-prefix/api-prefix.interceptor';
 import { adminTokenInterceptor } from './core/auth/interceptors/admin-token/admin-token.interceptor';
 import { TranslocoHttpLoader } from './transloco-loader';
-import { provideTransloco } from '@jsverse/transloco';
+import { provideTransloco, provideTranslocoTranspiler } from '@jsverse/transloco';
 import { provideTranslocoPersistLang } from '@jsverse/transloco-persist-lang';
 import {
   availableLanguagesCodes,
   defaultLanguage,
   LOCAL_STORAGE_LANGUAGE_KEY,
 } from './core/config/i18n/i18n.config';
+import { environment } from '../environments/environment.example';
+import { NoEvalTranslocoTranspiler } from '@ombro/shared/utils/translation-utils';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -41,6 +43,7 @@ export const appConfig: ApplicationConfig = {
           },
         },
       },
+      license: environment.primeUiLicenseKey,
     }),
     provideMaterialSymbols(),
     provideTransloco({
@@ -50,10 +53,10 @@ export const appConfig: ApplicationConfig = {
         fallbackLang: availableLanguagesCodes[0],
         reRenderOnLangChange: true,
         prodMode: !isDevMode(),
-        flatten: { aot: !isDevMode() },
       },
       loader: TranslocoHttpLoader,
     }),
+    provideTranslocoTranspiler(NoEvalTranslocoTranspiler),
     provideTranslocoPersistLang({
       storageKey: LOCAL_STORAGE_LANGUAGE_KEY,
       storage: { useValue: localStorage },
