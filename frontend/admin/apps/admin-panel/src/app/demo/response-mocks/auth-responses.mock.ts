@@ -1,6 +1,8 @@
-import { LoginResponseDto } from '@ombro/admin-panel/app/core/auth/dto/login.dtos';
 import { MockResponse } from '../mock-registry';
-import { RegistrationEligibilityResponseDto } from '../../core/auth/dto/admin-register.dtos';
+import {
+  ConfirmAdminAccountFormFieldResponseDto,
+  LoginResponseDto,
+} from '@ombro/shared/data-access/api-client';
 
 export const demoAccessToken = 'demo-token';
 const loginResponseBody: LoginResponseDto = {
@@ -10,14 +12,16 @@ const loginResponseBody: LoginResponseDto = {
     avatarUrl: null,
     displayName: 'Demo User',
     handleName: 'DemoAdmin123',
-    email: 'demo-admin@example.com',
     privileges: ['ADMINS_MANAGE', 'BLOG_MANAGE', 'FILE_MANAGE', 'OWNER'],
     isActivated: true,
     verification: 'VERIFIED',
+    preferences: { language: 'en' },
   },
 } as const;
 
-const checkRegistrationEligibilityBody: RegistrationEligibilityResponseDto = ['password'] as const;
+const checkRegistrationEligibilityBody: ConfirmAdminAccountFormFieldResponseDto = {
+  fields: ['password'],
+} as const;
 
 export const mockLoginResponse: MockResponse = { status: 201, body: loginResponseBody } as const;
 export const mockRefreshTokenResponse: MockResponse = {

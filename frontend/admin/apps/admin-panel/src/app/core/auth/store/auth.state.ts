@@ -6,8 +6,6 @@ export type AuthStateInternalError = 'SESSION_REFRESH_FAILED';
 
 type AdminState = Omit<AdminDto, 'privileges'> & { privileges: AdminPrivileges };
 
-export type AuthStateInternalError = 'SESSION_REFRESH_FAILED';
-
 export type AuthState = {
   admin: AdminState | null;
   accessToken: { token: string | null; expiresAtMs: number | null };
