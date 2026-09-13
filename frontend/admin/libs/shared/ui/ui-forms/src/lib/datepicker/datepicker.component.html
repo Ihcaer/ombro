@@ -1,0 +1,25 @@
+<div class="container">
+  @if (label()) {
+    <ombro-input-label [inputId]="inputId" [disabled]="disabled()" [iconName]="labelIcon()">{{
+      label()
+    }}</ombro-input-label>
+  }
+  <p-datepicker
+    [inputId]="inputId"
+    [ngModel]="value()"
+    (onSelect)="value.set($event)"
+    (onHide)="touch.emit()"
+    [disabled]="disabled()"
+    [dateFormat]="dateFormat()"
+    [showIcon]="showIcon()"
+    [iconDisplay]="'input'"
+    [placeholder]="placeholder()"
+    [pInputMask]="mask()"
+    [minDate]="minDate()"
+    [maxDate]="maxDate()"
+    [selectionMode]="selectionMode()"
+    [showTime]="showTime()"
+    [timeOnly]="onlyTime()"
+  />
+  <ombro-input-error-message [errorMessage]="errorState()" />
+</div>

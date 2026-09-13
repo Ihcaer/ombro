@@ -1,0 +1,4 @@
+map "${SSL_ENABLED}" $csp_upgrade_request {
+  "true" "upgrade-insecure-requests;";
+  default "";
+}

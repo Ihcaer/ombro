@@ -1,0 +1,60 @@
+<div class="container">
+  @if (label()) {
+    <ombro-input-label [inputId]="inputId" [disabled]="disabled()" [iconName]="labelIcon()">{{
+      label()
+    }}</ombro-input-label>
+  }
+  @if (type() === 'password') {
+    <p-iconfield>
+      <input
+        pInputPassword
+        [id]="inputId"
+        class="w-full"
+        [type]="type()"
+        [value]="value()"
+        [disabled]="disabled()"
+        (input)="onInput($event)"
+        (blur)="touch.emit()"
+        [autocomplete]="autocomplete()"
+        [placeholder]="placeholder()"
+        [invalid]="hasError()"
+        [mask]="mask()"
+      />
+      <p-inputicon (click)="mask.update((v) => !v)" class="cursor-pointer">
+        <ombro-icon [name]="mask() ? 'visibility' : 'visibility_off'" [size]="16" />
+      </p-inputicon>
+    </p-iconfield>
+  } @else {
+    <input
+      pInputText
+      [id]="inputId"
+      [type]="type()"
+      [value]="value()"
+      [disabled]="disabled()"
+      (input)="onInput($event)"
+      (blur)="touch.emit()"
+      [autocomplete]="autocomplete()"
+      [placeholder]="placeholder()"
+      [invalid]="hasError()"
+    />
+  }
+  <ombro-input-error-message [errorMessage]="errorState()" />
+  @if (type() === 'password' && showPasswordStrength()) {
+    <div class="mb-[1rem]">
+      <div class="flex justify-between" *transloco="let t">
+        <span class="text-(--p-text-color-emphasis)">
+          {{ t('common.forms.misc.passwordStrength.label') }}
+        </span>
+        <span [ngClass]="'strength-message-' + actualPasswordStrengthScore()">
+          {{ passwordStrengthMessage() ? t(passwordStrengthMessage()!) : undefined }}
+        </span>
+      </div>
+      <p-progressbar
+        class="h-[0.5rem]"
+        [ngClass]="'strength-bar-' + actualPasswordStrengthScore()"
+        [value]="actualPasswordPercentageStrength()"
+        [showValue]="false"
+      />
+    </div>
+  }
+</div>

@@ -1,15 +1,9 @@
 import { ClassConstructor, plainToInstance } from 'class-transformer';
-import {
-  validateSync,
-  ValidationError,
-  ValidatorOptions,
-} from 'class-validator';
+import { validateSync, ValidationError, ValidatorOptions } from 'class-validator';
 
-export const validateConfig = <T extends object>(
-  envClass: ClassConstructor<T>,
-): T => {
+export const validateConfig = <T extends object>(envClass: ClassConstructor<T>): T => {
   const validatedConfig = plainToInstance(envClass, process.env, {
-    enableImplicitConversion: true,
+    enableImplicitConversion: false,
     excludeExtraneousValues: true,
   });
 

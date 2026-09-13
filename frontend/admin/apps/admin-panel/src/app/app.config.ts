@@ -2,15 +2,27 @@ import {
   ApplicationConfig,
   provideBrowserGlobalErrorListeners,
   provideZoneChangeDetection,
+  isDevMode,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { appRoutes } from './app.routes';
 import { providePrimeNG } from 'primeng/config';
 import { DefaultPreset } from '@ombro/themes';
-import { provideMaterialSymbols } from '@ombro/shared/ui-icons';
-import { PRIME_NG_PL } from './core/config/i18n/primeng-pl';
+import { provideMaterialSymbols } from '@ombro/shared/ui/ui-icons';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { authInterceptor } from './core/auth/interceptors/auth.interceptor';
+import { authInterceptor } from './core/auth/interceptors/auth/auth.interceptor';
+import { apiPrefixInterceptor } from './core/auth/interceptors/api-prefix/api-prefix.interceptor';
+import { adminTokenInterceptor } from './core/auth/interceptors/admin-token/admin-token.interceptor';
+import { TranslocoHttpLoader } from './transloco-loader';
+import { provideTransloco, provideTranslocoTranspiler } from '@jsverse/transloco';
+import { provideTranslocoPersistLang } from '@jsverse/transloco-persist-lang';
+import {
+  availableLanguagesCodes,
+  defaultLanguage,
+  LOCAL_STORAGE_LANGUAGE_KEY,
+} from './core/config/i18n/i18n.config';
+import { environment } from '../environments/environment.example';
+import { NoEvalTranslocoTranspiler } from '@ombro/shared/utils/translation-utils';
 import { demoInterceptor } from './demo/demo.interceptor';
 
 export const appConfig: ApplicationConfig = {
@@ -18,7 +30,14 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(appRoutes),
-    provideHttpClient(withInterceptors([authInterceptor, demoInterceptor])),
+    provideHttpClient(
+      withInterceptors([
+        authInterceptor,
+        apiPrefixInterceptor,
+        adminTokenInterceptor,
+        demoInterceptor,
+      ]),
+    ),
     providePrimeNG({
       theme: {
         preset: DefaultPreset,
@@ -30,8 +49,23 @@ export const appConfig: ApplicationConfig = {
           },
         },
       },
-      translation: PRIME_NG_PL,
+      license: environment.primeUiLicenseKey,
     }),
     provideMaterialSymbols(),
+    provideTransloco({
+      config: {
+        availableLangs: availableLanguagesCodes,
+        defaultLang: defaultLanguage,
+        fallbackLang: availableLanguagesCodes[0],
+        reRenderOnLangChange: true,
+        prodMode: !isDevMode(),
+      },
+      loader: TranslocoHttpLoader,
+    }),
+    provideTranslocoTranspiler(NoEvalTranslocoTranspiler),
+    provideTranslocoPersistLang({
+      storageKey: LOCAL_STORAGE_LANGUAGE_KEY,
+      storage: { useValue: localStorage },
+    }),
   ],
 };

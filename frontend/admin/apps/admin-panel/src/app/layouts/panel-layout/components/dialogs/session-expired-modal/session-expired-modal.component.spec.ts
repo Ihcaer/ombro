@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SessionExpiredModalComponent } from './session-expired-modal.component';
+import { getTranslocoTestingModule } from '@ombro/admin-panel/app/shared/testing/transloco-testing-module';
 
 describe('SessionExpiredModalComponent', () => {
   let component: SessionExpiredModalComponent;
@@ -7,7 +8,7 @@ describe('SessionExpiredModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SessionExpiredModalComponent],
+      imports: [SessionExpiredModalComponent, getTranslocoTestingModule()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SessionExpiredModalComponent);

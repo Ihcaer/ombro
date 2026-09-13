@@ -13,7 +13,7 @@ export class DatabaseConfig {
     require_valid_protocol: true,
     require_tld: false,
   })
-  url: string;
+  url!: string;
 }
 
 export default registerAs('db', () => validateConfig(DatabaseConfig));

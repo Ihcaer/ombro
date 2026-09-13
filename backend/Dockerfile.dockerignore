@@ -1,0 +1,22 @@
+Dockerfile
+
+.vscode
+/dist
+node_modules
+/test
+
+.env
+.env.local
+
+.git
+.gitignore
+
+.prettierrc
+eslint.config.mjs
+README.md
+
+# Prisma
+/src/prisma/client
+
+# Swagger
+/src/metadata.ts

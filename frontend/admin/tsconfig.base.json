@@ -4,7 +4,7 @@
     "rootDir": ".",
     "sourceMap": true,
     "declaration": false,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
@@ -17,15 +17,22 @@
     "paths": {
       "@ombro/admin-panel/*": ["./apps/admin-panel/src/*"],
       "@ombro/themes": ["./libs/themes/src/index.ts"],
-      "@ombro/shared/ui-icons": ["./libs/shared/ui-icons/src/index.ts"],
-      "@ombro/shared/ui-forms": ["./libs/shared/ui-forms/src/index.ts"],
-      "@ombro/shared/util-ui": ["./libs/shared/util-id/src/index.ts"],
       "@ombro/shared/breadcrumb": ["./libs/shared/breadcrumb/src/index.ts"],
+      "@ombro/shared/utils/util-id": ["./libs/shared/utils/util-id/src/index.ts"],
       "@ombro/shared/utils/password-strength": [
         "./libs/shared/utils/password-strength/src/index.ts"
       ],
-      "@ombro/shared/ui-primitives": ["./libs/shared/ui-primitives/src/index.ts"]
-    }
+      "@ombro/shared/ui/ui-forms": ["./libs/shared/ui/ui-forms/src/index.ts"],
+      "@ombro/shared/ui/ui-icons": ["./libs/shared/ui/ui-icons/src/index.ts"],
+      "@ombro/shared/ui/ui-primitives": ["./libs/shared/ui/ui-primitives/src/index.ts"],
+      "@ombro/shared/data-access/api-client": ["./libs/shared/data-access/api-client/src/index.ts"],
+      "@ombro/shared/utils/translation-utils": [
+        "./libs/shared/utils/translation-utils/src/index.ts"
+      ]
+    },
+    "strict": false,
+    "noUncheckedSideEffectImports": false,
+    "types": ["*"]
   },
   "exclude": ["node_modules", "tmp"]
 }

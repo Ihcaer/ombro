@@ -1,0 +1,28 @@
+{
+  "signInPage": {
+    "title": "Logowanie",
+    "form": {
+      "submitBtn": "Zaloguj się",
+      "forgotPasswordLink": "Nie pamiętasz hasła?"
+    }
+  },
+  "forgotPasswordPage": {
+    "title": "Zresetuj swoje hasło",
+    "form": { "submitBtn": "Wyślij link" },
+    "messages": {
+      "success": "Gotowe! Instrukcje resetowania hasła są już w drodze na Twoją skrzynkę."
+    },
+    "additional": {
+      "resendEmail": {
+        "label": "E-mail nie przyszedł?",
+        "button": "Wyślij jeszcze raz",
+        "lead": "Ponowne wysłanie dostępne za:"
+      }
+    }
+  },
+  "resetPasswordPage": {
+    "title": "Ustaw nowe hasło",
+    "messages": { "success": "Sukces! Twoje hasło zostało zmienione." }
+  },
+  "confirmAccountPage": { "title": "Potwierdź swoje konto" }
+}

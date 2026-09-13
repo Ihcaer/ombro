@@ -9,6 +9,7 @@
     "build": {
       "executor": "@angular/build:application",
       "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
       "options": {
         "baseHref": "/admin/",
         "outputPath": "dist/apps/admin-panel",
@@ -51,7 +52,7 @@
           "outputHashing": "all",
           "fileReplacements": [
             {
-              "replace": "apps/admin-panel/src/environments/environment.dev.ts",
+              "replace": "apps/admin-panel/src/environments/environment.example.ts",
               "with": "apps/admin-panel/src/environments/environment.prod.ts"
             }
           ]
@@ -59,14 +60,20 @@
         "development": {
           "optimization": false,
           "extractLicenses": false,
-          "sourceMap": true
+          "sourceMap": true,
+          "fileReplacements": [
+            {
+              "replace": "apps/admin-panel/src/environments/environment.example.ts",
+              "with": "apps/admin-panel/src/environments/environment.dev.ts"
+            }
+          ]
         }
-      },
-      "defaultConfiguration": "production"
+      }
     },
     "serve": {
       "continuous": true,
       "executor": "@angular/build:dev-server",
+      "defaultConfiguration": "development",
       "configurations": {
         "production": {
           "buildTarget": "admin-panel:build:production"
@@ -74,8 +81,7 @@
         "development": {
           "buildTarget": "admin-panel:build:development"
         }
-      },
-      "defaultConfiguration": "development"
+      }
     },
     "extract-i18n": {
       "executor": "@angular/build:extract-i18n",
@@ -84,13 +90,25 @@
       }
     },
     "lint": {
-      "executor": "@nx/eslint:lint"
+      "inputs": [
+        "default",
+        "^default",
+        "{workspaceRoot}/.eslintrc.json",
+        "{workspaceRoot}/.eslintignore",
+        "{workspaceRoot}/eslint.config.mjs",
+        "{workspaceRoot}/tools/eslint-rules/**/*",
+        {
+          "externalDependencies": ["eslint"]
+        }
+      ]
     },
     "test": {
-      "executor": "@nx/vitest:test",
-      "outputs": ["{options.reportsDirectory}"],
+      "outputs": [
+        "{projectRoot}/{options.coverage.reportsDirectory}",
+        "{workspaceRoot}/coverage/apps/skema-admin-frontend"
+      ],
       "options": {
-        "reportsDirectory": "../../coverage/apps/admin-panel"
+        "coverage.reportsDirectory": "../../../coverage/apps/admin-panel"
       }
     },
     "serve-static": {

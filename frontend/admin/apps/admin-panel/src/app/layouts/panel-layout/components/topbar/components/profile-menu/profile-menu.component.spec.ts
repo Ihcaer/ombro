@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ProfileMenuComponent } from './profile-menu.component';
+import { getTranslocoTestingModule } from '@ombro/admin-panel/app/shared/testing/transloco-testing-module';
 
 describe('ProfileMenuComponent', () => {
   let component: ProfileMenuComponent;
@@ -7,7 +8,7 @@ describe('ProfileMenuComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProfileMenuComponent],
+      imports: [ProfileMenuComponent, getTranslocoTestingModule()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ProfileMenuComponent);

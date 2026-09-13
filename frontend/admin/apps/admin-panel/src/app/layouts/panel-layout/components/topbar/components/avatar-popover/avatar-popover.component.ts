@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { AuthStore } from '@ombro/admin-panel/app/core/auth/store';
-import { AvatarComponent } from '@ombro/shared/ui-primitives';
+import { AvatarComponent } from '@ombro/shared/ui/ui-primitives';
 import { ProfileMenuComponent } from '../profile-menu/profile-menu.component';
 
 @Component({
@@ -31,7 +31,7 @@ export class AvatarPopoverComponent {
   });
 
   private setAvatarSize(): void {
-    const sizeVariable = '--p-size-32';
+    const sizeVariable = '--p-custom-primitive-size-32';
 
     const rootStyles = getComputedStyle(document.documentElement);
     const size = rootStyles.getPropertyValue(sizeVariable).trim();

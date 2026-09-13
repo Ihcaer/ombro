@@ -1,0 +1,22 @@
+<div
+  class="inline-flex items-center justify-center overflow-hidden rounded-(--p-border-radius-full) text-white select-none"
+  [style.width]="computedSize()"
+  [style.height]="computedSize()"
+  [style.background]="showImage() ? 'transparent' : backgroundColor()"
+  [style.font-size]="computedFontSize()"
+>
+  @if (isDataLoaded()) {
+    @if (showImage()) {
+      <img
+        [src]="imageUrl()"
+        [alt]="name()"
+        (error)="imageFetchFailed.set(true)"
+        class="h-full w-full object-cover"
+      />
+    } @else {
+      <span class="leading-none">{{ initials() }}</span>
+    }
+  } @else {
+    <p-skeleton shape="circle" size="100%" />
+  }
+</div>

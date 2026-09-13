@@ -1,5 +1,5 @@
 import {
-  ConfirmAdminAccountFormFieldDto,
+  ConfirmAdminAccountFormFieldResponseDto,
   ConfirmAdminRequestDto,
   CreateAdminRequestDto,
   CreateAdminResponseDto,
@@ -7,30 +7,37 @@ import {
 import { AdminConfirmationData } from '@core/auth/interfaces/admin-registration.interfaces';
 import { OneTimeTokenContext } from '@core/auth/types/one-time-token.types';
 import { PrismaService } from '@core/database/prisma/prisma.service';
-import { AuthAdmin, AuthVerification, Prisma } from '@generated/prisma-client';
+import { AuthVerification, Prisma } from '@generated/prisma-client';
 import {
   BadRequestException,
+  Inject,
   Injectable,
   InternalServerErrorException,
+  Logger,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { HashService } from '@shared/hash/hash.service';
 import { AuthTokenService } from '../auth-token/auth-token.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AdminCreatedEvent } from '@core/auth/events/admin-created.event';
-import { checkPasswordStrengthUtil } from '@core/auth/utils/check-password-strength/check-password-strength.util';
 import { PossibleFieldsToFill } from '@core/auth/types/common.types';
 import { PASSWORD_SALT_ROUNDS } from '@core/auth/auth.constants';
 import { AuthAdminRepository } from '@core/auth/auth-admin.repository';
 import { PrivilegesUtils } from '@core/auth/utils/privileges.utils';
+import { PASSWORD_STRENGTH_VALIDATOR } from '@core/auth/providers/password-strength.provider';
+import type { PasswordStrengthValidatorFn } from '@core/auth/providers/password-strength.provider';
+import { AdminWithoutPreferences } from '@core/auth/types/admin.types';
+import { AdminPreferences } from '@core/auth/dto/models/adminPreferences.dto';
 
 @Injectable()
 export class AdminRegistrationService {
   private static readonly REGISTER_TOKEN_EXPIRATION_MS = 24 * 60 * 60 * 1000;
-  private static readonly POSSIBLE_COLUMNS_TO_FILL_OUT: (keyof PossibleFieldsToFill)[] = [
+  static readonly POSSIBLE_COLUMNS_TO_FILL_OUT: (keyof PossibleFieldsToFill)[] = [
     'password',
     'handleName',
   ];
+
+  private readonly logger = new Logger(AdminRegistrationService.name);
 
   constructor(
     private readonly hashService: HashService,
@@ -38,6 +45,8 @@ export class AdminRegistrationService {
     private readonly tokenService: AuthTokenService,
     private readonly authAdminRepository: AuthAdminRepository,
     private readonly eventEmitter: EventEmitter2,
+    @Inject(PASSWORD_STRENGTH_VALIDATOR)
+    private readonly isPasswordStrongValidator: PasswordStrengthValidatorFn,
   ) {}
 
   async createAdminAccount(dto: CreateAdminRequestDto): Promise<CreateAdminResponseDto> {
@@ -45,6 +54,7 @@ export class AdminRegistrationService {
     const maxAttempts = 5;
     let rawToken: Base64URLString | null = null;
     let result: CreateAdminResponseDto | null = null;
+    let adminId: number | null = null;
 
     while (attempts < maxAttempts) {
       try {
@@ -59,11 +69,11 @@ export class AdminRegistrationService {
             hashedToken: token.hashedToken,
             type: 'REGISTER',
             expiresAt,
-            admin: { create: dto },
+            admin: { create: { ...dto, verification: 'WAITING' } },
           },
           select: {
             admin: {
-              select: { displayName: true, email: true, privileges: true },
+              select: { id: true, displayName: true, email: true, privileges: true },
             },
           },
         });
@@ -74,6 +84,7 @@ export class AdminRegistrationService {
           email: admin.email,
           privileges: PrivilegesUtils.bitmaskToArray(admin.privileges),
         };
+        adminId = admin.id;
 
         break;
       } catch (error) {
@@ -99,26 +110,33 @@ export class AdminRegistrationService {
       const { EVENT_NAME: eventName } = AdminCreatedEvent;
       const wasHandled: boolean = this.eventEmitter.emit(
         eventName,
-        new AdminCreatedEvent(rawToken, {
-          name: result.displayName,
-          email: result.email,
+        new AdminCreatedEvent({
+          accountConfirmationToken: rawToken,
+          newAdminData: {
+            name: result.displayName,
+            email: result.email,
+          },
         }),
       );
 
       if (!wasHandled) {
-        console.warn(`The ${eventName} event was emitted but no one received it!`);
+        this.logger.error(
+          `The ${eventName} event was emitted but no one received it. Admin (User) ID ${adminId ?? 'unknown'}`,
+        );
       }
 
       return result;
     } else {
-      console.error('Failed to generate unique token.');
+      this.logger.error(`Failed to generate unique OTP token for Admin (User) ID ${adminId}`);
       throw new InternalServerErrorException(
         'We encountered an unexpected problem while creating account of new admin. Please try again later. If the issue persists, contact our support team.',
       );
     }
   }
 
-  async getFormFieldsToConfirm(inputToken: string): Promise<ConfirmAdminAccountFormFieldDto> {
+  async getFormFieldsToConfirm(
+    inputToken: string,
+  ): Promise<ConfirmAdminAccountFormFieldResponseDto> {
     const possibleFieldsToFillOut = [...AdminRegistrationService.POSSIBLE_COLUMNS_TO_FILL_OUT];
 
     const tokenContext: OneTimeTokenContext = await this.tokenService.fetchTokenContext(
@@ -136,34 +154,38 @@ export class AdminRegistrationService {
       await this.authAdminRepository.deleteOneTimeTokenById(tokenContext.id);
       throw new UnprocessableEntityException({
         message: 'Account is not waiting for verification',
-        reason: 'VERIFICATION_IS_NOT_CAPABLE',
+        errorCode: 'VERIFICATION_IS_NOT_CAPABLE',
       });
     }
 
-    return fieldsToFillOut;
+    return { fields: fieldsToFillOut };
   }
 
   async accountConfirmation(dto: ConfirmAdminRequestDto): Promise<void> {
-    const { oneTimeToken, ...fieldsToFill } = dto;
+    const { oneTimeToken, language, ...fieldsToFill } = dto;
 
-    const adminFields: Readonly<keyof AuthAdmin>[] = ['email', 'handleName', 'displayName'];
+    const adminFields: Readonly<keyof AdminWithoutPreferences>[] = [
+      'email',
+      'handleName',
+      'displayName',
+    ];
     const tokenContext: OneTimeTokenContext = await this.tokenService.fetchTokenContext(
       oneTimeToken,
       'REGISTER',
       [...adminFields],
     );
-    const handleName: string = (dto.handleName || tokenContext.admin?.handleName) as string;
+    const handleName = (dto.handleName || tokenContext.admin?.handleName) as string;
 
     await this.tokenService.validateOneTimeToken(tokenContext, 'REGISTER');
 
-    const admin: Partial<AuthAdmin> = { ...tokenContext.admin, handleName };
+    const admin: Partial<AdminWithoutPreferences> = { ...tokenContext.admin, handleName };
     const adminInfo: Readonly<string>[] = adminFields.map((key) => {
       const value = admin[key];
       if (typeof value === 'boolean' || value === null || typeof value === 'undefined') return '';
       return String(value);
     });
 
-    const isStrongPassword: boolean = checkPasswordStrengthUtil(dto.password, [...adminInfo]);
+    const isStrongPassword: boolean = this.isPasswordStrongValidator(dto.password, [...adminInfo]);
     if (!isStrongPassword)
       throw new BadRequestException(
         'The password is too weak or contains data from an email, handle or display name.',
@@ -175,6 +197,7 @@ export class AdminRegistrationService {
       password: hashedPassword,
       id: tokenContext.adminId,
       refreshTokenId: tokenContext.id,
+      preferences: { language },
     };
     await this.updateAdminVerification(adminData);
   }
@@ -183,21 +206,37 @@ export class AdminRegistrationService {
     adminData: AdminConfirmationData,
     wantedVerificationStatus: AuthVerification = AuthVerification.VERIFIED,
   ): Promise<void> {
-    const { id, refreshTokenId, ...dataToUpdate } = adminData;
+    const { id, refreshTokenId, preferences, ...dataToUpdate } = adminData;
 
     try {
-      await this.prismaService.$transaction([
-        this.prismaService.authOneTimeToken.delete({
-          where: { id: refreshTokenId },
-        }),
-        this.prismaService.authAdmin.update({
+      await this.prismaService.$transaction(async (tx) => {
+        const currentAdmin = await tx.authAdmin.findUnique({
           where: { id },
-          data: { ...dataToUpdate, verification: wantedVerificationStatus },
-          select: { verification: true },
-        }),
-      ]);
+          select: { preferences: true },
+        });
+
+        if (!currentAdmin) throw new Error('Admin not found');
+
+        const mergedPreferences = {
+          ...(currentAdmin.preferences as unknown as AdminPreferences),
+          ...preferences,
+        };
+
+        await tx.authOneTimeToken.delete({ where: { id: refreshTokenId } });
+        await tx.authAdmin.update({
+          where: { id },
+          data: {
+            ...dataToUpdate,
+            preferences: mergedPreferences,
+            verification: wantedVerificationStatus,
+          },
+        });
+      });
     } catch (error) {
-      console.error('Transaction error:', error);
+      const cause = error instanceof Error ? error.message : String(error);
+      this.logger.error(
+        `Failed to confirm registration for Admin (User) account ID ${id}. Reason: ${cause}`,
+      );
       throw new InternalServerErrorException('Failed to update data. Please try again later.');
     }
   }

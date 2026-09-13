@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
-import { LoginRequestDto } from '../../dto/login-request.dto';
-import { AdminDto } from '../../dto/admin.dto';
+import { LoginRequestDto } from '../../dto/requests/login-request.dto';
+import { AdminWithPassword } from '@core/auth/types/admin.types';
 import { AuthTokenService } from '../auth-token/auth-token.service';
 import { ForbiddenException, UnauthorizedException } from '@nestjs/common';
 import { HashService } from '@shared/hash/hash.service';
 import { AuthAdminRepository } from '../../auth-admin.repository';
 import { AuthRefreshToken, AuthVerification } from '@generated/prisma-client';
+import { DEFAULT_ADMIN_PREFERENCES } from '@core/auth/auth.constants';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -50,7 +51,7 @@ describe('AuthService', () => {
   });
 
   describe('login methods', () => {
-    let adminInDb: AdminDto | null;
+    let adminInDb: AdminWithPassword | null;
     let jwtTokensValue: { accessToken: string; refreshToken: string };
     let refreshTokenHash: string;
 
@@ -60,10 +61,11 @@ describe('AuthService', () => {
         handleName: 'handle',
         displayName: 'name',
         password: 'test-password',
-        avatarId: 1,
+        avatarFileId: 1,
         privileges: 1,
         verification: 'VERIFIED',
         isActivated: true,
+        preferences: DEFAULT_ADMIN_PREFERENCES,
       };
       jwtTokensValue = {
         accessToken: 'access-token',
@@ -79,7 +81,7 @@ describe('AuthService', () => {
       let loginCredentials: LoginRequestDto;
 
       it('should login successfully', async () => {
-        const admin = { ...adminInDb } as AdminDto;
+        const admin = { ...adminInDb } as AdminWithPassword;
         loginCredentials = {
           identifier: admin.handleName!,
           password: admin.password!,
@@ -95,7 +97,7 @@ describe('AuthService', () => {
       });
 
       it('should throw on invalid password', async () => {
-        const admin = { ...adminInDb } as AdminDto;
+        const admin = { ...adminInDb } as AdminWithPassword;
         loginCredentials = {
           identifier: admin.handleName!,
           password: 'wrong-password',
@@ -110,7 +112,7 @@ describe('AuthService', () => {
       });
 
       it('should throw when admin account is not verified', async () => {
-        const admin = { ...adminInDb } as AdminDto;
+        const admin = { ...adminInDb } as AdminWithPassword;
         Object.assign(admin, { password: null, verification: AuthVerification.WAITING });
         loginCredentials = {
           identifier: admin.handleName!,
@@ -128,11 +130,11 @@ describe('AuthService', () => {
 
     describe('.loginWithRefreshToken()', () => {
       let methodPayload: { adminId: number; refreshToken: string };
-      let admin: AdminDto;
+      let admin: AdminWithPassword;
       let refreshTokens: Pick<AuthRefreshToken, 'refreshTokenHash' | 'expiresAt'>[];
 
       beforeEach(() => {
-        admin = { ...adminInDb } as AdminDto;
+        admin = { ...adminInDb } as AdminWithPassword;
 
         methodPayload = {
           adminId: admin.id,

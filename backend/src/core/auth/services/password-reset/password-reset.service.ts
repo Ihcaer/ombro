@@ -1,32 +1,46 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { AuthTokenService } from '../auth-token/auth-token.service';
-import { AuthAdmin, Prisma } from '@generated/prisma-client';
+import { Prisma } from '@generated/prisma-client';
 import { PrismaService } from '@core/database/prisma/prisma.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { PasswordResetRequestEvent } from '@core/auth/events/password-reset-request.event';
+import { AdminPasswordResetRequestEvent } from '@core/auth/events/admin-password-reset-request.event';
 import { ResetPasswordRequestDto } from '@core/auth/dto';
 import { OneTimeTokenContext } from '@core/auth/types/one-time-token.types';
-import { checkPasswordStrengthUtil } from '@core/auth/utils/check-password-strength/check-password-strength.util';
 import { HashService } from '@shared/hash/hash.service';
 import { PASSWORD_SALT_ROUNDS } from '@core/auth/auth.constants';
+import { PASSWORD_STRENGTH_VALIDATOR } from '@core/auth/providers/password-strength.provider';
+import type { PasswordStrengthValidatorFn } from '@core/auth/providers/password-strength.provider';
+import { AdminWithoutPreferences } from '@core/auth/types/admin.types';
 
 @Injectable()
 export class PasswordResetService {
-  private static readonly RESET_PASSWORD_TOKEN_EXPIRATION_MS = 15 * 60 * 1000;
-  private static readonly DEFAULT_RESET_PASSWORD_INTERNAL_ERR_MESSAGE: string =
+  static readonly DEFAULT_RESET_PASSWORD_INTERNAL_ERR_MESSAGE: string =
     'We encountered an unexpected problem while resetting your password. Please try again later. If the issue persists, contact our support team.';
+
+  private static readonly RESET_PASSWORD_TOKEN_EXPIRATION_MS = 15 * 60 * 1000;
+
+  private readonly logger = new Logger(PasswordResetService.name);
 
   constructor(
     private readonly tokenService: AuthTokenService,
     private readonly hashService: HashService,
     private readonly prismaService: PrismaService,
     private readonly eventEmitter: EventEmitter2,
+    @Inject(PASSWORD_STRENGTH_VALIDATOR)
+    private readonly isPasswordStrongValidator: PasswordStrengthValidatorFn,
   ) {}
 
   async requestPasswordReset(email: string): Promise<void> {
     const maxAttempts = 5;
-    const eventName = PasswordResetRequestEvent.EVENT_NAME;
-    let eventData: PasswordResetRequestEvent | null = null;
+    const eventName = AdminPasswordResetRequestEvent.EVENT_NAME;
+    let eventData: AdminPasswordResetRequestEvent['payload'] | null = null;
+    let adminId: number | null = null;
 
     for (let i = 0; i < maxAttempts; i++) {
       try {
@@ -42,7 +56,7 @@ export class PasswordResetService {
             expiresAt,
             admin: { connect: { email } },
           },
-          select: { admin: { select: { displayName: true } } },
+          select: { admin: { select: { id: true, displayName: true } } },
         });
 
         eventData = {
@@ -52,6 +66,8 @@ export class PasswordResetService {
           },
           adminData: { name: admin.displayName, email },
         };
+        adminId = admin.id;
+
         break;
       } catch (error) {
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -74,11 +90,17 @@ export class PasswordResetService {
     if (eventData) {
       const wasHandled = this.eventEmitter.emit(
         eventName,
-        new PasswordResetRequestEvent(eventData.tokenData, eventData.adminData),
+        new AdminPasswordResetRequestEvent({
+          tokenData: eventData.tokenData,
+          adminData: eventData.adminData,
+        }),
       );
-      if (!wasHandled) console.warn(`The ${eventName} event was emitted but no one received it!`);
+      if (!wasHandled)
+        this.logger.error(
+          `The ${eventName} event was emitted but no one received it. Admin (User) ID ${adminId ?? 'unknown'}`,
+        );
     } else {
-      console.error('Failed to generate unique token.');
+      this.logger.error(`Failed to generate unique OTP token for Admin (User) ID ${adminId}`);
       throw new InternalServerErrorException(
         PasswordResetService.DEFAULT_RESET_PASSWORD_INTERNAL_ERR_MESSAGE,
       );
@@ -86,7 +108,11 @@ export class PasswordResetService {
   }
 
   async resetPasswordByToken(dto: ResetPasswordRequestDto): Promise<void> {
-    const adminFields: Readonly<keyof AuthAdmin>[] = ['email', 'handleName', 'displayName'];
+    const adminFields: Readonly<keyof AdminWithoutPreferences>[] = [
+      'email',
+      'handleName',
+      'displayName',
+    ];
 
     const tokenContext: OneTimeTokenContext = await this.tokenService.fetchTokenContext(
       dto.token,
@@ -97,8 +123,10 @@ export class PasswordResetService {
 
     const { admin } = tokenContext;
     if (!admin) {
-      console.error('resetPasswordByToken() method do not have needed admin to proceed request.');
-      throw new InternalServerErrorException({
+      this.logger.error(
+        'resetPasswordByToken() method do not have needed admin data to proceed request.',
+      );
+      throw new UnprocessableEntityException({
         errorCode: 'WEAK_PASSWORD',
         message: PasswordResetService.DEFAULT_RESET_PASSWORD_INTERNAL_ERR_MESSAGE,
       });
@@ -109,9 +137,9 @@ export class PasswordResetService {
       if (typeof value === 'boolean' || value === null || typeof value === 'undefined') return '';
       return String(value);
     });
-    const isPasswordStrong: boolean = checkPasswordStrengthUtil(dto.password, [...adminInfo]);
+    const isPasswordStrong: boolean = this.isPasswordStrongValidator(dto.password, [...adminInfo]);
     if (!isPasswordStrong)
-      throw new BadRequestException(
+      throw new UnprocessableEntityException(
         'The password is too weak or contains data from an email, handle or display name.',
       );
 
@@ -133,20 +161,19 @@ export class PasswordResetService {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
         const model = error.meta?.modelName as Prisma.ModelName;
 
-        if (model) {
-          switch (true) {
-            case model === 'AuthAdmin':
-              console.error(
-                'resetPasswordByToken() method do not have needed admin to proceed request.',
-              );
-              break;
-            case model === 'AuthOneTimeToken':
-              console.error(
-                'resetPasswordByToken() do not have needed one time token to proceed request.',
-              );
-              break;
-          }
+        switch (model) {
+          case 'AuthAdmin':
+            this.logger.error(
+              'resetPasswordByToken() method do not have needed admin to proceed request.',
+            );
+            break;
+          case 'AuthOneTimeToken':
+            this.logger.error(
+              'resetPasswordByToken() do not have needed one time token to proceed request.',
+            );
+            break;
         }
+
         throw new InternalServerErrorException(
           PasswordResetService.DEFAULT_RESET_PASSWORD_INTERNAL_ERR_MESSAGE,
         );

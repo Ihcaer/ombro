@@ -4,12 +4,14 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm ci
+RUN npm ci --ignore-scripts
 
 # Dummy variable for build (prisma client generation)
 ENV POSTGRES_URL=postgresql://user:pass@localhost:5432/tempdb
 
 COPY . .
+
+RUN npm run prisma:generate
 
 RUN npm run build
 
@@ -29,4 +31,4 @@ USER node
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "npm run prisma:migrate:deploy && npm run start:prod"]
+CMD ["sh", "-c", "npm run start:prod"]

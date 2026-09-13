@@ -1,34 +1,18 @@
 import { Injectable } from '@angular/core';
-import { Options, ZxcvbnResult } from '@zxcvbn-ts/core';
+import type { OptionsType, ZxcvbnResult } from '@zxcvbn-ts/core';
 import { PasswordStrengthScore } from './password-strength.types';
 
 type ZxcvbnFunction = (password: string, userInputs?: string[]) => ZxcvbnResult;
 
 @Injectable()
 export class PasswordStrengthService {
-  private engine: ZxcvbnFunction | null = null;
+  private enginePromise: Promise<ZxcvbnFunction> | null = null;
 
   async getValidator(): Promise<ZxcvbnFunction> {
-    if (this.engine) return this.engine;
+    if (this.enginePromise) return this.enginePromise;
 
-    const { zxcvbn, zxcvbnOptions } = await import('@zxcvbn-ts/core');
-    const { dictionary, adjacencyGraphs } = await import('@zxcvbn-ts/language-common');
-    const { dictionary: enDictionary, translations: enTranslations } = await import(
-      '@zxcvbn-ts/language-en'
-    );
-    const { dictionary: plDictionary, translations: plTranslations } = await import(
-      '@zxcvbn-ts/language-pl'
-    );
-
-    const options: Partial<Options> = {
-      dictionary: { ...dictionary, ...enDictionary, ...plDictionary },
-      translations: { ...enTranslations, ...plTranslations },
-      graphs: { ...adjacencyGraphs },
-    };
-
-    zxcvbnOptions.setOptions(options);
-    this.engine = zxcvbn;
-    return this.engine;
+    this.enginePromise = this.createValidator();
+    return this.enginePromise;
   }
 
   getStrengthPercent(
@@ -49,5 +33,24 @@ export class PasswordStrengthService {
     const calculated = min + progressInsideThreshold * (max - min);
 
     return Math.round(Math.max(min, Math.min(calculated, max)));
+  }
+
+  private async createValidator(): Promise<ZxcvbnFunction> {
+    const { ZxcvbnFactory } = await import('@zxcvbn-ts/core');
+    const { dictionary: commonDictionary, adjacencyGraphs } =
+      await import('@zxcvbn-ts/language-common');
+    const { dictionary: enDictionary, translations: enTranslations } =
+      await import('@zxcvbn-ts/language-en');
+    const { dictionary: plDictionary, translations: plTranslations } =
+      await import('@zxcvbn-ts/language-pl');
+
+    const options: OptionsType = {
+      dictionary: { ...commonDictionary, ...enDictionary, ...plDictionary },
+      graphs: { ...adjacencyGraphs },
+      translations: { ...enTranslations, ...plTranslations },
+    };
+
+    const zxcvbn = new ZxcvbnFactory(options);
+    return zxcvbn.check.bind(zxcvbn);
   }
 }

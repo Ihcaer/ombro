@@ -1,3 +1,4 @@
+import { provideTranslocoScope } from '@jsverse/transloco';
 import { AppRoutes } from '../../core/config/types/routing.types';
 import { PANEL_PATHS } from './panel-paths';
 
@@ -7,9 +8,10 @@ const panelRoutes: AppRoutes = [
   { path: '', redirectTo: dashboardPath, pathMatch: 'full' },
   {
     path: dashboardPath,
+    providers: [provideTranslocoScope('panelDashboard')],
     loadComponent: () =>
       import('./dashboard/dashboard.component').then((m) => m.DashboardComponent),
-    data: { breadcrumbLabel: 'Dashboard', privilegesRequired: new Set([]) },
+    data: { breadcrumbLabel: 'panel.pages.dashboard', privilegesRequired: new Set([]) },
   },
 ];
 

@@ -1,0 +1,19 @@
+{
+  "actions": { "signOut": "Wyloguj" },
+  "pages": {
+    "dashboard": "Pulpit",
+    "team": "Zespół",
+    "files": "Pliki",
+    "blog": "Blog",
+    "account": "Konto",
+    "settings": "Ustawienia"
+  },
+  "breadcrumbs": {},
+  "dialogs": {
+    "sessionExpired": {
+      "heading": "Sesja wygasła",
+      "content": "Twoja sesja wygasła ze względów bezpieczeństwa. Zostałeś wylogowany, aby chronić Twoje dane.",
+      "buttons": { "primary": "Przejdź do logowania" }
+    }
+  }
+}

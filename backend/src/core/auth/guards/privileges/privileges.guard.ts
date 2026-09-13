@@ -1,4 +1,4 @@
-import { PRIVILEGES_KEY } from '@core/auth/decorators/auth.decorator';
+import { PRIVILEGES_KEY } from '@core/auth/decorators';
 import { AdminPrivileges } from '@core/auth/enums/admin-privileges';
 import { PrivilegesUtils } from '@core/auth/utils/privileges.utils';
 import { getRequestUser } from '@core/auth/utils/request-user.util';

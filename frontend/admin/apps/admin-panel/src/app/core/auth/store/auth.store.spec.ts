@@ -1,19 +1,25 @@
 import { Mocked } from 'vitest';
 import { AuthStore, AuthStoreInstance } from './auth.store';
-import { AuthService } from '../auth.service';
 import { TestBed } from '@angular/core/testing';
-import { LoginResponseDto } from '../dto/login.dtos';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import * as jwtDecoder from 'jwt-decode';
 import { AuthState } from './auth.state';
 import { AdminPrivileges } from '../types/admin-data.types';
 import { patchState } from '@ngrx/signals';
+import {
+  AuthPasswordResetService,
+  AuthRegistrationService,
+  AuthService,
+  LoginResponseDto,
+} from '@ombro/shared/data-access/api-client';
 
 vi.mock('jwt-decode', () => ({ jwtDecode: vi.fn() }));
 
 describe('AuthStore', () => {
   let store: AuthStoreInstance;
   let authService: Mocked<AuthService>;
+  let authPasswordResetService: Mocked<AuthPasswordResetService>;
+  let authRegistrationService: Mocked<AuthRegistrationService>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -23,11 +29,25 @@ describe('AuthStore', () => {
           provide: AuthService,
           useValue: { login: vi.fn(), refreshToken: vi.fn() },
         },
+        {
+          provide: AuthPasswordResetService,
+          useValue: { requestPasswordReset: vi.fn(), passwordReset: vi.fn() },
+        },
+        {
+          provide: AuthRegistrationService,
+          useValue: { getFieldsToConfirmAccount: vi.fn(), confirmAdmin: vi.fn() },
+        },
       ],
     });
 
     store = TestBed.inject(AuthStore) as AuthStoreInstance;
     authService = TestBed.inject(AuthService) as Mocked<AuthService>;
+    authPasswordResetService = TestBed.inject(
+      AuthPasswordResetService,
+    ) as Mocked<AuthPasswordResetService>;
+    authRegistrationService = TestBed.inject(
+      AuthRegistrationService,
+    ) as Mocked<AuthRegistrationService>;
   });
 
   it('should have initial profile value as null', () => {
@@ -59,7 +79,7 @@ describe('AuthStore', () => {
       isActivated: true,
     };
 
-    authService.login.mockReturnValue(of(mockResponse));
+    authService.login.mockReturnValue(of(mockResponse) as Observable<any>);
     vi.mocked(jwtDecoder.jwtDecode).mockReturnValue({ options: { expiresIn: mockExpTime } });
 
     store.login({ identifier: 'handleName', password: 'password' });

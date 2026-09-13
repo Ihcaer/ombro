@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RequestPasswordResetComponent } from './request-password-reset.component';
 import { AUTH_PAGE_BASE_TESTING_PROVIDERS } from '../../auth-page-base-testing-providers';
 import { COMMON_TESTING_PROVIDERS } from '@ombro/admin-panel/app/shared/testing/common-testing-providers';
+import { getTranslocoTestingModule } from '@ombro/admin-panel/app/shared/testing/transloco-testing-module';
 
 describe('RequestResetPasswordComponent', () => {
   let component: RequestPasswordResetComponent;
@@ -9,7 +10,7 @@ describe('RequestResetPasswordComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RequestPasswordResetComponent],
+      imports: [RequestPasswordResetComponent, getTranslocoTestingModule()],
       providers: [...COMMON_TESTING_PROVIDERS, ...AUTH_PAGE_BASE_TESTING_PROVIDERS],
     }).compileComponents();
 

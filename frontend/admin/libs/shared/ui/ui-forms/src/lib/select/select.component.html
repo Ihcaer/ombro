@@ -1,0 +1,36 @@
+<div class="container">
+  @if (label()) {
+    <ombro-input-label
+      [inputId]="''"
+      [id]="inputId"
+      [disabled]="disabled()"
+      [iconName]="labelIcon()"
+      [attr.inert]="disabled() ? '' : null"
+      (click)="select.focus(); select.show()"
+      (mouseenter)="isLabelHovered.set(true)"
+      (mouseleave)="isLabelHovered.set(false)"
+      >{{ label() }}</ombro-input-label
+    >
+  }
+  <p-select
+    #select
+    [ariaLabelledBy]="inputId"
+    [options]="options()"
+    [ngModel]="value()"
+    [optionLabel]="optionLabel()"
+    [optionValue]="optionValue()"
+    (onChange)="value.set($event.value)"
+    [placeholder]="placeholder()"
+    [disabled]="disabled()"
+    [showClear]="showClear()"
+    [multiple]="multiple()"
+    [virtualScroll]="virtualScroll()"
+    [virtualScrollItemSize]="virtualScrollItemSize()"
+    [class.force-hover]="isLabelHovered()"
+    (onHide)="touch.emit()"
+  />
+  @if (errorState(); as message) {
+    <small>{{ message }}</small>
+  }
+  <ombro-input-error-message [errorMessage]="errorState()" />
+</div>

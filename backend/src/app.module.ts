@@ -1,21 +1,23 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigType } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import enabledModules from '@core/config/feature-flags.config';
-import { getEnvPath } from '@core/config/env-path.util';
-import { Environment } from '@core/config/envs/server.config';
-
-const nodeEnv = (process.env.NODE_ENV as Environment) || Environment.Development;
+import { getApplicationModules } from './module-registry';
+import { getConfigOptions } from '@core/config/env-config-options';
+import { BullModule } from '@nestjs/bullmq';
+import redisQueueConfig from '@core/config/envs/redis-queue.config';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      ignoreEnvFile: nodeEnv === Environment.Production,
-      envFilePath: getEnvPath(),
-      cache: nodeEnv !== Environment.Test,
-    }),
+    ConfigModule.forRoot(getConfigOptions()),
     EventEmitterModule.forRoot({ maxListeners: 3, delimiter: '.' }),
-    ...enabledModules,
+    BullModule.forRootAsync({
+      imports: [ConfigModule.forFeature(redisQueueConfig)],
+      inject: [redisQueueConfig.KEY],
+      useFactory: (config: ConfigType<typeof redisQueueConfig>) => ({
+        connection: { host: config.host, port: config.port, password: config.password },
+      }),
+    }),
+    ...getApplicationModules(),
   ],
 })
 export class AppModule {}

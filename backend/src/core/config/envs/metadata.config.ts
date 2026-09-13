@@ -7,12 +7,12 @@ export class MetadataConfig {
   @Expose({ name: 'APP_MAIN_DOMAIN' })
   @IsString()
   @IsNotEmpty()
-  mainDomain: string;
+  mainDomain!: string;
 
   @Expose({ name: 'APP_MEDIA_DOMAIN' })
   @IsString()
   @IsNotEmpty()
-  mediaDomain: string;
+  mediaDomain!: string;
 }
 
 export default registerAs('metadata', () => validateConfig(MetadataConfig));

@@ -6,6 +6,7 @@ This library provides a streamlined, automated breadcrumb solution for our Nx wo
 
 - **Zero Configuration:** Automatically parses the active route to generate labels.
 - **Consistent Styling:** Ensures all applications follow the internal design system.
+- **Internalization (i18n):** Labels are translated (handled by app).
 
 ## Installation
 
@@ -20,6 +21,8 @@ import { BreadcrumbComponent } from '@ombro/shared/breadcrumb';
 For the breadcrumb to display labels correctly, you must define a breadcrumb property within the data object of your routes.
 
 ### 1. Define routes
+
+#### Sample configuration:
 
 ```typescript
 export const routes: Routes = [
@@ -37,6 +40,24 @@ export const routes: Routes = [
   },
 ];
 ```
+
+Label can be static value or translated text:
+
+##### Static
+
+```typescript
+breadcrumbLabel: 'Settings';
+```
+
+OR
+
+##### Translated
+
+```typescript
+breadcrumbLabel: 'panel.pages.dashboard';
+```
+
+Translation is managed by application. To see possible translation keys and how to use them, go to app `README.md` file.
 
 ### 2. Add component to template
 

@@ -1,5 +1,5 @@
 import { PrismaService } from '@core/database/prisma/prisma.service';
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { INestApplication, Logger, ValidationPipe } from '@nestjs/common';
 import { TestingModule, Test } from '@nestjs/testing';
 import cookieParser from 'cookie-parser';
 import { AppModule } from '../../../src/app.module';
@@ -9,6 +9,8 @@ import { AdminFactory } from './factories';
 import { getEmailContent, MailpitDetail, MailpitSummary, waitForEmail } from './email';
 import { PostgreSqlContainer, StartedPostgreSqlContainer } from '@testcontainers/postgresql';
 import { GenericContainer, StartedTestContainer, Wait } from 'testcontainers';
+import { RedisContainer, StartedRedisContainer } from '@testcontainers/redis';
+import Redis from 'ioredis';
 import { execSync } from 'node:child_process';
 
 export class TestContext {
@@ -25,15 +27,23 @@ export class TestContext {
   };
 
   private postgresContainer!: StartedPostgreSqlContainer;
+  private redisQueueContainer!: StartedRedisContainer;
   private mailpitContainer!: StartedTestContainer;
+
+  private readonly logger = new Logger('Integration tests bootstrap');
 
   private static readonly EMAIL_CONFIG = { portSMTP: 1025, port: 8025 };
 
   async init() {
     try {
-      const [pg, mailpit] = await Promise.all([this.startPostgresql(), this.startMailpit()]);
+      const [pg, redis, mailpit] = await Promise.all([
+        this.startPostgresql(),
+        this.startRedisQueue(),
+        this.startMailpit(),
+      ]);
 
       this.postgresContainer = pg;
+      this.redisQueueContainer = redis;
       this.mailpitContainer = mailpit;
 
       this.setupEnvironment();
@@ -69,8 +79,9 @@ export class TestContext {
       return this;
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      console.error('Critical error while initializing the test application: ' + errorMessage);
-
+      this.logger.fatal(
+        `Critical error while initializing the test application. Reason: ${errorMessage}`,
+      );
       await this.close();
       process.exit(1);
     }
@@ -78,22 +89,44 @@ export class TestContext {
 
   async clearDatabase() {
     if (!this.prisma) {
-      console.warn('Cleanup skipped: Prisma not initialized');
+      this.logger.warn('DB cleanup skipped: Prisma not initialized');
       return;
     }
-    await clearDatabase(this.prisma);
+    await clearDatabase(this.prisma, this.logger);
+  }
+
+  async clearRedisQueue() {
+    if (!this.redisQueueContainer) return;
+
+    const client = new Redis({
+      host: this.redisQueueContainer.getHost(),
+      port: this.redisQueueContainer.getPort(),
+    });
+
+    try {
+      await client.flushall();
+    } finally {
+      await client.quit();
+    }
   }
 
   async close() {
     if (this.app) await this.app.close().catch(() => {});
 
-    await Promise.all([this.postgresContainer?.stop(), this.mailpitContainer?.stop()]);
+    await Promise.all([
+      this.postgresContainer?.stop(),
+      this.redisQueueContainer?.stop(),
+      this.mailpitContainer?.stop(),
+    ]);
   }
 
   private setupEnvironment() {
     const emailConfig = TestContext.EMAIL_CONFIG;
 
     process.env.POSTGRES_URL = this.postgresContainer.getConnectionUri();
+
+    process.env.REDIS_QUEUE_HOST = this.redisQueueContainer.getHost();
+    process.env.REDIS_QUEUE_PORT = this.redisQueueContainer.getPort().toString();
 
     process.env.EMAIL_HOST = this.mailpitContainer.getHost();
     process.env.EMAIL_PORT = this.mailpitContainer.getMappedPort(emailConfig.portSMTP).toString();
@@ -109,6 +142,10 @@ export class TestContext {
       .withUsername('testuser')
       .withPassword('testpassword')
       .start();
+  }
+
+  private async startRedisQueue() {
+    return await new RedisContainer('redis:8-alpine').start();
   }
 
   private async startMailpit() {

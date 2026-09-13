@@ -8,20 +8,16 @@ import { AuthAdmin, AuthOneTimeToken, Prisma } from '@generated/prisma-client';
 import { HashService } from '@shared/hash/hash.service';
 import { ResetPasswordRequestDto } from '@core/auth/dto';
 import { OneTimeTokenContext } from '@core/auth/types/one-time-token.types';
-import { checkPasswordStrengthUtil } from '@core/auth/utils/check-password-strength/check-password-strength.util';
+import { PASSWORD_STRENGTH_VALIDATOR } from '@core/auth/providers/password-strength.provider';
 
-jest.mock('@core/auth/utils/check-password-strength/check-password-strength.util');
-
-describe('PasswordService', () => {
+describe('PasswordResetService', () => {
   let service: PasswordResetService;
   let tokenService: jest.Mocked<AuthTokenService>;
   let hashService: jest.Mocked<HashService>;
   let prismaService: jest.Mocked<PrismaService>;
   let eventEmitter: jest.Mocked<EventEmitter2>;
 
-  const mockedCheckPasswordStrengthUtil = checkPasswordStrengthUtil as jest.MockedFunction<
-    typeof checkPasswordStrengthUtil
-  >;
+  const isPasswordStrongValidator = jest.fn();
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -45,6 +41,10 @@ describe('PasswordService', () => {
           },
         },
         { provide: EventEmitter2, useValue: { emit: jest.fn() } },
+        {
+          provide: PASSWORD_STRENGTH_VALIDATOR,
+          useValue: isPasswordStrongValidator,
+        },
       ],
     }).compile();
 
@@ -116,7 +116,7 @@ describe('PasswordService', () => {
         admin: { email: 'test@example.com', handleName: 'handle', displayName: 'display-name' },
       };
 
-      mockedCheckPasswordStrengthUtil.mockReturnValue(true);
+      isPasswordStrongValidator.mockReturnValue(true);
     });
 
     it('should execute successfully', async () => {
@@ -141,7 +141,7 @@ describe('PasswordService', () => {
       expect(result).toBeUndefined();
       expect(tokenService.fetchTokenContext).toHaveBeenCalled();
       expect(tokenService.validateOneTimeToken).toHaveBeenCalled();
-      expect(checkPasswordStrengthUtil).toHaveBeenCalled();
+      expect(isPasswordStrongValidator).toHaveBeenCalled();
       expect(hashService.hashBcrypt).toHaveBeenCalled();
       expect(prismaService.$transaction).toHaveBeenCalled();
     });

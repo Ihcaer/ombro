@@ -9,9 +9,20 @@
     "assets": [
       {
         "include": "generated/prisma-client/**/*",
-        "outDir": "dist"
+        "outDir": "dist/src",
+        "watchAssets": true
       }
     ],
-    "watchAssets": true
+    "watchAssets": true,
+    "plugins": [
+      {
+        "name": "@nestjs/swagger",
+        "options": {
+          "dtoFileNameSuffix": [".dto.ts", ".dtos.ts"],
+          "classValidatorShim": true,
+          "introspectComments": true
+        }
+      }
+    ]
   }
 }

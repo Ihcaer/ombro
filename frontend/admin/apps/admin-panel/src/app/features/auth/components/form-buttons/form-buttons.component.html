@@ -1,6 +1,6 @@
 <button pButton type="submit" [disabled]="isDisabled()"><ng-content /></button>
 @if (hasSecondaryButton()) {
-  <button pButton severity="secondary" [text]="true" (click)="secondaryClick.emit()">
+  <button pButton severity="secondary" variant="text" (click)="secondaryClick.emit()">
     <ng-content select="[secondary]" />
   </button>
 }

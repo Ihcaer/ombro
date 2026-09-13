@@ -15,11 +15,11 @@ export class ServerConfig {
     message:
       'nodeEnv must be one of the following values: ' + Object.values(Environment).join(', '),
   })
-  nodeEnv: Environment;
+  nodeEnv!: Environment;
 
   @Expose({ name: 'API_PORT' })
   @IsPort()
-  port: string;
+  port!: string;
 }
 
 export default registerAs('server', () => validateConfig(ServerConfig));
