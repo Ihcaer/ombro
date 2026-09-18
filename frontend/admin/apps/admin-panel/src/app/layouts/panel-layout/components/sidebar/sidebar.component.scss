@@ -2,6 +2,36 @@
 @use '../../shared/common.scss';
 @use '../../shared/menu-items.scss';
 
+$sideMenuItemMinWidth: 3rem;
+
+ul {
+  --side-menu-active-color: var(--p-primary-300);
+  --side-menu-item-min-width: #{$sideMenuItemMinWidth};
+}
+
 .itemTextTransitionDelay {
   transition-delay: math.div(common.$transitionDuration * 2, 3);
+}
+
+a {
+  color: var(--p-text-color-subtle);
+
+  .indicator {
+    height: $sideMenuItemMinWidth * 0.75;
+    flex: 0 0 auto;
+  }
+
+  &:not(.active) {
+    .menu-element:hover {
+      background-color: #ffffff14;
+    }
+  }
+
+  &.active {
+    color: var(--side-menu-active-color) !important;
+
+    .indicator {
+      width: 4px;
+    }
+  }
 }

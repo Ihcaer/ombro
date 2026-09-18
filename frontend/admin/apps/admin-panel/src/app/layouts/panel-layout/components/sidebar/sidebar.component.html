@@ -9,24 +9,19 @@
   <nav class="flex w-full flex-col overflow-y-auto" [aria-label]="navAriaLabel()">
     <ul
       class="flex flex-col gap-(--p-custom-primitive-spacing-1) text-(length:--p-custom-semantic-font-size-body-md) font-(weight:--p-custom-primitive-font-weight-500) text-(--p-primary-300)"
-      [style.--side-menu-active-color]="'var(--p-primary-300)'"
     >
       @for (item of menuItems(); track $index) {
         <li>
-          @if (item.isActive) {
+          <a
+            [routerLink]="item.link"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ paths: 'subset' }"
+            class="block hover:no-underline!"
+          >
             <ng-container
               *ngTemplateOutlet="itemTemplate; context: { $implicit: t, menuItem: item }"
             />
-          } @else {
-            <a
-              [routerLink]="item.link"
-              class="block text-(--p-text-color-subtle) hover:no-underline!"
-            >
-              <ng-container
-                *ngTemplateOutlet="itemTemplate; context: { $implicit: t, menuItem: item }"
-              />
-            </a>
-          }
+          </a>
         </li>
       }
     </ul>
@@ -50,13 +45,11 @@
   @let iconSize = 20;
   @let animationDurationMs = 200;
   <div
-    class="transition-background ease flex min-h-[3rem] gap-(--p-custom-primitive-spacing-4) rounded-(--p-border-radius-lg) duration-(--side-menu-item-transition-duration)"
-    [class]="item.isActive ? '' : 'hover:bg-[#ffffff14]'"
+    class="menu-element transition-background ease flex min-h-(--side-menu-item-min-width) items-center gap-(--p-custom-primitive-spacing-4) rounded-(--p-border-radius-lg) duration-(--side-menu-item-transition-duration)"
     [style.--side-menu-item-transition-duration.ms]="animationDurationMs"
   >
     <span
-      class="transition-width shrink-0 self-stretch rounded-[5px] bg-(--side-menu-active-color) duration-(--side-menu-item-transition-duration)"
-      [class]="item.isActive ? 'w-[4px]' : 'w-[0px]'"
+      class="indicator w-[0] rounded-[5px] bg-(--side-menu-active-color) transition-[width] duration-(--side-menu-item-transition-duration)"
     ></span>
     <div class="menu-item">
       @if (icon) {
