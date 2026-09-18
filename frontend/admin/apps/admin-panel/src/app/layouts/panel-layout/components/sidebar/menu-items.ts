@@ -6,7 +6,6 @@ export type SideMenuItem = Readonly<{
   name: string;
   link: string;
   neededPrivileges: AdminPrivileges;
-  isActive?: boolean;
   icon?: IconName;
 }>;
 

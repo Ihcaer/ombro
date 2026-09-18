@@ -166,11 +166,11 @@ export const AuthStore = signalStore(
             authService.logout().pipe(
               tapResponse({
                 next: () => {
-                  _resetAuthState;
+                  _resetAuthState();
                   router.navigateByUrl(loginPagePath);
                 },
                 error: () => {
-                  _resetAuthState;
+                  _resetAuthState();
                   router.navigateByUrl(loginPagePath);
                 },
               }),
