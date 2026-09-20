@@ -26,8 +26,9 @@ import {
   ConfirmAdminAccountFormFieldResponseDtoFieldsItem,
   ConfirmAdminRequestDto,
 } from '@ombro/shared/data-access/api-client';
-import { translateSignal, TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { FieldTree, form, FormRoot, FormField, required } from '@angular/forms/signals';
+import { TranslocoRootScopeService } from '@ombro/shared/utils/translation-utils';
 
 const CONFIRM_PASSWORD_FIELD_NAME = 'confirmPassword' as const;
 type RegistrationFormField =
@@ -45,7 +46,7 @@ type FinalizeRegistrationForm = Partial<Record<RegistrationFormField, string>>;
     FormRoot,
     FormField,
   ],
-  providers: [OneTimeTokenStore],
+  providers: [OneTimeTokenStore, TranslocoRootScopeService],
   templateUrl: './finalize-registration.component.html',
   styles: `
     @use '../../styles/common.scss';
@@ -57,15 +58,10 @@ export class FinalizeRegistrationComponent extends AuthPageBase implements OnIni
   private readonly tokenStore = inject(OneTimeTokenStore);
   private readonly route = inject(ActivatedRoute);
   private readonly transloco = inject(TranslocoService);
+  private readonly translocoRootScope = inject(TranslocoRootScopeService);
   private readonly regexAuthPatterns = inject(REGEX_PATTERNS).auth;
 
-  protected progressSpinnerAriaLabel = signal<string>('Ładowanie');
-
-  private passwordFieldTranslation = translateSignal(
-    'common.entities.user.password',
-    undefined,
-    this.transloco.activeLang(),
-  );
+  protected progressSpinnerAriaLabel = this.translocoRootScope.translate('common.misc.loading');
 
   protected neededFormFields: ConfirmAdminAccountFormFieldResponseDto['fields'] = [];
 
@@ -93,7 +89,7 @@ export class FinalizeRegistrationComponent extends AuthPageBase implements OnIni
         });
         matchFieldsValidator(schemaPath.confirmPassword!, {
           originalField: schemaPath.password!,
-          originalFieldName: this.passwordFieldTranslation,
+          originalFieldName: this.translocoRootScope.translate('common.entities.user.password'),
         });
       }
     },

@@ -4,7 +4,7 @@
   "sourceRoot": "libs/shared/utils/translation-utils/src",
   "prefix": "lib",
   "projectType": "library",
-  "tags": ["scope:shared", "type:utils"],
+  "tags": ["scope:shared", "type:util"],
   "targets": {
     "test": {
       "outputs": [

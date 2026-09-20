@@ -1,6 +1,7 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { translateSignal } from '@jsverse/transloco';
 
 export type logoTypes = 'wordmark' | 'lettermark';
 
@@ -21,6 +22,8 @@ export class LogoComponent {
   /** @see {@link LogoComponent} */
   readonly variant = input<logoTypes>('lettermark');
   readonly enableReference = input<boolean>(true);
+
+  protected ariaLabel = translateSignal('misc.mainPageLabel');
 
   protected readonly imageSrc = computed(
     () => LogoComponent.LOGO_PATH + LogoComponent.LOGO_MAP[this.variant()],

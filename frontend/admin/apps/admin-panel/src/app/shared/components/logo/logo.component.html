@@ -1,5 +1,5 @@
 @if (enableReference()) {
-  <a routerLink="/" aria-label="Strona główna panelu">
+  <a routerLink="/" [aria-label]="ariaLabel()">
     <ng-container [ngTemplateOutlet]="logo" />
   </a>
 } @else {
