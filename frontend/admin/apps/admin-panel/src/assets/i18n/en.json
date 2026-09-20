@@ -35,7 +35,8 @@
     },
     "dialogs": { "languageChange": { "heading": "Selected language" } },
     "misc": {
-      "loading": "Loading..."
+      "loading": "Loading...",
+      "mainPageLabel": "Panel home page"
     }
   }
 }

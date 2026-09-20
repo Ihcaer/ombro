@@ -18,7 +18,6 @@
   },
   "misc": {
     "mainNavigationLabel": "Main navigation",
-    "profile": { "label": "{{name}}'s profile", "menu": "Profile menu" },
-    "mainPageLabel": "Panel home page"
+    "profile": { "label": "{{name}}'s profile", "menu": "Profile menu" }
   }
 }
