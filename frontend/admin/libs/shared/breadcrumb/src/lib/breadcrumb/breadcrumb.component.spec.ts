@@ -4,6 +4,7 @@ import { BreadcrumbService } from './breadcrumb.service';
 import { signal } from '@angular/core';
 import { BreadcrumbItem } from './types';
 import { provideRouter } from '@angular/router';
+import { provideDumbTranslocoForTests } from '@ombro/shared/utils/translation-utils';
 
 describe('BreadcrumbComponent', () => {
   let component: BreadcrumbComponent;
@@ -23,6 +24,7 @@ describe('BreadcrumbComponent', () => {
           provide: BreadcrumbService,
           useValue: mockBreadcrumbService,
         },
+        provideDumbTranslocoForTests(),
       ],
     }).compileComponents();
 

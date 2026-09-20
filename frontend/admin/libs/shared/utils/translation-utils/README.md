@@ -69,6 +69,64 @@ Result:
 }
 ```
 
+## Root scope translation
+
+Using root translations when having provided scope in component requires to add current language parameter in translation methods.
+
+This utility addresses this need, helping to maintain DRY principle.
+
+`RootTranslocoService` is a lightweight wrapper around `TranslocoService`, designed for using translations within component code as Angular Signals.
+
+This service should be provided explicitly where it is needed, e.g. at the component level:
+
+```ts
+@Component({
+  providers: [RootTranslocoService],
+})
+export class SampleComponent {
+  private readonly translocoRootScope = inject(RootTranslocoService);
+}
+```
+
+### API
+
+The service provides the following methods:
+
+#### `translate()`
+
+```ts
+translate( key: string, params?: Record<string, unknown>, ): Signal<string | undefined>
+```
+
+The returned Signal can be used directly in the template:
+
+```ts
+// Component
+readonly title = this.rootTransloco.translate('common.title');
+
+// Template
+<h1>{{ title() }}</h1>
+```
+
+#### `translateObject()`
+
+```ts
+translateObject<T extends object>(
+    key: string,
+    params?: TranslationParams,
+  ): Signal<T | undefined>
+```
+
+The returned Signal can be used directly in the template:
+
+```ts
+// Component
+readonly object = this.rootTransloco.translateObject<{buttons: {cancel:string}}>('common');
+
+// Template
+<h1>{{ object()?.buttons.cancel }}</h1>
+```
+
 ## Transloco integration
 
 The library does not depend on _Transloco_. It only handles serialization and parsing.

@@ -1,19 +1,11 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  input,
-  signal,
-  Signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, Signal } from '@angular/core';
 import { BreadcrumbItem } from './types';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { RouterLink } from '@angular/router';
 import { IconComponent } from '@ombro/shared/ui/ui-icons';
 import { BreadcrumbService } from './breadcrumb.service';
 import { NgTemplateOutlet } from '@angular/common';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { translateSignal, TranslocoPipe } from '@jsverse/transloco';
 
 @Component({
   selector: 'ombro-breadcrumb',
@@ -28,7 +20,7 @@ export class BreadcrumbComponent {
   homeUrl = input<string>('/');
   separatorItem = input<string>('/');
 
-  protected navAriaLabel = signal<string>('Ścieżka nawigacji');
+  protected navAriaLabel = translateSignal('breadcrumbs.label');
   private items: Signal<BreadcrumbItem[]> = this.service.getBreadcrumbs();
 
   private homeItem: BreadcrumbItem = { label: 'home', url: this.homeUrl(), id: 'home' };

@@ -8,12 +8,17 @@
     "account": "Konto",
     "settings": "Ustawienia"
   },
-  "breadcrumbs": {},
+  "breadcrumbs": { "label": "Ścieżka nawigacji" },
   "dialogs": {
     "sessionExpired": {
       "heading": "Sesja wygasła",
       "content": "Twoja sesja wygasła ze względów bezpieczeństwa. Zostałeś wylogowany, aby chronić Twoje dane.",
       "buttons": { "primary": "Przejdź do logowania" }
     }
+  },
+  "misc": {
+    "mainNavigationLabel": "Główna nawigacja",
+    "profile": { "label": "Profil: {{name}}", "menu": "Menu profilu" },
+    "mainPageLabel": "Strona główna panelu"
   }
 }
