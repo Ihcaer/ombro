@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { AuthStore } from '@ombro/admin-panel/app/core/auth/store';
 import { AvatarComponent } from '@ombro/shared/ui/ui-primitives';
 import { ProfileMenuComponent } from '../profile-menu/profile-menu.component';
+import { translateSignal } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-avatar-popover',
@@ -19,15 +20,8 @@ export class AvatarPopoverComponent {
     this.setAvatarSize();
   }
 
-  protected buttonAriaLabel = computed<string | null>(() => {
-    const prefix = 'Profil';
-    const name = this.authStore.admin()?.displayName;
-
-    if (!name) {
-      return null;
-    } else {
-      return `${prefix}: ${name}`;
-    }
+  protected buttonAriaLabel = translateSignal('misc.profile.label', {
+    name: this.authStore.admin()?.displayName,
   });
 
   private setAvatarSize(): void {

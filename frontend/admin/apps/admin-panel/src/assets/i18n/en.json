@@ -33,6 +33,9 @@
         }
       }
     },
-    "dialogs": { "languageChange": { "heading": "Selected language" } }
+    "dialogs": { "languageChange": { "heading": "Selected language" } },
+    "misc": {
+      "loading": "Loading..."
+    }
   }
 }

@@ -5,7 +5,7 @@ import { SIDE_MENU_ITEMS, SideMenuItem } from './menu-items';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthStore } from '@ombro/admin-panel/app/core/auth/store';
 import { NgTemplateOutlet } from '@angular/common';
-import { TranslocoDirective } from '@jsverse/transloco';
+import { translateSignal, TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-panel-layout-sidebar',
@@ -26,7 +26,7 @@ export class SidebarComponent {
 
   private readonly authStore = inject(AuthStore);
 
-  protected navAriaLabel = signal<string>('Nawigacja główna');
+  protected navAriaLabel = translateSignal('misc.mainNavigationLabel');
   private allMenuItems = signal<SideMenuItem[]>(SIDE_MENU_ITEMS);
 
   protected readonly menuItems = computed<SideMenuItem[]>(() => {

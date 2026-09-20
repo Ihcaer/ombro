@@ -2,18 +2,23 @@
   "actions": { "signOut": "Sign out" },
   "pages": {
     "dashboard": "Dashboard",
-    "team": "team",
+    "team": "Team",
     "files": "Files",
     "blog": "Blog",
     "account": "Account",
     "settings": "Settings"
   },
-  "breadcrumbs": {},
+  "breadcrumbs": { "label": "Breadcrumb trail" },
   "dialogs": {
     "sessionExpired": {
       "heading": "Session expired",
       "content": "Your session has expired for security reasons. You have been logged out to protect your data.",
       "buttons": { "primary": "Go to login" }
     }
+  },
+  "misc": {
+    "mainNavigationLabel": "Main navigation",
+    "profile": { "label": "{{name}}'s profile", "menu": "Profile menu" },
+    "mainPageLabel": "Panel home page"
   }
 }
