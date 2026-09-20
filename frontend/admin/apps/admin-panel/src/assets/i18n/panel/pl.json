@@ -18,7 +18,6 @@
   },
   "misc": {
     "mainNavigationLabel": "Główna nawigacja",
-    "profile": { "label": "Profil: {{name}}", "menu": "Menu profilu" },
-    "mainPageLabel": "Strona główna panelu"
+    "profile": { "label": "Profil: {{name}}", "menu": "Menu profilu" }
   }
 }

@@ -1,13 +1,15 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { translateSignal } from '@jsverse/transloco';
+import { TranslocoRootScopeService } from '@ombro/shared/utils/translation-utils';
 
 export type logoTypes = 'wordmark' | 'lettermark';
 
 @Component({
   selector: 'app-logo',
   imports: [RouterLink, NgTemplateOutlet],
+  providers: [TranslocoRootScopeService],
   templateUrl: './logo.component.html',
   styleUrl: './logo.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,11 +21,13 @@ export class LogoComponent {
     lettermark: 'lettermark.svg',
   };
 
+  private readonly translocoRootScope = inject(TranslocoRootScopeService);
+
   /** @see {@link LogoComponent} */
   readonly variant = input<logoTypes>('lettermark');
   readonly enableReference = input<boolean>(true);
 
-  protected ariaLabel = translateSignal('misc.mainPageLabel');
+  protected ariaLabel = this.translocoRootScope.translate('common.misc.mainPageLabel');
 
   protected readonly imageSrc = computed(
     () => LogoComponent.LOGO_PATH + LogoComponent.LOGO_MAP[this.variant()],
