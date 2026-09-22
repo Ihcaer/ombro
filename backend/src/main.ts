@@ -3,8 +3,11 @@ import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import cookieParser from 'cookie-parser';
+import { checkRedisQueue } from './bootstrap/check-redis-queue';
 
 async function bootstrap() {
+  await checkRedisQueue();
+
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
   const port = configService.get<string>('port', '3000');

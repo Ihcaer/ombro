@@ -14,7 +14,12 @@ import redisQueueConfig from '@core/config/envs/redis-queue.config';
       imports: [ConfigModule.forFeature(redisQueueConfig)],
       inject: [redisQueueConfig.KEY],
       useFactory: (config: ConfigType<typeof redisQueueConfig>) => ({
-        connection: { host: config.host, port: config.port, password: config.password },
+        connection: {
+          host: config.host,
+          port: config.port,
+          password: config.password,
+          connectTimeout: 3000,
+        },
       }),
     }),
     ...getApplicationModules(),
