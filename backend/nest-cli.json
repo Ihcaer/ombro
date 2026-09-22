@@ -9,7 +9,7 @@
     "assets": [
       {
         "include": "generated/prisma-client/**/*",
-        "outDir": "dist/src",
+        "outDir": "dist",
         "watchAssets": true
       }
     ],
