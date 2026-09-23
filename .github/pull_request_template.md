@@ -2,7 +2,7 @@
 
 <!-- Briefly describe what this PR changes and why. -->
 
-**Trello Card:** [Paste Trello card link here]
+**Trello card:** [Paste Trello card link here]
 
 ## Type of change
 
@@ -17,9 +17,9 @@ Please check the options that are relevant:
 
 <!-- If this PR does not affect the backend, state "N/A" -->
 
-- **API Endpoints:** (e.g. added POST /api/v1/users)
+- **API endpoints:** (e.g. added POST /api/v1/users)
 - **Database:** Does this PR require database migrations? [No/Yes - name of the migration and whether it is safe for the data]
-- **Environment Variables:** Were any new keys added to the .env file? [Yes/No] (If yes, which ones?)
+- **Environment variables:** Were any new keys added to the .env file? [Yes/No] (If yes, which ones?)
 
 ### 🚨 Breaking changes
 
@@ -32,7 +32,7 @@ Does this PR introduce breaking changes to the API or data structure?
 
 <!-- If this PR does not affect the frontend, state "N/A" -->
 
-- **UI/UX Impact:** (What is changing from the user's perspective?)
+- **UI/UX impact:** (What is changing from the user's perspective?)
 - **Responsiveness & a11y:** Were the changes tested on mobile and for accessibility? [Yes/No]
 
 ### Screenshots / GIFs (Required for UI changes)
