@@ -6,6 +6,7 @@
   "transform": {
     "^.+\\.(t|j)s$": ["@swc/jest", { "configFile": ".swcrc.jest" }]
   },
+  "transformIgnorePatterns": ["node_modules/(?!(@nestjs)/)"],
   "moduleNameMapper": {
     "^@generated/(.*)$": "<rootDir>/src/generated/$1",
     "^@core/(.*)$": "<rootDir>/src/core/$1",
