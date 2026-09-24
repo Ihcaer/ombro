@@ -13,27 +13,24 @@ export class TokenCleanupScheduler implements OnModuleInit {
   }
 
   private async scheduleOneTimeTokenCleanup(): Promise<void> {
-    await this.tokenCleanupQueue.add(
-      TOKEN_CLEANUP_JOBS.PURGE_OTT,
-      {},
+    await this.tokenCleanupQueue.upsertJobScheduler(
+      'one-time-token-cleanup-scheduler',
       {
-        jobId: 'purge-ott-job-repeat',
-        repeat: { pattern: '0 2 * * *' },
-        removeOnComplete: true,
-        removeOnFail: 100,
+        pattern: '0 2 * * *',
       },
+      { name: TOKEN_CLEANUP_JOBS.PURGE_OTT, opts: { removeOnComplete: true, removeOnFail: 100 } },
     );
   }
 
   private async scheduleRefreshTokenCleanup(): Promise<void> {
-    await this.tokenCleanupQueue.add(
-      TOKEN_CLEANUP_JOBS.PURGE_OTT,
-      {},
+    await this.tokenCleanupQueue.upsertJobScheduler(
+      'refresh-token-cleanup-scheduler',
       {
-        jobId: 'purge-refresh-token-job-repeat',
-        repeat: { pattern: '0 2 * * *' },
-        removeOnComplete: true,
-        removeOnFail: 100,
+        pattern: '0 2 * * *',
+      },
+      {
+        name: TOKEN_CLEANUP_JOBS.PURGE_REFRESH,
+        opts: { removeOnComplete: true, removeOnFail: 100 },
       },
     );
   }

@@ -7,6 +7,8 @@ import serverConfig from '@core/config/envs/server.config';
 import { createServerConfigMock } from '@mocks/config/server.config.mock';
 import { RefreshTokenWithAdmin } from '@core/auth/types/jwt.types';
 import { DEFAULT_ADMIN_PREFERENCES } from '@core/auth/auth.constants';
+import { RefreshTokenGuard } from '@core/auth/guards/refresh-token.guard';
+import { mockGuard } from '@shared/testing/mock-guard';
 
 describe('AuthRefreshController', () => {
   let controller: AuthRefreshController;
@@ -25,7 +27,10 @@ describe('AuthRefreshController', () => {
         },
         { provide: serverConfig.KEY, useValue: createServerConfigMock() },
       ],
-    }).compile();
+    })
+      .overrideGuard(RefreshTokenGuard)
+      .useValue(mockGuard())
+      .compile();
 
     controller = module.get<AuthRefreshController>(AuthRefreshController);
     authService = module.get(AuthService);

@@ -1,4 +1,4 @@
-FROM node:24-alpine AS builder
+FROM node:26-alpine AS builder
 
 WORKDIR /app
 
@@ -17,7 +17,7 @@ RUN npm run build
 
 RUN npm prune --omit=dev && rm -rf node_modules/.cache
 
-FROM node:24-alpine AS final
+FROM node:26-alpine AS final
 
 WORKDIR /app
 
