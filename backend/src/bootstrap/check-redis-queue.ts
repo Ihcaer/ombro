@@ -11,7 +11,6 @@ export const checkRedisQueue = async (): Promise<void> => {
     password: config.password,
     connectTimeout: 3000,
     maxRetriesPerRequest: 1,
-    enableOfflineQueue: false,
   });
 
   try {
