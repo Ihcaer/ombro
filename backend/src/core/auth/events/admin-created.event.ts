@@ -1,4 +1,4 @@
-import { EventConfig } from '@shared/decorators';
+import { EventConfig } from '@shared/decorators/index.js';
 
 export type AdminCreatedPayload = {
   readonly accountConfirmationToken: string;

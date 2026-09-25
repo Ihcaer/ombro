@@ -1,2 +1,2 @@
-export * from './trim.decorator';
-export * from './event.decorator';
+export * from './trim.decorator.js';
+export * from './event.decorator.js';

@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Processor, WorkerHost } from '@nestjs/bullmq';
-import { EmailJobName, NOTIFICATIONS_QUEUE } from '../notifications.constants';
+import { EmailJobName, NOTIFICATIONS_QUEUE } from '../notifications.constants.js';
 import { Job } from 'bullmq';
-import { AdminPasswordResetRequestEmailHandler } from './handlers/email/auth/admin-password-reset-request-email.handler';
-import { AdminCreationConfirmationEmailHandler } from './handlers/email/auth/admin-creation-confirmation-email.handler';
+import { AdminPasswordResetRequestEmailHandler } from './handlers/email/auth/admin-password-reset-request-email.handler.js';
+import { AdminCreationConfirmationEmailHandler } from './handlers/email/auth/admin-creation-confirmation-email.handler.js';
 
 @Processor(NOTIFICATIONS_QUEUE)
 export class EmailConsumer extends WorkerHost {

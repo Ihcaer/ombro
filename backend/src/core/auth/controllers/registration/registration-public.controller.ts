@@ -1,13 +1,13 @@
-import { AUTH_ROUTE_PREFIX } from '@core/auth/auth.constants';
-import { PublicController } from '@core/auth/decorators';
+import { AUTH_ROUTE_PREFIX } from '@core/auth/auth.constants.js';
+import { PublicController } from '@core/auth/decorators/index.js';
 import {
   FieldsToConfirmAccountRequestDto,
   ConfirmAdminAccountFormFieldResponseDto,
   ConfirmAdminRequestDto,
-} from '@core/auth/dto';
-import { AdminRegistrationService } from '@core/auth/services/admin-registration/admin-registration.service';
+} from '@core/auth/dto/index.js';
+import { AdminRegistrationService } from '@core/auth/services/admin-registration/admin-registration.service.js';
 import { Body, Get, HttpCode, Param, Patch } from '@nestjs/common';
-import { REGISTER_ENDPOINT_PREFIX } from './registration-controllers.constants';
+import { REGISTER_ENDPOINT_PREFIX } from './registration-controllers.constants.js';
 import {
   ApiBadRequestResponse,
   ApiInternalServerErrorResponse,

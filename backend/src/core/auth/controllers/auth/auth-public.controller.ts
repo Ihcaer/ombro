@@ -1,12 +1,12 @@
-import { AUTH_ROUTE_PREFIX } from '@core/auth/auth.constants';
-import { LoginRequestDto, LoginResponseDto } from '@core/auth/dto';
-import { AuthService } from '@core/auth/services/auth/auth.service';
-import serverConfig from '@core/config/envs/server.config';
+import { AUTH_ROUTE_PREFIX } from '@core/auth/auth.constants.js';
+import { LoginRequestDto, LoginResponseDto } from '@core/auth/dto/index.js';
+import { AuthService } from '@core/auth/services/auth/auth.service.js';
+import serverConfig from '@core/config/envs/server.config.js';
 import { Body, Inject, Post, Res } from '@nestjs/common';
 import type { ConfigType } from '@nestjs/config';
 import type { Response } from 'express';
-import { setRefreshTokenCookie } from './auth-controllers-functions';
-import { PublicController } from '@core/auth/decorators';
+import { setRefreshTokenCookie } from './auth-controllers-functions.js';
+import { PublicController } from '@core/auth/decorators/index.js';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
@@ -14,7 +14,7 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { errorResponseExamples } from '@shared/swagger/error-response-examples.helper';
+import { errorResponseExamples } from '@shared/swagger/error-response-examples.helper.js';
 
 @ApiTags('Auth')
 @PublicController(AUTH_ROUTE_PREFIX)

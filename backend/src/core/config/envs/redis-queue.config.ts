@@ -1,8 +1,8 @@
 import { registerAs } from '@nestjs/config';
-import { ToNumber } from '@shared/decorators/type-transformation.decorators';
+import { ToNumber } from '@shared/decorators/type-transformation.decorators.js';
 import { Expose } from 'class-transformer';
 import { IsInt, IsNotEmpty, IsOptional, IsString, Max, Min } from 'class-validator';
-import { validateConfig } from '../env-config.validator';
+import { validateConfig } from '../env-config.validator.js';
 
 export class RedisQueueConfig {
   @Expose({ name: 'REDIS_QUEUE_HOST' })

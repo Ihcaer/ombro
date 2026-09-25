@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthService } from './auth.service';
-import { LoginRequestDto } from '../../dto/requests/login-request.dto';
-import { AdminWithPassword } from '@core/auth/types/admin.types';
-import { AuthTokenService } from '../auth-token/auth-token.service';
+import { AuthService } from './auth.service.js';
+import { LoginRequestDto } from '../../dto/requests/login-request.dto.js';
+import { AdminWithPassword } from '@core/auth/types/admin.types.js';
+import { AuthTokenService } from '../auth-token/auth-token.service.js';
 import { ForbiddenException, UnauthorizedException } from '@nestjs/common';
-import { HashService } from '@shared/hash/hash.service';
-import { AuthAdminRepository } from '../../auth-admin.repository';
-import { AuthRefreshToken, AuthVerification } from '@generated/prisma-client';
-import { DEFAULT_ADMIN_PREFERENCES } from '@core/auth/auth.constants';
+import { HashService } from '@shared/hash/hash.service.js';
+import { AuthAdminRepository } from '../../auth-admin.repository.js';
+import { AuthRefreshToken, AuthVerification } from '@generated/prisma-client/client.js';
+import { DEFAULT_ADMIN_PREFERENCES } from '@core/auth/auth.constants.js';
 
 describe('AuthService', () => {
   let service: AuthService;

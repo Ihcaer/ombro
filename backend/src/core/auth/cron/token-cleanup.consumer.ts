@@ -1,6 +1,6 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
-import { TOKEN_CLEANUP_QUEUE, TokenCleanupJobName } from '../auth.constants';
-import { AuthTokenService } from '../services/auth-token/auth-token.service';
+import { TOKEN_CLEANUP_QUEUE, TokenCleanupJobName } from '../auth.constants.js';
+import { AuthTokenService } from '../services/auth-token/auth-token.service.js';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
 

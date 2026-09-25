@@ -1,4 +1,4 @@
-import { EmailConfig } from '@core/config/envs/email.config';
+import { EmailConfig } from '@core/config/envs/email.config.js';
 import { plainToInstance } from 'class-transformer';
 
 type RawEmailEnv = {
@@ -10,9 +10,7 @@ type RawEmailEnv = {
   EMAIL_RECIPIENT: string;
 };
 
-export const createEmailConfigMock = (
-  overrides: Partial<RawEmailEnv> = {},
-): EmailConfig => {
+export const createEmailConfigMock = (overrides: Partial<RawEmailEnv> = {}): EmailConfig => {
   const defaultValues: RawEmailEnv = {
     EMAIL_HOST: 'smtp.test.com',
     EMAIL_PORT: 587,

@@ -1,5 +1,5 @@
-import { REFRESH_TOKEN_COOKIE_NAME } from '@core/auth/auth.constants';
-import { Environment } from '@core/config/envs/server.config';
+import { REFRESH_TOKEN_COOKIE_NAME } from '@core/auth/auth.constants.js';
+import { Environment } from '@core/config/envs/server.config.js';
 import type { Response } from 'express';
 
 export const setRefreshTokenCookie = (

@@ -1,6 +1,6 @@
-import { AuthAdmin } from '@generated/prisma-client';
+import { AuthAdmin } from '@generated/prisma-client/client.js';
 import { IsNotEmpty, IsString } from 'class-validator';
-import { IsOneTimeToken } from '@core/auth/decorators';
+import { IsOneTimeToken } from '@core/auth/decorators/index.js';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ResetPasswordRequestDto implements Pick<AuthAdmin, 'password'> {

@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthPublicController } from './auth-public.controller';
-import { LoginRequestDto } from '@core/auth/dto';
-import { AuthService } from '@core/auth/services/auth/auth.service';
+import { AuthPublicController } from './auth-public.controller.js';
+import { LoginRequestDto } from '@core/auth/dto/index.js';
+import { AuthService } from '@core/auth/services/auth/auth.service.js';
 import { Response } from 'express';
-import serverConfig from '@core/config/envs/server.config';
-import { createServerConfigMock } from '@mocks/config/server.config.mock';
-import { DEFAULT_ADMIN_PREFERENCES } from '@core/auth/auth.constants';
+import serverConfig from '@core/config/envs/server.config.js';
+import { createServerConfigMock } from '@mocks/config/server.config.mock.js';
+import { DEFAULT_ADMIN_PREFERENCES } from '@core/auth/auth.constants.js';
 
 describe('LoginPublicController', () => {
   let controller: AuthPublicController;

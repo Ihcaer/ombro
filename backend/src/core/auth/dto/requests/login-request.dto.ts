@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Trim } from '@shared/decorators';
+import { Trim } from '@shared/decorators/index.js';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class LoginRequestDto {

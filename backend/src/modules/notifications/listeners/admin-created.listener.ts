@@ -1,8 +1,8 @@
-import { AdminCreatedEvent } from '@core/auth/events/admin-created.event';
+import { AdminCreatedEvent } from '@core/auth/events/admin-created.event.js';
 import { InjectQueue } from '@nestjs/bullmq';
 import { OnEvent } from '@nestjs/event-emitter';
 import { Queue } from 'bullmq';
-import { EMAIL_JOBS, NOTIFICATIONS_QUEUE } from '../notifications.constants';
+import { EMAIL_JOBS, NOTIFICATIONS_QUEUE } from '../notifications.constants.js';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()

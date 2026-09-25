@@ -1,5 +1,5 @@
 import { Question, QuestionSet } from 'nest-commander';
-import { validateEmail } from '../functions/validate-email';
+import { validateEmail } from '../functions/validate-email.js';
 
 @QuestionSet({ name: 'admin-credentials-questions' })
 export class AdminCredentialsQuestions {

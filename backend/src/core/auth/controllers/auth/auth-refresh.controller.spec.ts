@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthRefreshController } from './auth-refresh.controller';
-import { AuthService } from '@core/auth/services/auth/auth.service';
+import { AuthRefreshController } from './auth-refresh.controller.js';
+import { AuthService } from '@core/auth/services/auth/auth.service.js';
 import { Response } from 'express';
-import serverConfig from '@core/config/envs/server.config';
-import { createServerConfigMock } from '@mocks/config/server.config.mock';
-import { RefreshTokenWithAdmin } from '@core/auth/types/jwt.types';
-import { DEFAULT_ADMIN_PREFERENCES } from '@core/auth/auth.constants';
-import { RefreshTokenGuard } from '@core/auth/guards/refresh-token.guard';
-import { mockGuard } from '@shared/testing/mock-guard';
+import serverConfig from '@core/config/envs/server.config.js';
+import { createServerConfigMock } from '@mocks/config/server.config.mock.js';
+import { RefreshTokenWithAdmin } from '@core/auth/types/jwt.types.js';
+import { DEFAULT_ADMIN_PREFERENCES } from '@core/auth/auth.constants.js';
+import { RefreshTokenGuard } from '@core/auth/guards/refresh-token.guard.js';
+import { mockGuard } from '@shared/testing/mock-guard.js';
 
 describe('AuthRefreshController', () => {
   let controller: AuthRefreshController;

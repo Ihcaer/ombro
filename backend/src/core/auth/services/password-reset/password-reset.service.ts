@@ -5,18 +5,18 @@ import {
   Logger,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { AuthTokenService } from '../auth-token/auth-token.service';
-import { Prisma } from '@generated/prisma-client';
-import { PrismaService } from '@core/database/prisma/prisma.service';
+import { AuthTokenService } from '../auth-token/auth-token.service.js';
+import { Prisma } from '@generated/prisma-client/client.js';
+import { PrismaService } from '@core/database/prisma/prisma.service.js';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { AdminPasswordResetRequestEvent } from '@core/auth/events/admin-password-reset-request.event';
-import { ResetPasswordRequestDto } from '@core/auth/dto';
-import { OneTimeTokenContext } from '@core/auth/types/one-time-token.types';
-import { HashService } from '@shared/hash/hash.service';
-import { PASSWORD_SALT_ROUNDS } from '@core/auth/auth.constants';
-import { PASSWORD_STRENGTH_VALIDATOR } from '@core/auth/providers/password-strength.provider';
-import type { PasswordStrengthValidatorFn } from '@core/auth/providers/password-strength.provider';
-import { AdminWithoutPreferences } from '@core/auth/types/admin.types';
+import { AdminPasswordResetRequestEvent } from '@core/auth/events/admin-password-reset-request.event.js';
+import { ResetPasswordRequestDto } from '@core/auth/dto/index.js';
+import { OneTimeTokenContext } from '@core/auth/types/one-time-token.types.js';
+import { HashService } from '@shared/hash/hash.service.js';
+import { PASSWORD_SALT_ROUNDS } from '@core/auth/auth.constants.js';
+import { PASSWORD_STRENGTH_VALIDATOR } from '@core/auth/providers/password-strength.provider.js';
+import type { PasswordStrengthValidatorFn } from '@core/auth/providers/password-strength.provider.js';
+import { AdminWithoutPreferences } from '@core/auth/types/admin.types.js';
 
 @Injectable()
 export class PasswordResetService {

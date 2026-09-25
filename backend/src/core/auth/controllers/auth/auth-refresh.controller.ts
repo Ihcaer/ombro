@@ -1,14 +1,14 @@
-import { LoginResponseDto } from '@core/auth/dto';
-import { AuthService } from '@core/auth/services/auth/auth.service';
-import { SignInResponse } from '@core/auth/types/common.types';
-import { RefreshTokenWithAdmin } from '@core/auth/types/jwt.types';
+import { LoginResponseDto } from '@core/auth/dto/index.js';
+import { AuthService } from '@core/auth/services/auth/auth.service.js';
+import { SignInResponse } from '@core/auth/types/common.types.js';
+import { RefreshTokenWithAdmin } from '@core/auth/types/jwt.types.js';
 import { HttpCode, Inject, Post, Req, Res } from '@nestjs/common';
 import type { Request, Response } from 'express';
-import { setRefreshTokenCookie } from './auth-controllers-functions';
-import serverConfig from '@core/config/envs/server.config';
+import { setRefreshTokenCookie } from './auth-controllers-functions.js';
+import serverConfig from '@core/config/envs/server.config.js';
 import type { ConfigType } from '@nestjs/config';
-import { RefreshController } from '@core/auth/decorators';
-import { AUTH_ROUTE_PREFIX, REFRESH_TOKEN_COOKIE_NAME } from '@core/auth/auth.constants';
+import { RefreshController } from '@core/auth/decorators/index.js';
+import { AUTH_ROUTE_PREFIX, REFRESH_TOKEN_COOKIE_NAME } from '@core/auth/auth.constants.js';
 import {
   ApiBadRequestResponse,
   ApiCookieAuth,
@@ -18,7 +18,7 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { errorResponseExamples } from '@shared/swagger/error-response-examples.helper';
+import { errorResponseExamples } from '@shared/swagger/error-response-examples.helper.js';
 
 @ApiTags('Auth')
 @ApiCookieAuth(REFRESH_TOKEN_COOKIE_NAME)

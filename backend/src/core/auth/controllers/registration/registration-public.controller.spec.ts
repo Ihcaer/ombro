@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { RegistrationPublicController } from './registration-public.controller';
-import { AdminRegistrationService } from '@core/auth/services/admin-registration/admin-registration.service';
+import { RegistrationPublicController } from './registration-public.controller.js';
+import { AdminRegistrationService } from '@core/auth/services/admin-registration/admin-registration.service.js';
 
 describe('RegistrationPublicController', () => {
   let controller: RegistrationPublicController;

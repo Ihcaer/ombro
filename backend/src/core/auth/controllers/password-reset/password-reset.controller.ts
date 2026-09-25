@@ -1,8 +1,8 @@
-import { AUTH_ROUTE_PREFIX } from '@core/auth/auth.constants';
-import { PublicController } from '@core/auth/decorators';
-import { ResetPasswordRequestDto } from '@core/auth/dto';
-import { ForgotPasswordRequestDto } from '@core/auth/dto/requests/forgot-password-request.dto';
-import { PasswordResetService } from '@core/auth/services/password-reset/password-reset.service';
+import { AUTH_ROUTE_PREFIX } from '@core/auth/auth.constants.js';
+import { PublicController } from '@core/auth/decorators/index.js';
+import { ResetPasswordRequestDto } from '@core/auth/dto/index.js';
+import { ForgotPasswordRequestDto } from '@core/auth/dto/requests/forgot-password-request.dto.js';
+import { PasswordResetService } from '@core/auth/services/password-reset/password-reset.service.js';
 import { Body, HttpCode, Post } from '@nestjs/common';
 import {
   ApiAcceptedResponse,
@@ -11,7 +11,7 @@ import {
   ApiTags,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
-import { errorResponseExamples } from '@shared/swagger/error-response-examples.helper';
+import { errorResponseExamples } from '@shared/swagger/error-response-examples.helper.js';
 
 @ApiTags('AuthPasswordReset')
 @PublicController(AUTH_ROUTE_PREFIX, 'recovery')

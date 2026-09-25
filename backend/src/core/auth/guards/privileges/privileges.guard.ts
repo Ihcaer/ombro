@@ -1,7 +1,7 @@
-import { PRIVILEGES_KEY } from '@core/auth/decorators';
-import { AdminPrivileges } from '@core/auth/enums/admin-privileges';
-import { PrivilegesUtils } from '@core/auth/utils/privileges.utils';
-import { getRequestUser } from '@core/auth/utils/request-user.util';
+import { PRIVILEGES_KEY } from '@core/auth/decorators/index.js';
+import { AdminPrivileges } from '@core/auth/enums/admin-privileges.js';
+import { PrivilegesUtils } from '@core/auth/utils/privileges.utils.js';
+import { getRequestUser } from '@core/auth/utils/request-user.util.js';
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 

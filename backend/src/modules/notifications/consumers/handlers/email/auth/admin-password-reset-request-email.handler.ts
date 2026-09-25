@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { IJobHandler } from '../../handler.interface';
-import { AdminPasswordResetRequestPayload } from '@core/auth/events/admin-password-reset-request.event';
-import { EmailService } from '@modules/notifications/services/email/email.service';
+import { IJobHandler } from '../../handler.interface.js';
+import { AdminPasswordResetRequestPayload } from '@core/auth/events/admin-password-reset-request.event.js';
+import { EmailService } from '@modules/notifications/services/email/email.service.js';
 import { Job } from 'bullmq';
-import { AUTH_SLUGS } from '@modules/notifications/frontend-paths.constants';
-import { AdminPasswordResetTemplate } from '@modules/notifications/emails/auth/admin-password-reset.template';
-import { CtaUrlService } from '@modules/notifications/services/cta-url-builder/cta-url.service';
+import { AUTH_SLUGS } from '@modules/notifications/frontend-paths.constants.js';
+import { AdminPasswordResetTemplate } from '@modules/notifications/emails/auth/admin-password-reset.template.js';
+import { CtaUrlService } from '@modules/notifications/services/cta-url-builder/cta-url.service.js';
 
 @Injectable()
 export class AdminPasswordResetRequestEmailHandler implements IJobHandler<AdminPasswordResetRequestPayload> {

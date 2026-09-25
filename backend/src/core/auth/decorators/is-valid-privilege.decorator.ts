@@ -4,7 +4,7 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { PrivilegesUtils } from '../utils/privileges.utils';
+import { PrivilegesUtils } from '../utils/privileges.utils.js';
 
 @ValidatorConstraint({ name: 'isValidPrivileges', async: false })
 export class IsValidPrivilegeConstraint implements ValidatorConstraintInterface {

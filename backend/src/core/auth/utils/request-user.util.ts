@@ -1,5 +1,5 @@
 import { ExecutionContext } from '@nestjs/common';
-import { AccessJwtPayload } from '../types/jwt.types';
+import { AccessJwtPayload } from '../types/jwt.types.js';
 
 interface RequestWithUser extends Request {
   user: AccessJwtPayload;

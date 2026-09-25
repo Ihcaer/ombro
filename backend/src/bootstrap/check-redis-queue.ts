@@ -1,6 +1,6 @@
-import { validateConfig } from '@core/config/env-config.validator';
-import { RedisQueueConfig } from '@core/config/envs/redis-queue.config';
-import Redis from 'ioredis';
+import { validateConfig } from '@core/config/env-config.validator.js';
+import { RedisQueueConfig } from '@core/config/envs/redis-queue.config.js';
+import { Redis } from 'ioredis';
 
 export const checkRedisQueue = async (): Promise<void> => {
   const config = validateConfig(RedisQueueConfig);

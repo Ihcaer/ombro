@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { EmailService } from './email.service';
-import { createEmailConfigMock } from '@mocks/config/email.config.mock';
-import emailConfig from '@core/config/envs/email.config';
-import serverConfig from '@core/config/envs/server.config';
-import { createServerConfigMock } from '@mocks/config/server.config.mock';
+import { EmailService } from './email.service.js';
+import { createEmailConfigMock } from '@mocks/config/email.config.mock.js';
+import emailConfig from '@core/config/envs/email.config.js';
+import serverConfig from '@core/config/envs/server.config.js';
+import { createServerConfigMock } from '@mocks/config/server.config.mock.js';
 
 describe('EmailService', () => {
   let service: EmailService;

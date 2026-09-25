@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthTokenService } from './auth-token.service';
+import { AuthTokenService } from './auth-token.service.js';
 import { JwtService } from '@nestjs/jwt';
-import { HashService } from '@shared/hash/hash.service';
-import { TokenExpirationContext } from '../../factories/token-expiration.factory';
-import { AccessJwtPayload, RefreshJwtPayload } from '../../types/jwt.types';
-import securityConfig from '@core/config/envs/security.config';
-import { createSecurityConfigMock } from '@mocks/config/security.config.mock';
-import { PrismaService } from '@core/database/prisma/prisma.service';
-import { AuthAdminRepository } from '@core/auth/auth-admin.repository';
+import { HashService } from '@shared/hash/hash.service.js';
+import { TokenExpirationContext } from '../../factories/token-expiration.factory.js';
+import { AccessJwtPayload, RefreshJwtPayload } from '../../types/jwt.types.js';
+import securityConfig from '@core/config/envs/security.config.js';
+import { createSecurityConfigMock } from '@mocks/config/security.config.mock.js';
+import { PrismaService } from '@core/database/prisma/prisma.service.js';
+import { AuthAdminRepository } from '@core/auth/auth-admin.repository.js';
 
 describe('AuthTokenService', () => {
   let service: AuthTokenService;

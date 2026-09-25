@@ -1,4 +1,4 @@
-import { getRequestUser } from '@core/auth/utils/request-user.util';
+import { getRequestUser } from '@core/auth/utils/request-user.util.js';
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 
 @Injectable()

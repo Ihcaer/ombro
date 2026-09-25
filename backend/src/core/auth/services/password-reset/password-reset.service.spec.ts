@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
-import { PasswordResetService } from './password-reset.service';
-import { AuthTokenService } from '../auth-token/auth-token.service';
-import { PrismaService } from '@core/database/prisma/prisma.service';
+import { PasswordResetService } from './password-reset.service.js';
+import { AuthTokenService } from '../auth-token/auth-token.service.js';
+import { PrismaService } from '@core/database/prisma/prisma.service.js';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { AuthAdmin, AuthOneTimeToken, Prisma } from '@generated/prisma-client';
-import { HashService } from '@shared/hash/hash.service';
-import { ResetPasswordRequestDto } from '@core/auth/dto';
-import { OneTimeTokenContext } from '@core/auth/types/one-time-token.types';
-import { PASSWORD_STRENGTH_VALIDATOR } from '@core/auth/providers/password-strength.provider';
+import { AuthAdmin, AuthOneTimeToken, Prisma } from '@generated/prisma-client/client.js';
+import { HashService } from '@shared/hash/hash.service.js';
+import { ResetPasswordRequestDto } from '@core/auth/dto/index.js';
+import { OneTimeTokenContext } from '@core/auth/types/one-time-token.types.js';
+import { PASSWORD_STRENGTH_VALIDATOR } from '@core/auth/providers/password-strength.provider.js';
 
 describe('PasswordResetService', () => {
   let service: PasswordResetService;

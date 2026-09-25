@@ -1,8 +1,8 @@
-import { Prisma } from '@generated/prisma-client';
+import { Prisma } from '@generated/prisma-client/client.js';
 import { Injectable } from '@nestjs/common';
-import { AdminData, AdminWithPassword, Identifier } from './types/admin.types';
-import { PrismaService } from '@core/database/prisma/prisma.service';
-import { RefreshTokenMetadata, RefreshTokenMetadataTable } from './types/jwt.types';
+import { AdminData, AdminWithPassword, Identifier } from './types/admin.types.js';
+import { PrismaService } from '@core/database/prisma/prisma.service.js';
+import { RefreshTokenMetadata, RefreshTokenMetadataTable } from './types/jwt.types.js';
 
 type AdminDataWithRefreshTokens = AdminData & { refreshTokens: RefreshTokenMetadataTable };
 

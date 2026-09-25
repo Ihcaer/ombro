@@ -1,24 +1,23 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AdminRegistrationService } from './admin-registration.service';
-import { HashService } from '@shared/hash/hash.service';
-import { PrismaService } from '@core/database/prisma/prisma.service';
-import { OneTimeTokenContext } from '@core/auth/types/one-time-token.types';
+import { AdminRegistrationService } from './admin-registration.service.js';
+import { HashService } from '@shared/hash/hash.service.js';
+import { PrismaService } from '@core/database/prisma/prisma.service.js';
+import { OneTimeTokenContext } from '@core/auth/types/one-time-token.types.js';
 import { BadRequestException } from '@nestjs/common';
-import { AuthAdmin, AuthOneTimeToken } from '@generated/prisma-client';
+import { AuthAdmin, AuthOneTimeToken, Prisma } from '@generated/prisma-client/client.js';
 import {
   ConfirmAdminAccountFormFieldResponseDto,
   ConfirmAdminRequestDto,
   CreateAdminRequestDto,
   CreateAdminResponseDto,
-} from '@core/auth/dto';
-import { AuthTokenService } from '../auth-token/auth-token.service';
+} from '@core/auth/dto/index.js';
+import { AuthTokenService } from '../auth-token/auth-token.service.js';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { plainToInstance } from 'class-transformer';
-import { AuthAdminRepository } from '@core/auth/auth-admin.repository';
-import { PrivilegesUtils } from '@core/auth/utils/privileges.utils';
-import { PASSWORD_STRENGTH_VALIDATOR } from '@core/auth/providers/password-strength.provider';
-import { DEFAULT_ADMIN_PREFERENCES } from '@core/auth/auth.constants';
-import { JsonValue } from '@generated/prisma-client/runtime/client';
+import { AuthAdminRepository } from '@core/auth/auth-admin.repository.js';
+import { PrivilegesUtils } from '@core/auth/utils/privileges.utils.js';
+import { PASSWORD_STRENGTH_VALIDATOR } from '@core/auth/providers/password-strength.provider.js';
+import { DEFAULT_ADMIN_PREFERENCES } from '@core/auth/auth.constants.js';
 
 describe('AdminRegistrationService', () => {
   let service: AdminRegistrationService;
@@ -199,7 +198,7 @@ describe('AdminRegistrationService', () => {
         };
         hashedPassword = 'hashedPassword';
 
-        findAdminMock = { preferences: DEFAULT_ADMIN_PREFERENCES as unknown as JsonValue };
+        findAdminMock = { preferences: DEFAULT_ADMIN_PREFERENCES as unknown as Prisma.JsonValue };
         deleteValueMock = {
           id: 1,
           adminId: tokenContext.adminId,

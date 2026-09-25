@@ -3,11 +3,11 @@ import {
   ConfirmAdminRequestDto,
   CreateAdminRequestDto,
   CreateAdminResponseDto,
-} from '@core/auth/dto';
-import { AdminConfirmationData } from '@core/auth/interfaces/admin-registration.interfaces';
-import { OneTimeTokenContext } from '@core/auth/types/one-time-token.types';
-import { PrismaService } from '@core/database/prisma/prisma.service';
-import { AuthVerification, Prisma } from '@generated/prisma-client';
+} from '@core/auth/dto/index.js';
+import { AdminConfirmationData } from '@core/auth/interfaces/admin-registration.interfaces.js';
+import { OneTimeTokenContext } from '@core/auth/types/one-time-token.types.js';
+import { PrismaService } from '@core/database/prisma/prisma.service.js';
+import { AuthVerification, Prisma } from '@generated/prisma-client/client.js';
 import {
   BadRequestException,
   Inject,
@@ -16,18 +16,18 @@ import {
   Logger,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { HashService } from '@shared/hash/hash.service';
-import { AuthTokenService } from '../auth-token/auth-token.service';
+import { HashService } from '@shared/hash/hash.service.js';
+import { AuthTokenService } from '../auth-token/auth-token.service.js';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { AdminCreatedEvent } from '@core/auth/events/admin-created.event';
-import { PossibleFieldsToFill } from '@core/auth/types/common.types';
-import { PASSWORD_SALT_ROUNDS } from '@core/auth/auth.constants';
-import { AuthAdminRepository } from '@core/auth/auth-admin.repository';
-import { PrivilegesUtils } from '@core/auth/utils/privileges.utils';
-import { PASSWORD_STRENGTH_VALIDATOR } from '@core/auth/providers/password-strength.provider';
-import type { PasswordStrengthValidatorFn } from '@core/auth/providers/password-strength.provider';
-import { AdminWithoutPreferences } from '@core/auth/types/admin.types';
-import { AdminPreferences } from '@core/auth/dto/models/adminPreferences.dto';
+import { AdminCreatedEvent } from '@core/auth/events/admin-created.event.js';
+import { PossibleFieldsToFill } from '@core/auth/types/common.types.js';
+import { PASSWORD_SALT_ROUNDS } from '@core/auth/auth.constants.js';
+import { AuthAdminRepository } from '@core/auth/auth-admin.repository.js';
+import { PrivilegesUtils } from '@core/auth/utils/privileges.utils.js';
+import { PASSWORD_STRENGTH_VALIDATOR } from '@core/auth/providers/password-strength.provider.js';
+import type { PasswordStrengthValidatorFn } from '@core/auth/providers/password-strength.provider.js';
+import { AdminWithoutPreferences } from '@core/auth/types/admin.types.js';
+import { AdminPreferences } from '@core/auth/dto/models/adminPreferences.dto.js';
 
 @Injectable()
 export class AdminRegistrationService {

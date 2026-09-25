@@ -1,10 +1,10 @@
 import { Type } from '@nestjs/common';
-import { FeatureModule } from './feature-module.enum';
-import modulesConfig, { ModulesConfig } from '@core/config/envs/modules.config';
-import { AuthModule } from '@core/auth/auth.module';
-import { PrismaModule } from '@core/database/prisma/prisma.module';
-import { NotificationsModule } from '@modules/notifications/notifications.module';
-import { UrlManagerModule } from '@modules/url-manager/url-manager.module';
+import { FeatureModule } from './feature-module.enum.js';
+import modulesConfig, { ModulesConfig } from '@core/config/envs/modules.config.js';
+import { AuthModule } from '@core/auth/auth.module.js';
+import { PrismaModule } from '@core/database/prisma/prisma.module.js';
+import { NotificationsModule } from '@modules/notifications/notifications.module.js';
+import { UrlManagerModule } from '@modules/url-manager/url-manager.module.js';
 
 const coreModules: Type<unknown>[] = [
   PrismaModule,

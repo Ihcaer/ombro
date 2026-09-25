@@ -1,12 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { AdminPrivileges } from '../../enums/admin-privileges';
+import { AdminPrivileges } from '../../enums/admin-privileges.js';
 import {
   AdminData,
   AdminPrivilegeTranslatedField,
   AdminAvatarUrlField,
   AdminPrivilegesTranslated,
-} from '../../types/admin.types';
-import { AdminPreferences } from './adminPreferences.dto';
+} from '../../types/admin.types.js';
+import { AdminPreferences } from './adminPreferences.dto.js';
 
 export class AdminDto
   implements

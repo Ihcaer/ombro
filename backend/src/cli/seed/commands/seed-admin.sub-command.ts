@@ -1,16 +1,12 @@
-import { AdminPrivileges } from '@core/auth/enums/admin-privileges';
-import { PrismaService } from '@core/database/prisma/prisma.service';
-import { AuthAdmin } from '@generated/prisma-client';
-import {
-  InputJsonValue,
-  PrismaClientKnownRequestError,
-} from '@generated/prisma-client/runtime/client';
+import { AdminPrivileges } from '@core/auth/enums/admin-privileges.js';
+import { PrismaService } from '@core/database/prisma/prisma.service.js';
+import { AuthAdmin, Prisma } from '@generated/prisma-client/client.js';
 import { Logger } from '@nestjs/common';
-import { HashService } from '@shared/hash/hash.service';
+import { HashService } from '@shared/hash/hash.service.js';
 import { CommandRunner, InquirerService, Option, SubCommand } from 'nest-commander';
-import { validateEmail } from '../functions/validate-email';
-import { AdminPreferences } from '@core/auth/dto/models/adminPreferences.dto';
-import { DEFAULT_ADMIN_PREFERENCES } from '@core/auth/auth.constants';
+import { validateEmail } from '../functions/validate-email.js';
+import { AdminPreferences } from '@core/auth/dto/models/adminPreferences.dto.js';
+import { DEFAULT_ADMIN_PREFERENCES } from '@core/auth/auth.constants.js';
 
 type SeedAdminCommandOptions = { email: string; password: string };
 type AdminCreationData = Omit<
@@ -71,11 +67,14 @@ export class SeedAdminSubCommand extends CommandRunner {
         preferences: DEFAULT_ADMIN_PREFERENCES,
       };
       await adminTable.create({
-        data: { ...adminData, preferences: adminData.preferences as unknown as InputJsonValue },
+        data: {
+          ...adminData,
+          preferences: adminData.preferences as unknown as Prisma.InputJsonValue,
+        },
       });
       this.logger.verbose('Admin (user) has been successfully added.');
     } catch (error) {
-      if (error instanceof PrismaClientKnownRequestError) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
         this.handlePrismaError(error);
       } else {
         this.logger.error(error);
@@ -100,7 +99,7 @@ export class SeedAdminSubCommand extends CommandRunner {
     return val;
   }
 
-  private handlePrismaError(error: PrismaClientKnownRequestError): void {
+  private handlePrismaError(error: Prisma.PrismaClientKnownRequestError): void {
     switch (error.code) {
       case 'P1001':
         this.logger.error('Database connection error');

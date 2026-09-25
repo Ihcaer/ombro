@@ -1,6 +1,6 @@
 import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { TOKEN_CLEANUP_JOBS, TOKEN_CLEANUP_QUEUE } from '../auth.constants';
+import { TOKEN_CLEANUP_JOBS, TOKEN_CLEANUP_QUEUE } from '../auth.constants.js';
 import { Queue } from 'bullmq';
 
 @Injectable()

@@ -1,5 +1,5 @@
 import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
-import { RedirectCode } from '../enums/redirect-code.enum';
+import { RedirectCode } from '../enums/redirect-code.enum.js';
 
 export class CreateUrlRedirectDto {
   @IsString({ message: 'Source URL should be a string.' })

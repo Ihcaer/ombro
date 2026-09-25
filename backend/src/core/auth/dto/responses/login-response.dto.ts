@@ -1,4 +1,4 @@
-import { AdminDto } from '../models/admin.dto';
+import { AdminDto } from '../models/admin.dto.js';
 
 export class LoginResponseDto {
   readonly accessToken!: string;

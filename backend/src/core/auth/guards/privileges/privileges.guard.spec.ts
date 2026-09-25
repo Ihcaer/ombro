@@ -1,10 +1,10 @@
 import { Reflector } from '@nestjs/core';
-import { PrivilegesGuard } from './privileges.guard';
+import { PrivilegesGuard } from './privileges.guard.js';
 import { Test, TestingModule } from '@nestjs/testing';
-import { AdminPrivileges } from '@core/auth/enums/admin-privileges';
+import { AdminPrivileges } from '@core/auth/enums/admin-privileges.js';
 import { ExecutionContext, ForbiddenException } from '@nestjs/common';
-import { AuthVerification } from '@generated/prisma-client';
-import { createMockContext } from './privileges.guard.mock';
+import { AuthVerification } from '@generated/prisma-client/client.js';
+import { createMockContext } from './privileges.guard.mock.js';
 
 describe('PrivilegesGuard', () => {
   let guard: PrivilegesGuard;

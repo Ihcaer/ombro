@@ -1,4 +1,4 @@
-import { EmailBase, EmailOptions, EmailTemplateContent } from '../email-base';
+import { EmailBase, EmailOptions, EmailTemplateContent } from '../email-base.js';
 
 export class AdminPasswordResetTemplate extends EmailBase {
   protected options: EmailOptions;

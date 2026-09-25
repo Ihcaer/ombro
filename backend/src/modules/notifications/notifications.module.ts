@@ -1,17 +1,17 @@
 import { Module, Provider } from '@nestjs/common';
-import { EmailService } from './services/email/email.service';
+import { EmailService } from './services/email/email.service.js';
 import { ConfigModule } from '@nestjs/config';
-import serverConfig from '@core/config/envs/server.config';
-import emailConfig from '@core/config/envs/email.config';
+import serverConfig from '@core/config/envs/server.config.js';
+import emailConfig from '@core/config/envs/email.config.js';
 import { BullModule } from '@nestjs/bullmq';
-import { NOTIFICATIONS_QUEUE } from './notifications.constants';
-import { AdminPasswordResetRequestListener } from './listeners/admin-password-reset-request.listener';
-import { AdminCreatedListener } from './listeners/admin-created.listener';
-import { CtaUrlService } from './services/cta-url-builder/cta-url.service';
-import { AdminPasswordResetRequestEmailHandler } from './consumers/handlers/email/auth/admin-password-reset-request-email.handler';
-import { AdminCreationConfirmationEmailHandler } from './consumers/handlers/email/auth/admin-creation-confirmation-email.handler';
-import { EmailConsumer } from './consumers/email.consumer';
-import metadataConfig from '@core/config/envs/metadata.config';
+import { NOTIFICATIONS_QUEUE } from './notifications.constants.js';
+import { AdminPasswordResetRequestListener } from './listeners/admin-password-reset-request.listener.js';
+import { AdminCreatedListener } from './listeners/admin-created.listener.js';
+import { CtaUrlService } from './services/cta-url-builder/cta-url.service.js';
+import { AdminPasswordResetRequestEmailHandler } from './consumers/handlers/email/auth/admin-password-reset-request-email.handler.js';
+import { AdminCreationConfirmationEmailHandler } from './consumers/handlers/email/auth/admin-creation-confirmation-email.handler.js';
+import { EmailConsumer } from './consumers/email.consumer.js';
+import metadataConfig from '@core/config/envs/metadata.config.js';
 
 const LISTENERS: Provider[] = [AdminPasswordResetRequestListener, AdminCreatedListener] as const;
 const CONSUMERS: Provider[] = [EmailConsumer] as const;

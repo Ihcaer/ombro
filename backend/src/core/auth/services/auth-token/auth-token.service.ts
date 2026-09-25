@@ -7,15 +7,15 @@ import {
 } from '@nestjs/common';
 import type { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { AccessJwtPayload, RefreshJwtPayload } from '../../types/jwt.types';
-import { TokenExpirationContext } from '../../factories/token-expiration.factory';
-import { HashService } from '@shared/hash/hash.service';
-import securityConfig from '@core/config/envs/security.config';
+import { AccessJwtPayload, RefreshJwtPayload } from '../../types/jwt.types.js';
+import { TokenExpirationContext } from '../../factories/token-expiration.factory.js';
+import { HashService } from '@shared/hash/hash.service.js';
+import securityConfig from '@core/config/envs/security.config.js';
 import { randomBytes } from 'node:crypto';
-import { OneTimeTokenContext } from '@core/auth/types/one-time-token.types';
-import { AuthAdmin, AuthTokenType } from '@generated/prisma-client';
-import { PrismaService } from '@core/database/prisma/prisma.service';
-import { AuthAdminRepository } from '@core/auth/auth-admin.repository';
+import { OneTimeTokenContext } from '@core/auth/types/one-time-token.types.js';
+import { AuthAdmin, AuthTokenType } from '@generated/prisma-client/client.js';
+import { PrismaService } from '@core/database/prisma/prisma.service.js';
+import { AuthAdminRepository } from '@core/auth/auth-admin.repository.js';
 
 @Injectable()
 export class AuthTokenService {

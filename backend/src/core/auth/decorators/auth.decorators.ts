@@ -1,10 +1,10 @@
 import { applyDecorators, SetMetadata, UseGuards } from '@nestjs/common';
-import { AccessTokenGuard } from '../guards/access-token.guard';
-import { PrivilegesGuard } from '../guards/privileges/privileges.guard';
-import { VerifiedAndActivatedGuard } from '../guards/verified-and-activated.guard';
-import { AdminPrivilegesTranslated } from '../types/admin.types';
-import { PrivilegesUtils } from '../utils/privileges.utils';
-import { RefreshTokenGuard } from '../guards/refresh-token.guard';
+import { AccessTokenGuard } from '../guards/access-token.guard.js';
+import { PrivilegesGuard } from '../guards/privileges/privileges.guard.js';
+import { VerifiedAndActivatedGuard } from '../guards/verified-and-activated.guard.js';
+import { AdminPrivilegesTranslated } from '../types/admin.types.js';
+import { PrivilegesUtils } from '../utils/privileges.utils.js';
+import { RefreshTokenGuard } from '../guards/refresh-token.guard.js';
 
 export const Public = () => applyDecorators();
 

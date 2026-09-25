@@ -9,16 +9,16 @@ import {
   RefreshJwtPayload,
   RefreshTokenMetadata,
   RefreshTokenMetadataTable,
-} from '../../types/jwt.types';
-import { AuthTokenService } from '../auth-token/auth-token.service';
-import { HashService } from '@shared/hash/hash.service';
-import { AuthAdminRepository } from '../../auth-admin.repository';
-import { TokenExpirationFactory } from '../../factories/token-expiration.factory';
-import { SignInResponse } from '../../types/common.types';
-import { AdminAvatarUrlField, AdminData, Identifier } from '@core/auth/types/admin.types';
-import { AdminDto, LoginRequestDto } from '@core/auth/dto';
-import { PASSWORD_SALT_ROUNDS } from '@core/auth/auth.constants';
-import { PrivilegesUtils } from '@core/auth/utils/privileges.utils';
+} from '../../types/jwt.types.js';
+import { AuthTokenService } from '../auth-token/auth-token.service.js';
+import { HashService } from '@shared/hash/hash.service.js';
+import { AuthAdminRepository } from '../../auth-admin.repository.js';
+import { TokenExpirationFactory } from '../../factories/token-expiration.factory.js';
+import { SignInResponse } from '../../types/common.types.js';
+import { AdminAvatarUrlField, AdminData, Identifier } from '@core/auth/types/admin.types.js';
+import { AdminDto, LoginRequestDto } from '@core/auth/dto/index.js';
+import { PASSWORD_SALT_ROUNDS } from '@core/auth/auth.constants.js';
+import { PrivilegesUtils } from '@core/auth/utils/privileges.utils.js';
 
 const throwLoginError = (
   errorCode: string = 'INVALID_CREDENTIALS',

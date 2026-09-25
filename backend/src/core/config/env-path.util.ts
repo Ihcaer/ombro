@@ -1,5 +1,5 @@
 import { existsSync } from 'node:fs';
-import { Environment } from './envs/server.config';
+import { Environment } from './envs/server.config.js';
 import { resolve } from 'node:path';
 import { argv } from 'node:process';
 

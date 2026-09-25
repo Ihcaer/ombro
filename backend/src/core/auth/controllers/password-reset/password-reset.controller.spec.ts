@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PasswordResetController } from './password-reset.controller';
-import { PasswordResetService } from '@core/auth/services/password-reset/password-reset.service';
+import { PasswordResetController } from './password-reset.controller.js';
+import { PasswordResetService } from '@core/auth/services/password-reset/password-reset.service.js';
 
 describe('PasswordResetController', () => {
   let controller: PasswordResetController;
