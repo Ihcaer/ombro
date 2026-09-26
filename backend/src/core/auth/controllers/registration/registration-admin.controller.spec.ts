@@ -6,7 +6,7 @@ import { mockGuard } from '@shared/testing/mock-guard.js';
 
 describe('RegistrationAdminController', () => {
   let controller: RegistrationAdminController;
-  // let adminRegistrationService: jest.Mocked<AdminRegistrationService>;
+  // let adminRegistrationService: Mocked<AdminRegistrationService>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -15,7 +15,7 @@ describe('RegistrationAdminController', () => {
         {
           provide: AdminRegistrationService,
           useValue: {
-            createAdminAccount: jest.fn(),
+            createAdminAccount: vi.fn(),
           },
         },
       ],

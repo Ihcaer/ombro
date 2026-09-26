@@ -8,27 +8,28 @@ import securityConfig from '@core/config/envs/security.config.js';
 import { createSecurityConfigMock } from '@mocks/config/security.config.mock.js';
 import { PrismaService } from '@core/database/prisma/prisma.service.js';
 import { AuthAdminRepository } from '@core/auth/auth-admin.repository.js';
+import type { Mocked } from 'vitest';
 
 describe('AuthTokenService', () => {
   let service: AuthTokenService;
-  let jwtService: jest.Mocked<JwtService>;
-  // let hashService: jest.Mocked<HashService>;
-  // let authAdminRepository: jest.Mocked<AuthAdminRepository>;
-  // let prismaService: jest.Mocked<PrismaService>;
+  let jwtService: Mocked<JwtService>;
+  // let hashService: Mocked<HashService>;
+  // let authAdminRepository: Mocked<AuthAdminRepository>;
+  // let prismaService: Mocked<PrismaService>;
 
   beforeEach(async () => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthTokenService,
-        { provide: JwtService, useValue: { signAsync: jest.fn() } },
+        { provide: JwtService, useValue: { signAsync: vi.fn() } },
         { provide: securityConfig.KEY, useValue: createSecurityConfigMock() },
-        { provide: HashService, useValue: { hash: jest.fn() } },
-        { provide: AuthAdminRepository, useValue: { deleteOneTimeTokenById: jest.fn() } },
+        { provide: HashService, useValue: { hash: vi.fn() } },
+        { provide: AuthAdminRepository, useValue: { deleteOneTimeTokenById: vi.fn() } },
         {
           provide: PrismaService,
-          useValue: { authOneTimeToken: { delete: jest.fn(), findUnique: jest.fn() } },
+          useValue: { authOneTimeToken: { delete: vi.fn(), findUnique: vi.fn() } },
         },
       ],
     }).compile();

@@ -4,7 +4,7 @@ import { PasswordResetService } from '@core/auth/services/password-reset/passwor
 
 describe('PasswordResetController', () => {
   let controller: PasswordResetController;
-  // let passwordResetService: jest.Mocked<PasswordResetService>;
+  // let passwordResetService: Mocked<PasswordResetService>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -12,7 +12,7 @@ describe('PasswordResetController', () => {
       providers: [
         {
           provide: PasswordResetService,
-          useValue: { requestPasswordReset: jest.fn(), resetPasswordByToken: jest.fn() },
+          useValue: { requestPasswordReset: vi.fn(), resetPasswordByToken: vi.fn() },
         },
       ],
     }).compile();

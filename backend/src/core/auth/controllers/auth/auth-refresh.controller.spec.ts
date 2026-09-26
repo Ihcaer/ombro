@@ -9,10 +9,11 @@ import { RefreshTokenWithAdmin } from '@core/auth/types/jwt.types.js';
 import { DEFAULT_ADMIN_PREFERENCES } from '@core/auth/auth.constants.js';
 import { RefreshTokenGuard } from '@core/auth/guards/refresh-token.guard.js';
 import { mockGuard } from '@shared/testing/mock-guard.js';
+import type { Mocked } from 'vitest';
 
 describe('AuthRefreshController', () => {
   let controller: AuthRefreshController;
-  let authService: jest.Mocked<AuthService>;
+  let authService: Mocked<AuthService>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -21,8 +22,8 @@ describe('AuthRefreshController', () => {
         {
           provide: AuthService,
           useValue: {
-            loginWithRefreshToken: jest.fn(),
-            logout: jest.fn(),
+            loginWithRefreshToken: vi.fn(),
+            logout: vi.fn(),
           },
         },
         { provide: serverConfig.KEY, useValue: createServerConfigMock() },
@@ -35,7 +36,7 @@ describe('AuthRefreshController', () => {
     controller = module.get<AuthRefreshController>(AuthRefreshController);
     authService = module.get(AuthService);
 
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('.refreshTokens()', () => {
@@ -47,7 +48,7 @@ describe('AuthRefreshController', () => {
           refreshToken: 'refresh-token',
         } satisfies RefreshTokenWithAdmin,
       } as any;
-      const res = { cookie: jest.fn() } as unknown as Response;
+      const res = { cookie: vi.fn() } as unknown as Response;
 
       authService.loginWithRefreshToken.mockResolvedValue({
         adminData: {

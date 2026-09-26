@@ -1,6 +1,6 @@
 import { CommandTestFactory } from 'nest-commander-testing';
-import { CliTestContext } from '../../helpers/cli-test-context';
-import { HashService } from '@shared/hash/hash.service';
+import { CliTestContext } from '../../helpers/cli-test-context.js';
+import { HashService } from '@shared/hash/hash.service.js';
 
 describe('(CLI) seed command', () => {
   let ctx: CliTestContext;
@@ -15,7 +15,7 @@ describe('(CLI) seed command', () => {
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe('admin sub-command', () => {
@@ -24,7 +24,7 @@ describe('(CLI) seed command', () => {
       const testPassword = 'testPassword';
 
       const hashService = ctx.commandInstance.get(HashService);
-      const hashPasswordSpy = jest.spyOn(hashService, 'hashBcrypt');
+      const hashPasswordSpy = vi.spyOn(hashService, 'hashBcrypt');
 
       await CommandTestFactory.run(ctx.commandInstance, [
         'seed',

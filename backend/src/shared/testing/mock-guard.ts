@@ -1,1 +1,1 @@
-export const mockGuard = () => ({ canActivate: jest.fn(() => true) });
+export const mockGuard = () => ({ canActivate: vi.fn(() => true) });

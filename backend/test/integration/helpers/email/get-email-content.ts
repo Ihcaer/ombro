@@ -1,4 +1,4 @@
-import { MailpitDetail } from './email.types';
+import { MailpitDetail } from './email.types.js';
 
 export const getEmailContent = async (
   mailpitApi: string,

@@ -7,7 +7,7 @@ describe('UrlManagerService', () => {
 
   const mockPrismaService = {
     urlManagerRedirect: {
-      upsert: jest.fn(),
+      upsert: vi.fn(),
     },
   };
 

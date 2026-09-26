@@ -4,7 +4,7 @@ import { HashService } from './hash.service.js';
 describe('HashService', () => {
   let service: HashService;
   beforeEach(async () => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [HashService],
