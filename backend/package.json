@@ -5,6 +5,7 @@
   "author": "Ihcaer (https://github.com/Ihcaer)",
   "private": true,
   "license": "UNLICENSED",
+  "type": "module",
   "scripts": {
     "postinstall": "npm run prisma:generate",
     "build": "nest build",
@@ -15,12 +16,11 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main.js",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:ver": "jest --verbose",
-    "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:integration": "jest --config ./test/integration/jest-integration.json --runInBand",
+    "test": "vitest --config vitest.config.ts",
+    "test:watch": "npm run test -- --watch",
+    "test:cov": "npm run test -- --coverage",
+    "test:integration": "vitest --config test/integration/vitest.integration.config.ts",
     "prisma:migrate:dev": "prisma migrate dev",
     "prisma:migrate:deploy": "prisma migrate deploy",
     "prisma:generate": "prisma generate",
@@ -69,22 +69,20 @@
     "@nestjs/testing": "^12.1.0",
     "@swc/cli": "^0.8.1",
     "@swc/core": "^1.16.2",
-    "@swc/jest": "^0.2.39",
     "@testcontainers/postgresql": "^12.1.0",
     "@testcontainers/redis": "^12.1.0",
     "@types/bcrypt": "^6.0.0",
     "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.6",
-    "@types/jest": "^30.0.0",
     "@types/node": "^26.6.2",
     "@types/passport-jwt": "^4.0.1",
     "@types/supertest": "^7.2.1",
     "@typescript/native": "npm:typescript@^7.0.2",
+    "@vitest/coverage-v8": "^5.0.2",
     "eslint": "^10.11.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.6",
     "globals": "^17.12.0",
-    "jest": "^30.5.2",
     "nest-commander-testing": "^3.6.0",
     "prettier": "^3.9.9",
     "prisma": "^7.10.0",
@@ -94,47 +92,7 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
-    "typescript-eslint": "^8.70.1"
-  },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "extensionsToTreatAsEsm": [
-      ".ts"
-    ],
-    "rootDir": "src",
-    "moduleNameMapper": {
-      "^@generated/(.*)$": "<rootDir>/generated/$1",
-      "^@core/(.*)$": "<rootDir>/core/$1",
-      "^@modules/(.*)$": "<rootDir>/modules/$1",
-      "^@shared/(.*)$": "<rootDir>/shared/$1",
-      "^@mocks/(.*)$": "<rootDir>/__mocks__/$1"
-    },
-    "testRegex": ".*\\.spec\\.ts$",
-    "transform": {
-      "^.+\\.(t|j)s$": [
-        "@swc/jest",
-        {
-          "configFile": ".swcrc.jest"
-        }
-      ]
-    },
-    "transformIgnorePatterns": [
-      "node_modules/(?!(@nestjs)/)"
-    ],
-    "collectCoverageFrom": [
-      "**/*.(t|j)s"
-    ],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node",
-    "testPathIgnorePatterns": [
-      "/dist/"
-    ],
-    "modulePathIgnorePatterns": [
-      "<rootDir>/dist"
-    ]
+    "typescript-eslint": "^8.70.1",
+    "vitest": "^5.0.2"
   }
 }

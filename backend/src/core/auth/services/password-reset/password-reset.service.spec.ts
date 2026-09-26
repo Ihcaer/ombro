@@ -1,23 +1,24 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
-import { PasswordResetService } from './password-reset.service';
-import { AuthTokenService } from '../auth-token/auth-token.service';
-import { PrismaService } from '@core/database/prisma/prisma.service';
+import { PasswordResetService } from './password-reset.service.js';
+import { AuthTokenService } from '../auth-token/auth-token.service.js';
+import { PrismaService } from '@core/database/prisma/prisma.service.js';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { AuthAdmin, AuthOneTimeToken, Prisma } from '@generated/prisma-client';
-import { HashService } from '@shared/hash/hash.service';
-import { ResetPasswordRequestDto } from '@core/auth/dto';
-import { OneTimeTokenContext } from '@core/auth/types/one-time-token.types';
-import { PASSWORD_STRENGTH_VALIDATOR } from '@core/auth/providers/password-strength.provider';
+import { AuthAdmin, AuthOneTimeToken, Prisma } from '@generated/prisma-client/client.js';
+import { HashService } from '@shared/hash/hash.service.js';
+import { ResetPasswordRequestDto } from '@core/auth/dto/index.js';
+import { OneTimeTokenContext } from '@core/auth/types/one-time-token.types.js';
+import { PASSWORD_STRENGTH_VALIDATOR } from '@core/auth/providers/password-strength.provider.js';
+import type { Mock, Mocked } from 'vitest';
 
 describe('PasswordResetService', () => {
   let service: PasswordResetService;
-  let tokenService: jest.Mocked<AuthTokenService>;
-  let hashService: jest.Mocked<HashService>;
-  let prismaService: jest.Mocked<PrismaService>;
-  let eventEmitter: jest.Mocked<EventEmitter2>;
+  let tokenService: Mocked<AuthTokenService>;
+  let hashService: Mocked<HashService>;
+  let prismaService: Mocked<PrismaService>;
+  let eventEmitter: Mocked<EventEmitter2>;
 
-  const isPasswordStrongValidator = jest.fn();
+  const isPasswordStrongValidator = vi.fn();
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -26,21 +27,21 @@ describe('PasswordResetService', () => {
         {
           provide: AuthTokenService,
           useValue: {
-            generateOneTimeTokenPair: jest.fn(),
-            fetchTokenContext: jest.fn(),
-            validateOneTimeToken: jest.fn(),
+            generateOneTimeTokenPair: vi.fn(),
+            fetchTokenContext: vi.fn(),
+            validateOneTimeToken: vi.fn(),
           },
         },
-        { provide: HashService, useValue: { hashBcrypt: jest.fn() } },
+        { provide: HashService, useValue: { hashBcrypt: vi.fn() } },
         {
           provide: PrismaService,
           useValue: {
-            $transaction: jest.fn(),
-            authOneTimeToken: { create: jest.fn(), delete: jest.fn() },
-            authAdmin: { update: jest.fn() },
+            $transaction: vi.fn(),
+            authOneTimeToken: { create: vi.fn(), delete: vi.fn() },
+            authAdmin: { update: vi.fn() },
           },
         },
-        { provide: EventEmitter2, useValue: { emit: jest.fn() } },
+        { provide: EventEmitter2, useValue: { emit: vi.fn() } },
         {
           provide: PASSWORD_STRENGTH_VALIDATOR,
           useValue: isPasswordStrongValidator,
@@ -54,7 +55,7 @@ describe('PasswordResetService', () => {
     prismaService = module.get(PrismaService);
     eventEmitter = module.get(EventEmitter2);
 
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('.requestPasswordReset()', () => {
@@ -75,7 +76,7 @@ describe('PasswordResetService', () => {
     it('should not return error', async () => {
       oneTimeTokenDb = { admin: { email: testEmail } };
 
-      (prismaService.authOneTimeToken.create as jest.Mock).mockResolvedValue(oneTimeTokenDb);
+      (prismaService.authOneTimeToken.create as Mock).mockResolvedValue(oneTimeTokenDb);
       eventEmitter.emit.mockReturnValue(true);
 
       const result = await service.requestPasswordReset(params.email);
@@ -91,7 +92,7 @@ describe('PasswordResetService', () => {
       );
 
       oneTimeTokenDb = { admin: { email: testEmail } };
-      (prismaService.authOneTimeToken.create as jest.Mock)
+      (prismaService.authOneTimeToken.create as Mock)
         .mockRejectedValueOnce(prismaTokenError)
         .mockResolvedValue(oneTimeTokenDb);
       eventEmitter.emit.mockReturnValue(true);
@@ -128,10 +129,8 @@ describe('PasswordResetService', () => {
       tokenService.validateOneTimeToken.mockResolvedValue(undefined);
       hashService.hashBcrypt.mockResolvedValue('hashed-password');
 
-      const mockUpdate = (prismaService.authAdmin.update as jest.Mock).mockReturnValue(
-        mockUpdateValue,
-      );
-      const mockDelete = (prismaService.authOneTimeToken.delete as jest.Mock).mockReturnValue(
+      const mockUpdate = (prismaService.authAdmin.update as Mock).mockReturnValue(mockUpdateValue);
+      const mockDelete = (prismaService.authOneTimeToken.delete as Mock).mockReturnValue(
         mockDeleteValue,
       );
       prismaService.$transaction.mockResolvedValue([mockUpdate, mockDelete]);

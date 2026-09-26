@@ -1,22 +1,23 @@
 import { Reflector } from '@nestjs/core';
-import { PrivilegesGuard } from './privileges.guard';
+import { PrivilegesGuard } from './privileges.guard.js';
 import { Test, TestingModule } from '@nestjs/testing';
-import { AdminPrivileges } from '@core/auth/enums/admin-privileges';
+import { AdminPrivileges } from '@core/auth/enums/admin-privileges.js';
 import { ExecutionContext, ForbiddenException } from '@nestjs/common';
-import { AuthVerification } from '@generated/prisma-client';
-import { createMockContext } from './privileges.guard.mock';
+import { AuthVerification } from '@generated/prisma-client/client.js';
+import { createMockContext } from './privileges.guard.mock.js';
+import type { Mocked } from 'vitest';
 
 describe('PrivilegesGuard', () => {
   let guard: PrivilegesGuard;
-  let reflector: jest.Mocked<Reflector>;
+  let reflector: Mocked<Reflector>;
 
   beforeEach(async () => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         PrivilegesGuard,
-        { provide: Reflector, useValue: { getAllAndOverride: jest.fn() } },
+        { provide: Reflector, useValue: { getAllAndOverride: vi.fn() } },
       ],
     }).compile();
 

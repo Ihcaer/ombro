@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { AdminCreatedPayload } from '@core/auth/events/admin-created.event';
-import { EmailService } from '@modules/notifications/services/email/email.service';
-import { CtaUrlService } from '@modules/notifications/services/cta-url-builder/cta-url.service';
+import { AdminCreatedPayload } from '@core/auth/events/admin-created.event.js';
+import { EmailService } from '@modules/notifications/services/email/email.service.js';
+import { CtaUrlService } from '@modules/notifications/services/cta-url-builder/cta-url.service.js';
 import { Job } from 'bullmq';
-import { AUTH_SLUGS } from '@modules/notifications/frontend-paths.constants';
-import { AdminAccountActivationTemplate } from '@modules/notifications/emails/auth/admin-account-activation.template';
-import { IJobHandler } from '../../handler.interface';
+import { AUTH_SLUGS } from '@modules/notifications/frontend-paths.constants.js';
+import { AdminAccountActivationTemplate } from '@modules/notifications/emails/auth/admin-account-activation.template.js';
+import { IJobHandler } from '../../handler.interface.js';
 
 @Injectable()
 export class AdminCreationConfirmationEmailHandler implements IJobHandler<AdminCreatedPayload> {

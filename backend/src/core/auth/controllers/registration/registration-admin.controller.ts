@@ -1,9 +1,9 @@
-import { AUTH_ROUTE_PREFIX } from '@core/auth/auth.constants';
-import { AdminController } from '@core/auth/decorators';
-import { REGISTER_ENDPOINT_PREFIX } from './registration-controllers.constants';
-import { AdminRegistrationService } from '@core/auth/services/admin-registration/admin-registration.service';
+import { AUTH_ROUTE_PREFIX } from '@core/auth/auth.constants.js';
+import { AdminController } from '@core/auth/decorators/index.js';
+import { REGISTER_ENDPOINT_PREFIX } from './registration-controllers.constants.js';
+import { AdminRegistrationService } from '@core/auth/services/admin-registration/admin-registration.service.js';
 import { Body, Post } from '@nestjs/common';
-import { CreateAdminRequestDto, CreateAdminResponseDto } from '@core/auth/dto';
+import { CreateAdminRequestDto, CreateAdminResponseDto } from '@core/auth/dto/index.js';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,

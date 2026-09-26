@@ -1,5 +1,5 @@
-import metadataConfig from '@core/config/envs/metadata.config';
-import serverConfig, { Environment } from '@core/config/envs/server.config';
+import metadataConfig from '@core/config/envs/metadata.config.js';
+import serverConfig, { Environment } from '@core/config/envs/server.config.js';
 import { Inject, Injectable } from '@nestjs/common';
 import type { ConfigType } from '@nestjs/config';
 

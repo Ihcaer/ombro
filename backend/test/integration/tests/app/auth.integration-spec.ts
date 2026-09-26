@@ -6,19 +6,19 @@ import {
   LoginRequestDto,
   LoginResponseDto,
   ResetPasswordRequestDto,
-} from '@core/auth/dto';
-import { AdminRegistrationService } from '@core/auth/services/admin-registration/admin-registration.service';
-import { TestContext } from '../../helpers';
-import { AuthAdmin } from '@generated/prisma-client';
-import { AUTH_ROUTE_PREFIX, DEFAULT_ADMIN_PREFERENCES } from '@core/auth/auth.constants';
-import { ForgotPasswordRequestDto } from '@core/auth/dto/requests/forgot-password-request.dto';
-import { AUTH_SLUGS as EMAIL_AUTH_SLUGS } from '@modules/notifications/frontend-paths.constants';
-import { PrivilegesUtils } from '@core/auth/utils/privileges.utils';
-import { AdminPrivileges } from '@core/auth/enums/admin-privileges';
-import { TestCreateAdminRequestDto } from '../../helpers/common-test.types';
+} from '@core/auth/dto/index.js';
+import { AdminRegistrationService } from '@core/auth/services/admin-registration/admin-registration.service.js';
+import { AuthAdminFactoryOverrides, TestContext } from '../../helpers/index.js';
+import { AUTH_ROUTE_PREFIX, DEFAULT_ADMIN_PREFERENCES } from '@core/auth/auth.constants.js';
+import { ForgotPasswordRequestDto } from '@core/auth/dto/requests/forgot-password-request.dto.js';
+import { AUTH_SLUGS as EMAIL_AUTH_SLUGS } from '@modules/notifications/frontend-paths.constants.js';
+import { PrivilegesUtils } from '@core/auth/utils/privileges.utils.js';
+import { AdminPrivileges } from '@core/auth/enums/admin-privileges.js';
+import { TestCreateAdminRequestDto } from '../../helpers/common-test.types.js';
 
 describe('Auth Module', () => {
-  jest.setTimeout(25000);
+  vi.setConfig({ testTimeout: 25000 });
+
   let ctx: TestContext;
   let adminRegistrationService: AdminRegistrationService;
 
@@ -145,7 +145,7 @@ describe('Auth Module', () => {
         desc: 'another correct privileges',
       },
     ])('should return $expected for scenario: $desc', async ({ privilegeValue, expected }) => {
-      const admin: Partial<AuthAdmin> = {
+      const admin: AuthAdminFactoryOverrides = {
         handleName: 'handle',
         password: 'password',
         privileges: privilegeValue,

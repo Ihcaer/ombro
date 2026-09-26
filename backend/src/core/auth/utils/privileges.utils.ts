@@ -1,6 +1,6 @@
-import { AuthAdmin } from '@generated/prisma-client';
-import { AdminPrivileges } from '../enums/admin-privileges';
-import { AdminPrivilegesTranslated } from '../types/admin.types';
+import { AuthAdmin } from '@generated/prisma-client/client.js';
+import { AdminPrivileges } from '../enums/admin-privileges.js';
+import { AdminPrivilegesTranslated } from '../types/admin.types.js';
 
 export class PrivilegesUtils {
   static hasAll(adminPrivileges: number, requiredPrivileges: AdminPrivileges[]): boolean {

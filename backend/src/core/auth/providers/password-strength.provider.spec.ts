@@ -3,7 +3,7 @@ import {
   PASSWORD_STRENGTH_VALIDATOR,
   PasswordStrengthProvider,
   PasswordStrengthValidatorFn,
-} from './password-strength.provider';
+} from './password-strength.provider.js';
 
 describe('PasswordStrengthProvider', () => {
   let isPasswordStrong: PasswordStrengthValidatorFn;

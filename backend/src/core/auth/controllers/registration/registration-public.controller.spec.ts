@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { RegistrationPublicController } from './registration-public.controller';
-import { AdminRegistrationService } from '@core/auth/services/admin-registration/admin-registration.service';
+import { RegistrationPublicController } from './registration-public.controller.js';
+import { AdminRegistrationService } from '@core/auth/services/admin-registration/admin-registration.service.js';
 
 describe('RegistrationPublicController', () => {
   let controller: RegistrationPublicController;
-  // let adminRegistrationService: jest.Mocked<AdminRegistrationService>;
+  // let adminRegistrationService: Mocked<AdminRegistrationService>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -13,8 +13,8 @@ describe('RegistrationPublicController', () => {
         {
           provide: AdminRegistrationService,
           useValue: {
-            getFormFieldsToConfirm: jest.fn(),
-            accountConfirmation: jest.fn(),
+            getFormFieldsToConfirm: vi.fn(),
+            accountConfirmation: vi.fn(),
           },
         },
       ],

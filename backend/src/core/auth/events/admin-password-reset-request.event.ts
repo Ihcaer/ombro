@@ -1,4 +1,4 @@
-import { EventConfig } from '@shared/decorators';
+import { EventConfig } from '@shared/decorators/index.js';
 
 export type AdminPasswordResetRequestPayload = {
   readonly tokenData: { readonly token: string; readonly expirationTimeMinutes: number };

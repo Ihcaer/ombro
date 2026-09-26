@@ -6,8 +6,8 @@ import {
   ValidatorConstraintInterface,
 } from 'class-validator';
 import { Inject } from '@nestjs/common';
-import { PASSWORD_STRENGTH_VALIDATOR } from '../providers/password-strength.provider';
-import type { PasswordStrengthValidatorFn } from '../providers/password-strength.provider';
+import { PASSWORD_STRENGTH_VALIDATOR } from '../providers/password-strength.provider.js';
+import type { PasswordStrengthValidatorFn } from '../providers/password-strength.provider.js';
 
 @ValidatorConstraint({ name: 'IsSecurePasswordConstraint', async: false })
 export class IsSecurePasswordConstraint implements ValidatorConstraintInterface {

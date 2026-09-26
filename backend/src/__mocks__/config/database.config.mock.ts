@@ -1,4 +1,4 @@
-import { DatabaseConfig } from '@core/config/envs/database.config';
+import { DatabaseConfig } from '@core/config/envs/database.config.js';
 import { plainToInstance } from 'class-transformer';
 
 type RawDatabaseEnv = { POSTGRES_URL: string };

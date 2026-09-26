@@ -1,16 +1,16 @@
-import { PrismaService } from '@core/database/prisma/prisma.service';
+import { PrismaService } from '@core/database/prisma/prisma.service.js';
 import { INestApplication, Logger, ValidationPipe } from '@nestjs/common';
 import { TestingModule, Test } from '@nestjs/testing';
 import cookieParser from 'cookie-parser';
-import { AppModule } from '../../../src/app.module';
-import { clearDatabase } from './clear-database';
-import { App } from 'supertest/types';
-import { AdminFactory } from './factories';
-import { getEmailContent, MailpitDetail, MailpitSummary, waitForEmail } from './email';
+import { AppModule } from '../../../src/app.module.js';
+import { clearDatabase } from './clear-database.js';
+import { App } from 'supertest/types.js';
+import { AdminFactory } from './factories/index.js';
+import { getEmailContent, MailpitDetail, MailpitSummary, waitForEmail } from './email/index.js';
 import { PostgreSqlContainer, StartedPostgreSqlContainer } from '@testcontainers/postgresql';
 import { GenericContainer, StartedTestContainer, Wait } from 'testcontainers';
 import { RedisContainer, StartedRedisContainer } from '@testcontainers/redis';
-import Redis from 'ioredis';
+import { Redis } from 'ioredis';
 import { execSync } from 'node:child_process';
 
 export class TestContext {

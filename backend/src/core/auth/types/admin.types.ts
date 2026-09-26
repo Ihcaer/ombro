@@ -1,6 +1,6 @@
-import { AuthAdmin } from '@generated/prisma-client';
-import { AdminPrivileges } from '../enums/admin-privileges';
-import { AdminPreferences } from '../dto/models/adminPreferences.dto';
+import { AuthAdmin } from '@generated/prisma-client/client.js';
+import { AdminPrivileges } from '../enums/admin-privileges.js';
+import { AdminPreferences } from '../dto/models/adminPreferences.dto.js';
 
 export type Identifier = keyof Pick<AuthAdmin, 'email' | 'handleName'>;
 

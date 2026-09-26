@@ -1,16 +1,17 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthPublicController } from './auth-public.controller';
-import { LoginRequestDto } from '@core/auth/dto';
-import { AuthService } from '@core/auth/services/auth/auth.service';
+import { AuthPublicController } from './auth-public.controller.js';
+import { LoginRequestDto } from '@core/auth/dto/index.js';
+import { AuthService } from '@core/auth/services/auth/auth.service.js';
 import { Response } from 'express';
-import serverConfig from '@core/config/envs/server.config';
-import { createServerConfigMock } from '@mocks/config/server.config.mock';
-import { DEFAULT_ADMIN_PREFERENCES } from '@core/auth/auth.constants';
+import serverConfig from '@core/config/envs/server.config.js';
+import { createServerConfigMock } from '@mocks/config/server.config.mock.js';
+import { DEFAULT_ADMIN_PREFERENCES } from '@core/auth/auth.constants.js';
+import type { Mocked } from 'vitest';
 
 describe('LoginPublicController', () => {
   let controller: AuthPublicController;
-  let authService: jest.Mocked<AuthService>;
+  let authService: Mocked<AuthService>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -19,7 +20,7 @@ describe('LoginPublicController', () => {
         {
           provide: AuthService,
           useValue: {
-            loginWithCredentials: jest.fn(),
+            loginWithCredentials: vi.fn(),
           },
         },
         { provide: serverConfig.KEY, useValue: createServerConfigMock() },
@@ -29,7 +30,7 @@ describe('LoginPublicController', () => {
     controller = module.get<AuthPublicController>(AuthPublicController);
     authService = module.get(AuthService);
 
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('.login()', () => {
@@ -38,7 +39,7 @@ describe('LoginPublicController', () => {
         identifier: 'handle',
         password: 'test-password',
       };
-      const res = { cookie: jest.fn() } as unknown as Response;
+      const res = { cookie: vi.fn() } as unknown as Response;
 
       authService.loginWithCredentials.mockResolvedValue({
         adminData: {

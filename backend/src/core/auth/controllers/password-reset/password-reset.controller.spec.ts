@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PasswordResetController } from './password-reset.controller';
-import { PasswordResetService } from '@core/auth/services/password-reset/password-reset.service';
+import { PasswordResetController } from './password-reset.controller.js';
+import { PasswordResetService } from '@core/auth/services/password-reset/password-reset.service.js';
 
 describe('PasswordResetController', () => {
   let controller: PasswordResetController;
-  // let passwordResetService: jest.Mocked<PasswordResetService>;
+  // let passwordResetService: Mocked<PasswordResetService>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -12,7 +12,7 @@ describe('PasswordResetController', () => {
       providers: [
         {
           provide: PasswordResetService,
-          useValue: { requestPasswordReset: jest.fn(), resetPasswordByToken: jest.fn() },
+          useValue: { requestPasswordReset: vi.fn(), resetPasswordByToken: vi.fn() },
         },
       ],
     }).compile();

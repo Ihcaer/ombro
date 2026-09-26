@@ -1,4 +1,4 @@
-import { IsOneTimeToken } from '@core/auth/decorators';
+import { IsOneTimeToken } from '@core/auth/decorators/index.js';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class FieldsToConfirmAccountRequestDto {

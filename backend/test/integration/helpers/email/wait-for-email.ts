@@ -1,5 +1,5 @@
 import { setTimeout } from 'node:timers/promises';
-import { MailpitSummary, MailpitResponse } from './email.types';
+import { MailpitSummary, MailpitResponse } from './email.types.js';
 
 export async function waitForEmail(
   mailpitApi: string,

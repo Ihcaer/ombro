@@ -1,8 +1,8 @@
 import { InjectQueue } from '@nestjs/bullmq';
-import { EMAIL_JOBS, NOTIFICATIONS_QUEUE } from '../notifications.constants';
+import { EMAIL_JOBS, NOTIFICATIONS_QUEUE } from '../notifications.constants.js';
 import { Queue } from 'bullmq';
 import { OnEvent } from '@nestjs/event-emitter';
-import { AdminPasswordResetRequestEvent } from '@core/auth/events/admin-password-reset-request.event';
+import { AdminPasswordResetRequestEvent } from '@core/auth/events/admin-password-reset-request.event.js';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()

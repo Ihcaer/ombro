@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { UrlManagerRedirectCode as PrismaRedirectCode } from '@generated/prisma-client';
-import { PrismaService } from '@core/database/prisma/prisma.service';
-import { CreateUrlRedirectDto } from './dto/create-redirect.dto';
-import { GetRedirectDto } from './dto/get-redirect.dto';
-import { RedirectCode } from './enums/redirect-code.enum';
+import { UrlManagerRedirectCode as PrismaRedirectCode } from '@generated/prisma-client/client.js';
+import { PrismaService } from '@core/database/prisma/prisma.service.js';
+import { CreateUrlRedirectDto } from './dto/create-redirect.dto.js';
+import { GetRedirectDto } from './dto/get-redirect.dto.js';
+import { RedirectCode } from './enums/redirect-code.enum.js';
 
 const CodeValueToSymbolMap: Record<string, PrismaRedirectCode> = {
   '301': 'MOVED_PERMANENTLY_301',
@@ -26,9 +26,7 @@ const symbolValueToCode = (symbol: PrismaRedirectCode): RedirectCode => {
 export class UrlManagerService {
   constructor(private prisma: PrismaService) {}
 
-  async createUrlRedirect(
-    createRedirectDto: CreateUrlRedirectDto,
-  ): Promise<void> {
+  async createUrlRedirect(createRedirectDto: CreateUrlRedirectDto): Promise<void> {
     const prismaSymbol = CodeValueToSymbolMap[createRedirectDto.redirectCode];
 
     await this.prisma.urlManagerRedirect.upsert({

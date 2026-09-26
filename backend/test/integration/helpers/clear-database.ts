@@ -1,4 +1,4 @@
-import { PrismaClient } from '@generated/prisma-client';
+import { PrismaClient } from '@generated/prisma-client/client.js';
 import { Logger } from '@nestjs/common';
 
 export async function clearDatabase(prisma: PrismaClient, logger: Logger): Promise<void> {

@@ -1,5 +1,5 @@
 import { Command, CommandRunner } from 'nest-commander';
-import { SeedAdminSubCommand } from './seed-admin.sub-command';
+import { SeedAdminSubCommand } from './seed-admin.sub-command.js';
 
 @Command({
   name: 'seed',

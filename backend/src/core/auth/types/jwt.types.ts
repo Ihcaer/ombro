@@ -1,4 +1,4 @@
-import { AuthRefreshToken, AuthVerification } from '@generated/prisma-client';
+import { AuthRefreshToken, AuthVerification } from '@generated/prisma-client/client.js';
 
 export type TokensExpirationTimes = {
   readonly accessExpiration: number;

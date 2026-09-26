@@ -1,6 +1,6 @@
 import { applyDecorators, Controller } from '@nestjs/common';
-import { Admin, AuthRefresh, Public } from './auth.decorators';
-import { AdminPrivilegesTranslated } from '../types/admin.types';
+import { Admin, AuthRefresh, Public } from './auth.decorators.js';
+import { AdminPrivilegesTranslated } from '../types/admin.types.js';
 
 const PUBLIC_PREFIX = 'public';
 const ADMIN_PREFIX = 'admin';

@@ -1,8 +1,8 @@
 import {
   AdminPrivilegesTranslated,
   AdminPrivilegeTranslatedField,
-} from '@core/auth/types/admin.types';
-import { AuthAdmin } from '@generated/prisma-client';
+} from '@core/auth/types/admin.types.js';
+import { AuthAdmin } from '@generated/prisma-client/client.js';
 
 export class CreateAdminResponseDto implements Readonly<
   NonNullable<Pick<AuthAdmin, 'displayName' | 'email'> & AdminPrivilegeTranslatedField>

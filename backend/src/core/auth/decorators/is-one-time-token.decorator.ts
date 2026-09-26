@@ -6,7 +6,7 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { AuthTokenService } from '../services/auth-token/auth-token.service';
+import { AuthTokenService } from '../services/auth-token/auth-token.service.js';
 
 const EXPECTED_LENGTH: number = Math.ceil((4 * AuthTokenService.ONE_TIME_TOKEN_BYTES) / 3);
 

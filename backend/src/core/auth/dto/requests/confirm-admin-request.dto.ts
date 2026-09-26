@@ -1,11 +1,11 @@
-import { Trim } from '@shared/decorators';
+import { Trim } from '@shared/decorators/index.js';
 import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
-import { IsOneTimeToken } from '../../decorators';
-import { PossibleFieldsToFill } from '../../types/common.types';
+import { IsOneTimeToken } from '../../decorators/index.js';
+import { PossibleFieldsToFill } from '../../types/common.types.js';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsLanguage } from '@core/auth/decorators/is-language.decorator';
-import { Language } from '@core/auth/auth.constants';
-import { AdminPreferences } from '../models/adminPreferences.dto';
+import { IsLanguage } from '@core/auth/decorators/is-language.decorator.js';
+import { Language } from '@core/auth/auth.constants.js';
+import { AdminPreferences } from '../models/adminPreferences.dto.js';
 
 export class ConfirmAdminRequestDto implements PossibleFieldsToFill {
   @IsString()

@@ -1,6 +1,6 @@
 import { ConfigModuleOptions } from '@nestjs/config';
-import { getEnvPath } from './env-path.util';
-import { Environment } from './envs/server.config';
+import { getEnvPath } from './env-path.util.js';
+import { Environment } from './envs/server.config.js';
 
 const nodeEnv = (process.env.NODE_ENV as Environment) || Environment.Development;
 

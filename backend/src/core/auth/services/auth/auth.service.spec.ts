@@ -1,20 +1,21 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthService } from './auth.service';
-import { LoginRequestDto } from '../../dto/requests/login-request.dto';
-import { AdminWithPassword } from '@core/auth/types/admin.types';
-import { AuthTokenService } from '../auth-token/auth-token.service';
+import { AuthService } from './auth.service.js';
+import { LoginRequestDto } from '../../dto/requests/login-request.dto.js';
+import { AdminWithPassword } from '@core/auth/types/admin.types.js';
+import { AuthTokenService } from '../auth-token/auth-token.service.js';
 import { ForbiddenException, UnauthorizedException } from '@nestjs/common';
-import { HashService } from '@shared/hash/hash.service';
-import { AuthAdminRepository } from '../../auth-admin.repository';
-import { AuthRefreshToken, AuthVerification } from '@generated/prisma-client';
-import { DEFAULT_ADMIN_PREFERENCES } from '@core/auth/auth.constants';
+import { HashService } from '@shared/hash/hash.service.js';
+import { AuthAdminRepository } from '../../auth-admin.repository.js';
+import { AuthRefreshToken, AuthVerification } from '@generated/prisma-client/client.js';
+import { DEFAULT_ADMIN_PREFERENCES } from '@core/auth/auth.constants.js';
+import type { Mocked } from 'vitest';
 
 describe('AuthService', () => {
   let service: AuthService;
-  let adminRepository: jest.Mocked<AuthAdminRepository>;
-  let tokenService: jest.Mocked<AuthTokenService>;
-  let hashService: jest.Mocked<HashService>;
+  let adminRepository: Mocked<AuthAdminRepository>;
+  let tokenService: Mocked<AuthTokenService>;
+  let hashService: Mocked<HashService>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -23,20 +24,20 @@ describe('AuthService', () => {
         {
           provide: AuthAdminRepository,
           useValue: {
-            findAdminByIdentifier: jest.fn(),
-            findAdminAndRefreshTokensById: jest.fn(),
-            saveRefreshToken: jest.fn(),
+            findAdminByIdentifier: vi.fn(),
+            findAdminAndRefreshTokensById: vi.fn(),
+            saveRefreshToken: vi.fn(),
           },
         },
         {
           provide: AuthTokenService,
-          useValue: { generateTokens: jest.fn(), hashRefreshToken: jest.fn() },
+          useValue: { generateTokens: vi.fn(), hashRefreshToken: vi.fn() },
         },
         {
           provide: HashService,
           useValue: {
-            compareBcrypt: jest.fn(),
-            compareHash: jest.fn(),
+            compareBcrypt: vi.fn(),
+            compareHash: vi.fn(),
           },
         },
       ],
@@ -47,7 +48,7 @@ describe('AuthService', () => {
     tokenService = module.get(AuthTokenService);
     hashService = module.get(HashService);
 
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('login methods', () => {

@@ -1,1 +1,1 @@
-export * from './admin.factory';
+export * from './admin.factory.js';

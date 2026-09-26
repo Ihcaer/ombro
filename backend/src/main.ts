@@ -1,9 +1,9 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { AppModule } from './app.module.js';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import cookieParser from 'cookie-parser';
-import { checkRedisQueue } from './bootstrap/check-redis-queue';
+import { checkRedisQueue } from './bootstrap/check-redis-queue.js';
 
 async function bootstrap() {
   await checkRedisQueue();

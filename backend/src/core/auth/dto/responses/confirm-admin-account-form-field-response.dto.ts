@@ -1,4 +1,4 @@
-import { PossibleFieldsToFill } from '../../types/common.types';
+import { PossibleFieldsToFill } from '../../types/common.types.js';
 
 const _POSSIBLE_FIELDS = [
   'password',

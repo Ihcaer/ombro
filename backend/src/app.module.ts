@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigType } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { getApplicationModules } from './module-registry';
-import { getConfigOptions } from '@core/config/env-config-options';
+import { getApplicationModules } from './module-registry.js';
+import { getConfigOptions } from '@core/config/env-config-options.js';
 import { BullModule } from '@nestjs/bullmq';
-import redisQueueConfig from '@core/config/envs/redis-queue.config';
+import redisQueueConfig from '@core/config/envs/redis-queue.config.js';
 
 @Module({
   imports: [

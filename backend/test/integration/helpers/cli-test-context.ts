@@ -1,9 +1,9 @@
 import { PostgreSqlContainer, StartedPostgreSqlContainer } from '@testcontainers/postgresql';
 import { execSync } from 'child_process';
 import { TestingModule } from '@nestjs/testing';
-import { PrismaService } from '@core/database/prisma/prisma.service';
+import { PrismaService } from '@core/database/prisma/prisma.service.js';
 import { CommandTestFactory } from 'nest-commander-testing';
-import { CliModule } from '../../../src/cli/cli.module';
+import { CliModule } from '../../../src/cli/cli.module.js';
 import { Logger } from '@nestjs/common';
 
 export class CliTestContext {

@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { RegistrationAdminController } from './registration-admin.controller';
-import { AdminRegistrationService } from '@core/auth/services/admin-registration/admin-registration.service';
-import { AccessTokenGuard } from '@core/auth/guards/access-token.guard';
-import { mockGuard } from '@shared/testing/mock-guard';
+import { RegistrationAdminController } from './registration-admin.controller.js';
+import { AdminRegistrationService } from '@core/auth/services/admin-registration/admin-registration.service.js';
+import { AccessTokenGuard } from '@core/auth/guards/access-token.guard.js';
+import { mockGuard } from '@shared/testing/mock-guard.js';
 
 describe('RegistrationAdminController', () => {
   let controller: RegistrationAdminController;
-  // let adminRegistrationService: jest.Mocked<AdminRegistrationService>;
+  // let adminRegistrationService: Mocked<AdminRegistrationService>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -15,7 +15,7 @@ describe('RegistrationAdminController', () => {
         {
           provide: AdminRegistrationService,
           useValue: {
-            createAdminAccount: jest.fn(),
+            createAdminAccount: vi.fn(),
           },
         },
       ],
