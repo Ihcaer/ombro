@@ -17,8 +17,6 @@ import { AdminPrivileges } from '@core/auth/enums/admin-privileges.js';
 import { TestCreateAdminRequestDto } from '../../helpers/common-test.types.js';
 
 describe('Auth Module', () => {
-  vi.setConfig({ testTimeout: 25000 });
-
   let ctx: TestContext;
   let adminRegistrationService: AdminRegistrationService;
 
