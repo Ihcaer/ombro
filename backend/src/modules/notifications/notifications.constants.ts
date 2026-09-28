@@ -1,3 +1,5 @@
+import { JobsOptions } from 'bullmq';
+
 export const NOTIFICATIONS_QUEUE = 'notifications-queue';
 
 export const EMAIL_JOBS = {
@@ -6,3 +8,9 @@ export const EMAIL_JOBS = {
 } as const;
 
 export type EmailJobName = (typeof EMAIL_JOBS)[keyof typeof EMAIL_JOBS];
+
+export const EMAIL_JOB_OPTIONS: JobsOptions = {
+  attempts: 5,
+  backoff: { type: 'exponential', delay: 1000 },
+  removeOnComplete: true,
+} as const;
