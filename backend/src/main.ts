@@ -21,8 +21,9 @@ async function bootstrap() {
       transform: true,
     }),
   );
-
   app.use(cookieParser());
+
+  app.enableShutdownHooks();
 
   await app.listen(port);
   logger.log(`Server ready! Listening on: http://localhost:${port}`);

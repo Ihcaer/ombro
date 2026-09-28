@@ -5,12 +5,14 @@ import { AuthModule } from '@core/auth/auth.module.js';
 import { PrismaModule } from '@core/database/prisma/prisma.module.js';
 import { NotificationsModule } from '@modules/notifications/notifications.module.js';
 import { UrlManagerModule } from '@modules/url-manager/url-manager.module.js';
+import { HealthModule } from '@core/health/health.module.js';
 
 const coreModules: Type<unknown>[] = [
   PrismaModule,
   AuthModule,
   UrlManagerModule,
   NotificationsModule,
+  HealthModule,
 ] as const;
 
 const featureModules: ReadonlyArray<{ feature: FeatureModule; module: Type<unknown> }> =
