@@ -120,6 +120,12 @@ services:
     networks:
       - api_net
       - backend_net
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/healthz', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     depends_on:
       db:
         condition: service_healthy
@@ -177,7 +183,7 @@ services:
       - seaweed_public_net
     depends_on:
       backend:
-        condition: service_started
+        condition: service_healthy
       frontend-admin:
         condition: service_started
       seaweed-s3:
