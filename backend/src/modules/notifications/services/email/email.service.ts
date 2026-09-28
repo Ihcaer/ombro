@@ -9,7 +9,6 @@ import { createTransport, SendMailOptions, Transporter } from 'nodemailer';
 import { EmailOptions } from '@modules/notifications/emails/email-base.js';
 import type { ConfigType } from '@nestjs/config';
 import emailConfig from '@core/config/envs/email.config.js';
-import { setTimeout } from 'node:timers/promises';
 import serverConfig, { Environment } from '@core/config/envs/server.config.js';
 
 @Injectable()
@@ -57,8 +56,6 @@ export class EmailService implements OnModuleInit {
   ): Promise<void> {
     const defaultFromName = 'Skema Admin Panel';
     const fromName: string = template.from ?? defaultFromName;
-    const maxRetries = 3;
-    const baseDelayMs = 1000;
 
     const mailOptions: SendMailOptions = {
       from: `"${fromName}" ${this.emailConf.sender}`,
@@ -67,26 +64,6 @@ export class EmailService implements OnModuleInit {
       html: template.html,
     };
 
-    for (let attempt = 1; attempt <= maxRetries; attempt++) {
-      try {
-        await this.transporter.sendMail(mailOptions);
-        return;
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-
-        if (attempt === maxRetries) {
-          this.logger.error(
-            `Failed to send email to ${recipient} with subject ${mailOptions.subject}. Reason: ${errorMessage}`,
-          );
-          break;
-        }
-
-        const delay = baseDelayMs * Math.pow(2, attempt - 1);
-        this.logger.warn(
-          `Attempt ${attempt}/${maxRetries} to send email failed: ${errorMessage}. Retrying in ${delay}ms...`,
-        );
-        await setTimeout(delay);
-      }
-    }
+    await this.transporter.sendMail(mailOptions);
   }
 }

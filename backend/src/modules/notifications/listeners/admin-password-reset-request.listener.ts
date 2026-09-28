@@ -1,5 +1,5 @@
 import { InjectQueue } from '@nestjs/bullmq';
-import { EMAIL_JOBS, NOTIFICATIONS_QUEUE } from '../notifications.constants.js';
+import { EMAIL_JOB_OPTIONS, EMAIL_JOBS, NOTIFICATIONS_QUEUE } from '../notifications.constants.js';
 import { Queue } from 'bullmq';
 import { OnEvent } from '@nestjs/event-emitter';
 import { AdminPasswordResetRequestEvent } from '@core/auth/events/admin-password-reset-request.event.js';
@@ -11,6 +11,10 @@ export class AdminPasswordResetRequestListener {
 
   @OnEvent(AdminPasswordResetRequestEvent.EVENT_NAME)
   private async handle(event: AdminPasswordResetRequestEvent) {
-    await this.notificationsQueue.add(EMAIL_JOBS.SEND_PASSWORD_RESET, event.payload);
+    await this.notificationsQueue.add(
+      EMAIL_JOBS.SEND_PASSWORD_RESET,
+      event.payload,
+      EMAIL_JOB_OPTIONS,
+    );
   }
 }
