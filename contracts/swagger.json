@@ -823,23 +823,6 @@
           "password",
           "token"
         ]
-      },
-      "AuditActionExportDto": {
-        "type": "object",
-        "properties": {
-          "action": {
-            "type": "string",
-            "enum": [
-              "CREATE",
-              "UPDATE",
-              "DELETE",
-              "OTHER"
-            ]
-          }
-        },
-        "required": [
-          "action"
-        ]
       }
     }
   }
