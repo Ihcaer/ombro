@@ -4,7 +4,6 @@ import { AuditService } from '@modules/audit/audit.service.js';
 import { CreateLogDto } from '@modules/audit/dto/create-log.dto.js';
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
-import { authModuleDataSerializer } from '../helpers/auth-module-data-serializer.js';
 import { AuditActorType } from '@generated/prisma-client/enums.js';
 import { Changes } from '@modules/audit/audit-log-fields.types.js';
 import { buildChanges } from '../helpers/build-diff.js';
@@ -21,16 +20,16 @@ export class LogOnAdminCreatedListener {
     const actorType: AuditActorType = actorId ? 'ADMIN' : 'SYSTEM';
     const changes: Changes = buildChanges({ after: eventPayload.newAdminData });
 
-    const logData: CreateLogDto = authModuleDataSerializer({
+    const logData: CreateLogDto = {
       actorId: String(actorId),
       actorType,
-      entityType: 'admin',
+      entityType: 'ADMIN',
       entityId: String(eventPayload.newAdminData.id),
       visibility: 'OWNER',
-      module: 'team',
-      action: 'create',
+      module: 'TEAM',
+      action: 'CREATE',
       changes,
-    });
+    };
     this.auditService.log({ name: LogJobsAuthModule.ADMIN_CREATED, log: logData });
   }
 }

@@ -109,7 +109,7 @@ describe('AdminRegistrationService', () => {
       eventEmitter.emit.mockReturnValue(true);
 
       expect(params[0]).toBeInstanceOf(CreateAdminRequestDto);
-      await expect(service.createAdminAccount(...params)).resolves.toEqual(expectedResult);
+      await expect(service.createAdminAccount(...params, null)).resolves.toEqual(expectedResult);
     });
   });
 

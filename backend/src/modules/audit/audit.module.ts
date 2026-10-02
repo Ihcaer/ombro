@@ -3,7 +3,7 @@ import { Module, Provider } from '@nestjs/common';
 import { AuditService } from './audit.service.js';
 import { BullModule } from '@nestjs/bullmq';
 import { AUDIT_QUEUE_NAME } from './audit-queue.constants.js';
-import { LogOnAdminCreatedListener } from './listeners/auth/log-on-admin-created.listener.js';
+import { LogOnAdminCreatedListener } from './listeners/team/log-on-admin-created.listener.js';
 
 const LISTENERS: Provider[] = [LogOnAdminCreatedListener];
 
