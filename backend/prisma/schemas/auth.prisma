@@ -36,7 +36,6 @@ model AuthAdmin {
 
   oneTimeTokens             AuthOneTimeToken[]
   refreshTokens             AuthRefreshToken[]
-  actionLogs                AuditAdminLogs[]
   approvalRequests          TeamApprovalRequest[]
   approvalResponses         TeamApprovalResponses[]
   avatar                    FilesFile?              @relation("AdminAvatar", fields: [avatarFileId], references: [id], onDelete: SetNull)

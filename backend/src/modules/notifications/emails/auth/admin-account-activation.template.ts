@@ -15,7 +15,7 @@ export class AdminAccountActivationTemplate extends EmailBase {
 
     this.mediaDomain = inputMediaDomain;
     this.options = this.setOptions();
-    this.content = this.setContent(adminName, confirmAccountLink);
+    this.content = this.setContent(adminName.split(' ')[0], confirmAccountLink);
   }
 
   private setOptions(): EmailOptions {

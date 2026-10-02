@@ -1,8 +1,10 @@
 import { EventConfig } from '@shared/decorators/index.js';
+import { NewlyCreatedAdmin } from '../types/admin.types.js';
 
 export type AdminCreatedPayload = {
+  readonly actorId: number | null;
   readonly accountConfirmationToken: string;
-  readonly newAdminData: { readonly name: string; readonly email: string };
+  readonly newAdminData: NewlyCreatedAdmin;
 };
 
 @EventConfig

@@ -26,7 +26,7 @@ import { AuthAdminRepository } from '@core/auth/auth-admin.repository.js';
 import { PrivilegesUtils } from '@core/auth/utils/privileges.utils.js';
 import { PASSWORD_STRENGTH_VALIDATOR } from '@core/auth/providers/password-strength.provider.js';
 import type { PasswordStrengthValidatorFn } from '@core/auth/providers/password-strength.provider.js';
-import { AdminWithoutPreferences } from '@core/auth/types/admin.types.js';
+import { AdminWithoutPreferences, NewlyCreatedAdmin } from '@core/auth/types/admin.types.js';
 import { AdminPreferences } from '@core/auth/dto/models/adminPreferences.dto.js';
 
 @Injectable()
@@ -49,12 +49,15 @@ export class AdminRegistrationService {
     private readonly isPasswordStrongValidator: PasswordStrengthValidatorFn,
   ) {}
 
-  async createAdminAccount(dto: CreateAdminRequestDto): Promise<CreateAdminResponseDto> {
+  async createAdminAccount(
+    dto: CreateAdminRequestDto,
+    actorId: number | null,
+  ): Promise<CreateAdminResponseDto> {
     let attempts = 0;
     const maxAttempts = 5;
     let rawToken: Base64URLString | null = null;
     let result: CreateAdminResponseDto | null = null;
-    let adminId: number | null = null;
+    let newAdminData: NewlyCreatedAdmin | null = null;
 
     while (attempts < maxAttempts) {
       try {
@@ -73,7 +76,15 @@ export class AdminRegistrationService {
           },
           select: {
             admin: {
-              select: { id: true, displayName: true, email: true, privileges: true },
+              select: {
+                id: true,
+                displayName: true,
+                handleName: true,
+                verification: true,
+                isActivated: true,
+                privileges: true,
+                email: true,
+              },
             },
           },
         });
@@ -84,7 +95,7 @@ export class AdminRegistrationService {
           email: admin.email,
           privileges: PrivilegesUtils.bitmaskToArray(admin.privileges),
         };
-        adminId = admin.id;
+        newAdminData = { ...admin, privileges: PrivilegesUtils.bitmaskToArray(admin.privileges) };
 
         break;
       } catch (error) {
@@ -106,28 +117,24 @@ export class AdminRegistrationService {
       }
     }
 
-    if (rawToken && result) {
+    if (rawToken && result && newAdminData) {
       const { EVENT_NAME: eventName } = AdminCreatedEvent;
       const wasHandled: boolean = this.eventEmitter.emit(
         eventName,
-        new AdminCreatedEvent({
-          accountConfirmationToken: rawToken,
-          newAdminData: {
-            name: result.displayName,
-            email: result.email,
-          },
-        }),
+        new AdminCreatedEvent({ actorId, accountConfirmationToken: rawToken, newAdminData }),
       );
 
       if (!wasHandled) {
         this.logger.error(
-          `The ${eventName} event was emitted but no one received it. Admin (User) ID ${adminId ?? 'unknown'}`,
+          `The ${eventName} event was emitted but no one received it. Admin (User) ID ${newAdminData.id}`,
         );
       }
 
       return result;
     } else {
-      this.logger.error(`Failed to generate unique OTP token for Admin (User) ID ${adminId}`);
+      this.logger.error(
+        `Failed to generate unique OTP token for Admin (User) ID ${newAdminData?.id ?? '<unknown>'}`,
+      );
       throw new InternalServerErrorException(
         'We encountered an unexpected problem while creating account of new admin. Please try again later. If the issue persists, contact our support team.',
       );

@@ -23,7 +23,7 @@ export class AdminCreationConfirmationEmailHandler implements IJobHandler<AdminC
     );
 
     const adminCreationEmail = new AdminAccountActivationTemplate(
-      newAdminData.name,
+      newAdminData.displayName,
       registrationUrl,
       this.ctaService.mediaDomain,
     );

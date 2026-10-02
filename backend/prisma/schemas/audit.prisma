@@ -1,55 +1,40 @@
 // Enums
 
-enum AuditLogLevel {
-  INFO
-  WARN
-  ERROR
-  CRITICAL
+enum AuditVisibility {
+  PUBLIC
+  OWNER
+  SYSTEM
 
-  @@map("LogLevel")
   @@schema("audit")
 }
 
-enum AuditBackendModule {
-  URL_MANAGER
-  AUTH
-  AUDIT
-  TEAM
-  FILES
-  BLOG
+enum AuditActorType {
+  ADMIN
+  SYSTEM
+  CRON
 
-  @@map("Modules")
   @@schema("audit")
 }
 
 // Models
 
-model AuditSystemLogs {
-  id        Int                @id @default(autoincrement())
-  level     AuditLogLevel      @default(INFO)
-  source    AuditBackendModule
-  message   String
-  createdAt DateTime           @default(now()) @db.Timestamptz(3)
+model AuditLog {
+  id         Int             @id @default(autoincrement())
+  actorId    String?
+  actorType  AuditActorType  @default(ADMIN)
+  module     String
+  action     String
+  entityType String
+  entityId   String
+  visibility AuditVisibility @default(SYSTEM)
+  changes    Json?
+  metadata   Json?
+  createdAt  DateTime        @default(now())
 
-  @@map("system_logs")
-  @@schema("audit")
-}
-
-model AuditAdminLogs {
-  id          Int                @id @default(autoincrement())
-  adminId     Int?
-  action      String
-  module      AuditBackendModule
-  entityType  String
-  entityId    Int?
-  description String
-  metadata    Json
-  createdAt   DateTime           @default(now()) @db.Timestamptz(3)
-
-  admin AuthAdmin? @relation(fields: [adminId], references: [id], onDelete: SetNull)
-
-  @@index([adminId])
-  @@index([action])
-  @@map("admin_logs")
+  @@index([actorId, actorType, visibility, createdAt(sort: Desc)])
+  @@index([createdAt(sort: Desc)])
+  @@index([entityType, entityId, createdAt(sort: Desc)])
+  @@index([module, action, createdAt(sort: Desc)])
+  @@map("audit_logs")
   @@schema("audit")
 }

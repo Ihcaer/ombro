@@ -17,10 +17,10 @@ CREATE SCHEMA IF NOT EXISTS "team";
 CREATE SCHEMA IF NOT EXISTS "url_manager";
 
 -- CreateEnum
-CREATE TYPE "audit"."LogLevel" AS ENUM ('INFO', 'WARN', 'ERROR', 'CRITICAL');
+CREATE TYPE "audit"."AuditVisibility" AS ENUM ('PUBLIC', 'OWNER', 'SYSTEM');
 
 -- CreateEnum
-CREATE TYPE "audit"."Modules" AS ENUM ('URL_MANAGER', 'AUTH', 'AUDIT', 'TEAM', 'FILES', 'BLOG');
+CREATE TYPE "audit"."AuditActorType" AS ENUM ('ADMIN', 'SYSTEM', 'CRON');
 
 -- CreateEnum
 CREATE TYPE "auth"."Verification" AS ENUM ('VERIFIED', 'WAITING', 'NON_VERIFIED');
@@ -44,29 +44,20 @@ CREATE TYPE "team"."RequestStatus" AS ENUM ('PENDING', 'APPROVED', 'REJECTED', '
 CREATE TYPE "url_manager"."RedirectCode" AS ENUM ('MOVED_PERMANENTLY_301', 'FOUND_302', 'TEMPORARY_REDIRECT_307', 'PERMANENT_REDIRECT_308');
 
 -- CreateTable
-CREATE TABLE "audit"."system_logs" (
+CREATE TABLE "audit"."audit_logs" (
     "id" SERIAL NOT NULL,
-    "level" "audit"."LogLevel" NOT NULL DEFAULT 'INFO',
-    "source" "audit"."Modules" NOT NULL,
-    "message" TEXT NOT NULL,
-    "createdAt" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "system_logs_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "audit"."admin_logs" (
-    "id" SERIAL NOT NULL,
-    "adminId" INTEGER,
+    "actorId" TEXT,
+    "actorType" "audit"."AuditActorType" NOT NULL DEFAULT 'ADMIN',
+    "module" TEXT NOT NULL,
     "action" TEXT NOT NULL,
-    "module" "audit"."Modules" NOT NULL,
     "entityType" TEXT NOT NULL,
-    "entityId" INTEGER,
-    "description" TEXT NOT NULL,
-    "metadata" JSONB NOT NULL,
-    "createdAt" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "entityId" TEXT NOT NULL,
+    "visibility" "audit"."AuditVisibility" NOT NULL DEFAULT 'SYSTEM',
+    "changes" JSONB,
+    "metadata" JSONB,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "admin_logs_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "audit_logs_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -248,10 +239,16 @@ CREATE TABLE "blog"."_BlogPostToBlogTag" (
 );
 
 -- CreateIndex
-CREATE INDEX "admin_logs_adminId_idx" ON "audit"."admin_logs"("adminId");
+CREATE INDEX "audit_logs_actorId_actorType_visibility_createdAt_idx" ON "audit"."audit_logs"("actorId", "actorType", "visibility", "createdAt" DESC);
 
 -- CreateIndex
-CREATE INDEX "admin_logs_action_idx" ON "audit"."admin_logs"("action");
+CREATE INDEX "audit_logs_createdAt_idx" ON "audit"."audit_logs"("createdAt" DESC);
+
+-- CreateIndex
+CREATE INDEX "audit_logs_entityType_entityId_createdAt_idx" ON "audit"."audit_logs"("entityType", "entityId", "createdAt" DESC);
+
+-- CreateIndex
+CREATE INDEX "audit_logs_module_action_createdAt_idx" ON "audit"."audit_logs"("module", "action", "createdAt" DESC);
 
 -- CreateIndex
 CREATE UNIQUE INDEX "admins_handleName_key" ON "auth"."admins"("handleName");
@@ -321,9 +318,6 @@ CREATE UNIQUE INDEX "redirects_sourceUrl_key" ON "url_manager"."redirects"("sour
 
 -- CreateIndex
 CREATE INDEX "_BlogPostToBlogTag_B_index" ON "blog"."_BlogPostToBlogTag"("B");
-
--- AddForeignKey
-ALTER TABLE "audit"."admin_logs" ADD CONSTRAINT "admin_logs_adminId_fkey" FOREIGN KEY ("adminId") REFERENCES "auth"."admins"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "auth"."admins" ADD CONSTRAINT "admins_avatarFileId_fkey" FOREIGN KEY ("avatarFileId") REFERENCES "files"."files"("id") ON DELETE SET NULL ON UPDATE CASCADE;
