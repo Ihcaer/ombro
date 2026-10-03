@@ -8,7 +8,7 @@ type AuditLogTypedFields = MapSelected<
     module: Module;
     action: Action;
     entityType: EntityType;
-    changes?: Changes;
+    changes?: Changes<Record<string, unknown>>;
     metadata?: object;
   }
 >;

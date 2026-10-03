@@ -17,7 +17,7 @@ CREATE SCHEMA IF NOT EXISTS "team";
 CREATE SCHEMA IF NOT EXISTS "url_manager";
 
 -- CreateEnum
-CREATE TYPE "audit"."AuditVisibility" AS ENUM ('PUBLIC', 'OWNER', 'SYSTEM');
+CREATE TYPE "audit"."AuditVisibility" AS ENUM ('PRIVATE', 'ACTOR_AND_TARGET', 'SUPER_ADMIN', 'MANAGER', 'PUBLIC');
 
 -- CreateEnum
 CREATE TYPE "audit"."AuditActorType" AS ENUM ('ADMIN', 'SYSTEM', 'CRON');
@@ -52,7 +52,7 @@ CREATE TABLE "audit"."audit_logs" (
     "action" TEXT NOT NULL,
     "entityType" TEXT NOT NULL,
     "entityId" TEXT NOT NULL,
-    "visibility" "audit"."AuditVisibility" NOT NULL DEFAULT 'SYSTEM',
+    "visibility" "audit"."AuditVisibility" NOT NULL DEFAULT 'SUPER_ADMIN',
     "changes" JSONB,
     "metadata" JSONB,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

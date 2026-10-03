@@ -1,9 +1,11 @@
 // Enums
 
 enum AuditVisibility {
+  PRIVATE
+  ACTOR_AND_TARGET
+  SUPER_ADMIN
+  MANAGER
   PUBLIC
-  OWNER
-  SYSTEM
 
   @@schema("audit")
 }
@@ -26,7 +28,7 @@ model AuditLog {
   action     String
   entityType String
   entityId   String
-  visibility AuditVisibility @default(SYSTEM)
+  visibility AuditVisibility @default(SUPER_ADMIN)
   changes    Json?
   metadata   Json?
   createdAt  DateTime        @default(now())
