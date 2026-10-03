@@ -19,6 +19,8 @@ import { PrivilegesUtils } from '@core/auth/utils/privileges.utils.js';
 import { PASSWORD_STRENGTH_VALIDATOR } from '@core/auth/providers/password-strength.provider.js';
 import { DEFAULT_ADMIN_PREFERENCES } from '@core/auth/auth.constants.js';
 import type { Mock, Mocked } from 'vitest';
+import { FullAdminWithoutPasswordAndTimers } from '@core/auth/types/admin.types.js';
+import { AdminPrivileges } from '@core/auth/enums/admin-privileges.js';
 
 describe('AdminRegistrationService', () => {
   let service: AdminRegistrationService;
@@ -170,9 +172,9 @@ describe('AdminRegistrationService', () => {
     describe('.accountConfirmation()', () => {
       let hashedToken: string;
       let hashedPassword: string;
-      let findAdminMock: Pick<AuthAdmin, 'preferences'>,
+      let findAdminMock: FullAdminWithoutPasswordAndTimers,
         deleteValueMock: AuthOneTimeToken,
-        updateValueMock: Partial<AuthAdmin>;
+        updateValueMock: FullAdminWithoutPasswordAndTimers;
       let parameters: ConfirmAdminRequestDto;
 
       beforeEach(() => {
@@ -199,7 +201,18 @@ describe('AdminRegistrationService', () => {
         };
         hashedPassword = 'hashedPassword';
 
-        findAdminMock = { preferences: DEFAULT_ADMIN_PREFERENCES as unknown as Prisma.JsonValue };
+        const adminInDd: FullAdminWithoutPasswordAndTimers = {
+          id: 1,
+          displayName: 'display name',
+          handleName: 'handle',
+          avatarFileId: null,
+          email: 'test@example.com',
+          privileges: AdminPrivileges.OWNER,
+          preferences: DEFAULT_ADMIN_PREFERENCES as unknown as Prisma.JsonValue,
+          verification: 'WAITING',
+          isActivated: true,
+        };
+        findAdminMock = { ...adminInDd };
         deleteValueMock = {
           id: 1,
           adminId: tokenContext.adminId,
@@ -207,7 +220,7 @@ describe('AdminRegistrationService', () => {
           type: 'REGISTER',
           expiresAt: tokenContext.expiresAt,
         };
-        updateValueMock = { verification: 'VERIFIED' };
+        updateValueMock = { ...adminInDd, verification: 'VERIFIED' };
 
         parameters = {
           oneTimeToken: 'token',
@@ -217,11 +230,13 @@ describe('AdminRegistrationService', () => {
 
         mockFindToken(tokenContext);
         hashService.hashBcrypt.mockResolvedValue(hashedPassword);
+        prismaService.$transaction.mockImplementation(async (callback) => callback(prismaService));
         vi.spyOn(prismaService.authAdmin, 'findUnique').mockResolvedValue(
           findAdminMock as AuthAdmin,
         );
         vi.spyOn(prismaService.authOneTimeToken, 'delete').mockResolvedValue(deleteValueMock);
         vi.spyOn(prismaService.authAdmin, 'update').mockResolvedValue(updateValueMock as AuthAdmin);
+        eventEmitter.emit.mockReturnValue(true);
 
         await expect(service.accountConfirmation(parameters)).resolves.not.toThrow();
         // eslint-disable-next-line @typescript-eslint/unbound-method

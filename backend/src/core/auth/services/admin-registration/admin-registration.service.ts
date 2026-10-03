@@ -26,8 +26,13 @@ import { AuthAdminRepository } from '@core/auth/auth-admin.repository.js';
 import { PrivilegesUtils } from '@core/auth/utils/privileges.utils.js';
 import { PASSWORD_STRENGTH_VALIDATOR } from '@core/auth/providers/password-strength.provider.js';
 import type { PasswordStrengthValidatorFn } from '@core/auth/providers/password-strength.provider.js';
-import { AdminWithoutPreferences, NewlyCreatedAdmin } from '@core/auth/types/admin.types.js';
+import {
+  AdminWithoutPreferences,
+  FullAdminWithoutPasswordAndTimersBeforeAndAfter,
+  NewlyCreatedAdmin,
+} from '@core/auth/types/admin.types.js';
 import { AdminPreferences } from '@core/auth/dto/models/adminPreferences.dto.js';
+import { AdminAccountConfirmedEvent } from '@core/auth/events/admin-account-confirmed.event.js';
 
 @Injectable()
 export class AdminRegistrationService {
@@ -206,39 +211,63 @@ export class AdminRegistrationService {
       refreshTokenId: tokenContext.id,
       preferences: { language },
     };
-    await this.updateAdminVerification(adminData);
+    const adminState = await this.updateAdminVerification(adminData);
+
+    // Additional event
+    const eventName = AdminAccountConfirmedEvent.EVENT_NAME;
+    const wasHandled: boolean = this.eventEmitter.emit(
+      eventName,
+      new AdminAccountConfirmedEvent(adminState),
+    );
+    if (!wasHandled) {
+      this.logger.error(
+        `The ${eventName} event was emitted but no one received it. Admin (User) ID ${adminState.updatedAdmin.id}`,
+      );
+    }
   }
 
   private async updateAdminVerification(
     adminData: AdminConfirmationData,
     wantedVerificationStatus: AuthVerification = AuthVerification.VERIFIED,
-  ): Promise<void> {
+  ): Promise<FullAdminWithoutPasswordAndTimersBeforeAndAfter> {
     const { id, refreshTokenId, preferences, ...dataToUpdate } = adminData;
 
     try {
-      await this.prismaService.$transaction(async (tx) => {
-        const currentAdmin = await tx.authAdmin.findUnique({
-          where: { id },
-          select: { preferences: true },
+      const adminState: FullAdminWithoutPasswordAndTimersBeforeAndAfter =
+        await this.prismaService.$transaction(async (tx) => {
+          const omitAdminFields: Prisma.AuthAdminOmit = {
+            password: true,
+            lastLogged: true,
+            createdAt: true,
+            updatedAt: true,
+          };
+
+          const currentAdmin = await tx.authAdmin.findUnique({
+            where: { id },
+            omit: omitAdminFields,
+          });
+
+          if (!currentAdmin) throw new Error('Admin not found');
+
+          const mergedPreferences = {
+            ...(currentAdmin.preferences as unknown as AdminPreferences),
+            ...preferences,
+          };
+
+          await tx.authOneTimeToken.delete({ where: { id: refreshTokenId } });
+          const updatedAdmin = await tx.authAdmin.update({
+            where: { id },
+            data: {
+              ...dataToUpdate,
+              preferences: mergedPreferences,
+              verification: wantedVerificationStatus,
+            },
+            omit: omitAdminFields,
+          });
+
+          return { admin: currentAdmin, updatedAdmin };
         });
-
-        if (!currentAdmin) throw new Error('Admin not found');
-
-        const mergedPreferences = {
-          ...(currentAdmin.preferences as unknown as AdminPreferences),
-          ...preferences,
-        };
-
-        await tx.authOneTimeToken.delete({ where: { id: refreshTokenId } });
-        await tx.authAdmin.update({
-          where: { id },
-          data: {
-            ...dataToUpdate,
-            preferences: mergedPreferences,
-            verification: wantedVerificationStatus,
-          },
-        });
-      });
+      return adminState;
     } catch (error) {
       const cause = error instanceof Error ? error.message : String(error);
       this.logger.error(

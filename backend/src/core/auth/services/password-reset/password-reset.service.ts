@@ -17,6 +17,7 @@ import { PASSWORD_SALT_ROUNDS } from '@core/auth/auth.constants.js';
 import { PASSWORD_STRENGTH_VALIDATOR } from '@core/auth/providers/password-strength.provider.js';
 import type { PasswordStrengthValidatorFn } from '@core/auth/providers/password-strength.provider.js';
 import { AdminWithoutPreferences } from '@core/auth/types/admin.types.js';
+import { PasswordRecoveryCompletedEvent } from '@core/auth/events/password-recovery-completed.event.js';
 
 @Injectable()
 export class PasswordResetService {
@@ -121,6 +122,7 @@ export class PasswordResetService {
     );
     await this.tokenService.validateOneTimeToken(tokenContext, 'PASSWORD_RESET');
 
+    const adminId = tokenContext.adminId;
     const { admin } = tokenContext;
     if (!admin) {
       this.logger.error(
@@ -148,7 +150,7 @@ export class PasswordResetService {
     try {
       await this.prismaService.$transaction([
         this.prismaService.authAdmin.update({
-          where: { id: tokenContext.adminId },
+          where: { id: adminId },
           data: { password: hashedPassword },
           select: { id: true },
         }),
@@ -169,7 +171,7 @@ export class PasswordResetService {
             break;
           case 'AuthOneTimeToken':
             this.logger.error(
-              'resetPasswordByToken() do not have needed one time token to proceed request.',
+              'resetPasswordByToken() do not have needed One Time Token to proceed request.',
             );
             break;
         }
@@ -180,5 +182,16 @@ export class PasswordResetService {
       }
       throw error;
     }
+
+    // Additional event
+    const eventName = PasswordRecoveryCompletedEvent.EVENT_NAME;
+    const wasEventHandled = this.eventEmitter.emit(
+      eventName,
+      new PasswordRecoveryCompletedEvent({ adminId }),
+    );
+    if (!wasEventHandled)
+      this.logger.error(
+        `The ${eventName} event was emitted but no one received it. Admin (User) ID ${adminId ?? 'unknown'}`,
+      );
   }
 }

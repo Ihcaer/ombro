@@ -15,6 +15,16 @@ export type AdminData = Pick<
   | 'isActivated'
 > & { preferences: AdminPreferences };
 
+export type FullAdminWithoutPasswordAndTimers = Omit<
+  AuthAdmin,
+  'password' | 'lastLogged' | 'createdAt' | 'updatedAt'
+>;
+
+export type FullAdminWithoutPasswordAndTimersBeforeAndAfter = {
+  admin: FullAdminWithoutPasswordAndTimers;
+  updatedAdmin: FullAdminWithoutPasswordAndTimers;
+};
+
 export type AdminWithPassword = Readonly<AdminData & Pick<AuthAdmin, 'password'>>;
 
 export type NewlyCreatedAdmin = Readonly<
