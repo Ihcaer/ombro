@@ -1,4 +1,4 @@
-import { pxToRem } from '../../../utils';
+import { pxToRem } from '../../../utils/px-to-rem.util';
 
 export const size = {
   '10': pxToRem(10),

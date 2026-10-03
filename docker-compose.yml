@@ -117,6 +117,7 @@ services:
       dockerfile: Dockerfile
       target: final
     restart: unless-stopped
+    stop_grace_period: 30s
     networks:
       - api_net
       - backend_net
@@ -132,7 +133,7 @@ services:
       redis-queue:
         condition: service_healthy
       db-prepare:
-        condition: service_completed_successfully
+        condition: service_completed_successfully  
 
   # frontend-web placeholder
 

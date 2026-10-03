@@ -134,6 +134,7 @@ describe('PasswordResetService', () => {
         mockDeleteValue,
       );
       prismaService.$transaction.mockResolvedValue([mockUpdate, mockDelete]);
+      eventEmitter.emit.mockReturnValue(true);
 
       const result = await service.resetPasswordByToken(params.dto);
 

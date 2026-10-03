@@ -15,9 +15,25 @@ export type AdminData = Pick<
   | 'isActivated'
 > & { preferences: AdminPreferences };
 
-export type AdminWithoutPreferences = Omit<AuthAdmin, 'preferences'>;
+export type FullAdminWithoutPasswordAndTimers = Omit<
+  AuthAdmin,
+  'password' | 'lastLogged' | 'createdAt' | 'updatedAt'
+>;
+
+export type FullAdminWithoutPasswordAndTimersBeforeAndAfter = {
+  admin: FullAdminWithoutPasswordAndTimers;
+  updatedAdmin: FullAdminWithoutPasswordAndTimers;
+};
 
 export type AdminWithPassword = Readonly<AdminData & Pick<AuthAdmin, 'password'>>;
+
+export type NewlyCreatedAdmin = Readonly<
+  Omit<AdminData, 'avatarFileId' | 'privileges' | 'preferences'> &
+    AdminPrivilegeTranslatedField &
+    Pick<AuthAdmin, 'email'>
+>;
+
+export type AdminWithoutPreferences = Omit<AuthAdmin, 'preferences'>;
 
 export type AdminPrivilegesTranslated = Exclude<keyof typeof AdminPrivileges, 'NONE'>;
 export interface AdminPrivilegeTranslatedField {

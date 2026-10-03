@@ -26,8 +26,13 @@ import { AuthAdminRepository } from '@core/auth/auth-admin.repository.js';
 import { PrivilegesUtils } from '@core/auth/utils/privileges.utils.js';
 import { PASSWORD_STRENGTH_VALIDATOR } from '@core/auth/providers/password-strength.provider.js';
 import type { PasswordStrengthValidatorFn } from '@core/auth/providers/password-strength.provider.js';
-import { AdminWithoutPreferences } from '@core/auth/types/admin.types.js';
+import {
+  AdminWithoutPreferences,
+  FullAdminWithoutPasswordAndTimersBeforeAndAfter,
+  NewlyCreatedAdmin,
+} from '@core/auth/types/admin.types.js';
 import { AdminPreferences } from '@core/auth/dto/models/adminPreferences.dto.js';
+import { AdminAccountConfirmedEvent } from '@core/auth/events/admin-account-confirmed.event.js';
 
 @Injectable()
 export class AdminRegistrationService {
@@ -49,12 +54,15 @@ export class AdminRegistrationService {
     private readonly isPasswordStrongValidator: PasswordStrengthValidatorFn,
   ) {}
 
-  async createAdminAccount(dto: CreateAdminRequestDto): Promise<CreateAdminResponseDto> {
+  async createAdminAccount(
+    dto: CreateAdminRequestDto,
+    actorId: number | null,
+  ): Promise<CreateAdminResponseDto> {
     let attempts = 0;
     const maxAttempts = 5;
     let rawToken: Base64URLString | null = null;
     let result: CreateAdminResponseDto | null = null;
-    let adminId: number | null = null;
+    let newAdminData: NewlyCreatedAdmin | null = null;
 
     while (attempts < maxAttempts) {
       try {
@@ -73,7 +81,15 @@ export class AdminRegistrationService {
           },
           select: {
             admin: {
-              select: { id: true, displayName: true, email: true, privileges: true },
+              select: {
+                id: true,
+                displayName: true,
+                handleName: true,
+                verification: true,
+                isActivated: true,
+                privileges: true,
+                email: true,
+              },
             },
           },
         });
@@ -84,7 +100,7 @@ export class AdminRegistrationService {
           email: admin.email,
           privileges: PrivilegesUtils.bitmaskToArray(admin.privileges),
         };
-        adminId = admin.id;
+        newAdminData = { ...admin, privileges: PrivilegesUtils.bitmaskToArray(admin.privileges) };
 
         break;
       } catch (error) {
@@ -106,28 +122,24 @@ export class AdminRegistrationService {
       }
     }
 
-    if (rawToken && result) {
+    if (rawToken && result && newAdminData) {
       const { EVENT_NAME: eventName } = AdminCreatedEvent;
       const wasHandled: boolean = this.eventEmitter.emit(
         eventName,
-        new AdminCreatedEvent({
-          accountConfirmationToken: rawToken,
-          newAdminData: {
-            name: result.displayName,
-            email: result.email,
-          },
-        }),
+        new AdminCreatedEvent({ actorId, accountConfirmationToken: rawToken, newAdminData }),
       );
 
       if (!wasHandled) {
         this.logger.error(
-          `The ${eventName} event was emitted but no one received it. Admin (User) ID ${adminId ?? 'unknown'}`,
+          `The ${eventName} event was emitted but no one received it. Admin (User) ID ${newAdminData.id}`,
         );
       }
 
       return result;
     } else {
-      this.logger.error(`Failed to generate unique OTP token for Admin (User) ID ${adminId}`);
+      this.logger.error(
+        `Failed to generate unique OTP token for Admin (User) ID ${newAdminData?.id ?? '<unknown>'}`,
+      );
       throw new InternalServerErrorException(
         'We encountered an unexpected problem while creating account of new admin. Please try again later. If the issue persists, contact our support team.',
       );
@@ -199,39 +211,63 @@ export class AdminRegistrationService {
       refreshTokenId: tokenContext.id,
       preferences: { language },
     };
-    await this.updateAdminVerification(adminData);
+    const adminState = await this.updateAdminVerification(adminData);
+
+    // Additional event
+    const eventName = AdminAccountConfirmedEvent.EVENT_NAME;
+    const wasHandled: boolean = this.eventEmitter.emit(
+      eventName,
+      new AdminAccountConfirmedEvent(adminState),
+    );
+    if (!wasHandled) {
+      this.logger.error(
+        `The ${eventName} event was emitted but no one received it. Admin (User) ID ${adminState.updatedAdmin.id}`,
+      );
+    }
   }
 
   private async updateAdminVerification(
     adminData: AdminConfirmationData,
     wantedVerificationStatus: AuthVerification = AuthVerification.VERIFIED,
-  ): Promise<void> {
+  ): Promise<FullAdminWithoutPasswordAndTimersBeforeAndAfter> {
     const { id, refreshTokenId, preferences, ...dataToUpdate } = adminData;
 
     try {
-      await this.prismaService.$transaction(async (tx) => {
-        const currentAdmin = await tx.authAdmin.findUnique({
-          where: { id },
-          select: { preferences: true },
+      const adminState: FullAdminWithoutPasswordAndTimersBeforeAndAfter =
+        await this.prismaService.$transaction(async (tx) => {
+          const omitAdminFields: Prisma.AuthAdminOmit = {
+            password: true,
+            lastLogged: true,
+            createdAt: true,
+            updatedAt: true,
+          };
+
+          const currentAdmin = await tx.authAdmin.findUnique({
+            where: { id },
+            omit: omitAdminFields,
+          });
+
+          if (!currentAdmin) throw new Error('Admin not found');
+
+          const mergedPreferences = {
+            ...(currentAdmin.preferences as unknown as AdminPreferences),
+            ...preferences,
+          };
+
+          await tx.authOneTimeToken.delete({ where: { id: refreshTokenId } });
+          const updatedAdmin = await tx.authAdmin.update({
+            where: { id },
+            data: {
+              ...dataToUpdate,
+              preferences: mergedPreferences,
+              verification: wantedVerificationStatus,
+            },
+            omit: omitAdminFields,
+          });
+
+          return { admin: currentAdmin, updatedAdmin };
         });
-
-        if (!currentAdmin) throw new Error('Admin not found');
-
-        const mergedPreferences = {
-          ...(currentAdmin.preferences as unknown as AdminPreferences),
-          ...preferences,
-        };
-
-        await tx.authOneTimeToken.delete({ where: { id: refreshTokenId } });
-        await tx.authAdmin.update({
-          where: { id },
-          data: {
-            ...dataToUpdate,
-            preferences: mergedPreferences,
-            verification: wantedVerificationStatus,
-          },
-        });
-      });
+      return adminState;
     } catch (error) {
       const cause = error instanceof Error ? error.message : String(error);
       this.logger.error(
