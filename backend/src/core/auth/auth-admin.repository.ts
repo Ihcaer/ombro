@@ -1,4 +1,4 @@
-import { Prisma } from '@generated/prisma-client/client.js';
+import { AuthRefreshToken, Prisma } from '@generated/prisma-client/client.js';
 import { Injectable } from '@nestjs/common';
 import { AdminData, AdminWithPassword, Identifier } from './types/admin.types.js';
 import { PrismaService } from '@core/database/prisma/prisma.service.js';
@@ -89,13 +89,18 @@ export class AuthAdminRepository {
     });
   }
 
-  async saveRefreshToken(adminId: AdminData['id'], hash: string, expiresAt: Date): Promise<void> {
+  async saveRefreshToken(
+    adminId: AdminData['id'],
+    sessionId: AuthRefreshToken['sessionId'],
+    hash: string,
+    expiresAt: Date,
+  ): Promise<void> {
     await this.prisma.authAdmin.update({
       where: { id: adminId },
       data: {
         lastLogged: new Date(),
         refreshTokens: {
-          create: { refreshTokenHash: hash, expiresAt },
+          create: { sessionId, refreshTokenHash: hash, expiresAt },
         },
       },
     });

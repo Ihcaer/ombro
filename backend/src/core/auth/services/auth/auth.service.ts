@@ -1,11 +1,13 @@
 import {
   ForbiddenException,
   Injectable,
+  InternalServerErrorException,
   OnModuleInit,
   UnauthorizedException,
 } from '@nestjs/common';
 import {
   AccessJwtPayload,
+  AuthJwtTokens,
   RefreshJwtPayload,
   RefreshTokenMetadata,
   RefreshTokenMetadataTable,
@@ -19,6 +21,8 @@ import { AdminAvatarUrlField, AdminData, Identifier } from '@core/auth/types/adm
 import { AdminDto, LoginRequestDto } from '@core/auth/dto/index.js';
 import { PASSWORD_SALT_ROUNDS } from '@core/auth/auth.constants.js';
 import { PrivilegesUtils } from '@core/auth/utils/privileges.utils.js';
+import { randomUUID, UUID } from 'node:crypto';
+import { AuthRefreshToken, Prisma } from '@generated/prisma-client/client.js';
 
 const throwLoginError = (
   errorCode: string = 'INVALID_CREDENTIALS',
@@ -113,27 +117,55 @@ export class AuthService implements OnModuleInit {
 
   private async issueTokens(
     admin: Omit<AdminDto, 'privileges'> & { privileges: AdminData['privileges'] },
+    maxRetries: number = 3,
   ): Promise<SignInResponse> {
+    let accessPayload: AccessJwtPayload, refreshPayload: RefreshJwtPayload;
+    let tokens: AuthJwtTokens | null = null;
     const tokenExpirationTimes = TokenExpirationFactory.create();
-    const accessPayload: AccessJwtPayload = {
-      id: admin.id,
-      privileges: admin.privileges,
-      verification: admin.verification,
-      isActivated: admin.isActivated,
-    };
-    const refreshPayload: RefreshJwtPayload = { id: admin.id };
 
-    const tokens = await this.tokenService.generateTokens(
-      accessPayload,
-      refreshPayload,
-      tokenExpirationTimes,
-    );
+    for (let attempt = 0; attempt < maxRetries - 1; attempt++) {
+      const sessionId = AuthService.generateSessionId();
 
-    await this.adminRepository.saveRefreshToken(
-      admin.id,
-      this.tokenService.hashRefreshToken(tokens.refreshToken),
-      tokenExpirationTimes.refreshExpiresAt,
-    );
+      accessPayload = {
+        id: admin.id,
+        sessionId,
+        privileges: admin.privileges,
+        verification: admin.verification,
+        isActivated: admin.isActivated,
+      };
+      refreshPayload = { id: admin.id, sessionId };
+
+      tokens = await this.tokenService.generateTokens(
+        accessPayload,
+        refreshPayload,
+        tokenExpirationTimes,
+      );
+      try {
+        await this.adminRepository.saveRefreshToken(
+          admin.id,
+          sessionId,
+          this.tokenService.hashRefreshToken(tokens.refreshToken),
+          tokenExpirationTimes.refreshExpiresAt,
+        );
+      } catch (error) {
+        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+          const target = error.meta?.target;
+
+          if (typeof target === 'string' || Array.isArray(target)) {
+            const sessionIdKey: keyof AuthRefreshToken = 'sessionId';
+            if (target.includes(sessionIdKey)) {
+              if (attempt === maxRetries) {
+                throw new InternalServerErrorException();
+              }
+              continue;
+            }
+          }
+        }
+        throw error;
+      }
+    }
+
+    if (!tokens) throw new InternalServerErrorException();
 
     return {
       adminData: {
@@ -159,5 +191,9 @@ export class AuthService implements OnModuleInit {
   ): RefreshTokenMetadataTable {
     const now = new Date();
     return refreshTokens.filter((token) => token.expiresAt > now);
+  }
+
+  private static generateSessionId(): UUID {
+    return randomUUID();
   }
 }

@@ -95,6 +95,7 @@ CREATE TABLE "auth"."refresh_tokens" (
     "id" SERIAL NOT NULL,
     "adminId" INTEGER NOT NULL,
     "refreshTokenHash" TEXT NOT NULL,
+    "sessionId" UUID NOT NULL,
     "expiresAt" TIMESTAMPTZ(3) NOT NULL,
 
     CONSTRAINT "refresh_tokens_pkey" PRIMARY KEY ("id")
@@ -272,7 +273,13 @@ CREATE UNIQUE INDEX "one_time_tokens_adminId_type_key" ON "auth"."one_time_token
 CREATE UNIQUE INDEX "refresh_tokens_refreshTokenHash_key" ON "auth"."refresh_tokens"("refreshTokenHash");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "refresh_tokens_sessionId_key" ON "auth"."refresh_tokens"("sessionId");
+
+-- CreateIndex
 CREATE INDEX "refresh_tokens_expiresAt_idx" ON "auth"."refresh_tokens"("expiresAt");
+
+-- CreateIndex
+CREATE INDEX "refresh_tokens_adminId_idx" ON "auth"."refresh_tokens"("adminId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "posts_categoryId_slug_key" ON "blog"."posts"("categoryId", "slug");

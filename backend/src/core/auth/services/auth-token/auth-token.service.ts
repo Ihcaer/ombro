@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import type { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { AccessJwtPayload, RefreshJwtPayload } from '../../types/jwt.types.js';
+import { AccessJwtPayload, AuthJwtTokens, RefreshJwtPayload } from '../../types/jwt.types.js';
 import { TokenExpirationContext } from '../../factories/token-expiration.factory.js';
 import { HashService } from '@shared/hash/hash.service.js';
 import securityConfig from '@core/config/envs/security.config.js';
@@ -34,7 +34,7 @@ export class AuthTokenService {
     accessJwtPayload: AccessJwtPayload,
     refreshJwtPayload: RefreshJwtPayload,
     tokensExpiration: TokenExpirationContext,
-  ): Promise<{ accessToken: string; refreshToken: string }> {
+  ): Promise<AuthJwtTokens> {
     const accessSecret = this.securityConf.jwtAccessSecret;
     const refreshSecret = this.securityConf.jwtRefreshSecret;
 

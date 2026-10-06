@@ -74,11 +74,13 @@ model AuthRefreshToken {
   id               Int      @id @default(autoincrement())
   adminId          Int
   refreshTokenHash String   @unique
+  sessionId        String   @unique @db.Uuid
   expiresAt        DateTime @db.Timestamptz(3)
 
   admin AuthAdmin @relation(fields: [adminId], references: [id], onDelete: Cascade)
 
   @@index([expiresAt])
+  @@index([adminId])
   @@map("refresh_tokens")
   @@schema("auth")
 }

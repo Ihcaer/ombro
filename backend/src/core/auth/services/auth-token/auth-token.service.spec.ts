@@ -9,6 +9,8 @@ import { createSecurityConfigMock } from '@mocks/config/security.config.mock.js'
 import { PrismaService } from '@core/database/prisma/prisma.service.js';
 import { AuthAdminRepository } from '@core/auth/auth-admin.repository.js';
 import type { Mocked } from 'vitest';
+import { AuthRefreshToken } from '@generated/prisma-client/client.js';
+import { randomUUID } from 'node:crypto';
 
 describe('AuthTokenService', () => {
   let service: AuthTokenService;
@@ -42,6 +44,7 @@ describe('AuthTokenService', () => {
   });
 
   describe('.generateTokens()', () => {
+    let sessionId: AuthRefreshToken['sessionId'];
     let methodPayload: {
       accessJwtPayload: AccessJwtPayload;
       refreshJwtPayload: RefreshJwtPayload;
@@ -50,14 +53,16 @@ describe('AuthTokenService', () => {
     let jwtTokens: { accessToken: string; refreshToken: string };
 
     beforeEach(() => {
+      sessionId = randomUUID();
       methodPayload = {
         accessJwtPayload: {
           id: 1,
+          sessionId,
           privileges: 1,
           verification: 'VERIFIED',
           isActivated: true,
         },
-        refreshJwtPayload: { id: 1 },
+        refreshJwtPayload: { id: 1, sessionId },
         tokensExpiration: {
           now: new Date('2025-12-29T16:00:00Z'),
           accessExpiresAt: new Date('2025-12-29T17:00:00Z'),
