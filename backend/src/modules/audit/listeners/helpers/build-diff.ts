@@ -1,5 +1,5 @@
 import { Prisma } from '@generated/prisma-client/client.js';
-import { Changes } from '@modules/audit/audit-log-fields.types.js';
+import { Changes } from '@modules/audit/types/audit-log-fields.types.js';
 
 type BuildDiffOptions<T extends object> = {
   before?: Partial<T> | null;

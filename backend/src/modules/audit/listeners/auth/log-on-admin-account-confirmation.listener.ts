@@ -9,7 +9,7 @@ import {
 import { PrivilegesUtils } from '@core/auth/utils/privileges.utils.js';
 import { CreateLogDto } from '@modules/audit/dto/create-log.dto.js';
 import { buildChanges } from '../helpers/build-diff.js';
-import { Changes } from '@modules/audit/audit-log-fields.types.js';
+import { Changes } from '@modules/audit/types/audit-log-fields.types.js';
 import { LogJobsAuthModule } from '@modules/audit/audit-queue.constants.js';
 
 type AdminWithTranslatedPrivileges = Omit<FullAdminWithoutPasswordAndTimers, 'privileges'> &

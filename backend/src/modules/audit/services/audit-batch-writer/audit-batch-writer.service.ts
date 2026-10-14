@@ -1,6 +1,6 @@
 import { PrismaService } from '@core/database/prisma/prisma.service.js';
 import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
-import { CreateLogDto } from './dto/create-log.dto.js';
+import { CreateLogDto } from '../../dto/create-log.dto.js';
 
 type PendingRecord = {
   record: CreateLogDto;
@@ -9,11 +9,11 @@ type PendingRecord = {
 };
 
 @Injectable()
-export class AuditBatchWriter implements OnModuleInit, OnModuleDestroy {
+export class AuditBatchWriterService implements OnModuleInit, OnModuleDestroy {
   private static readonly BATCH_SIZE = 500;
   private static readonly FLUSH_INTERVAL = 100;
 
-  private readonly logger = new Logger(AuditBatchWriter.name);
+  private readonly logger = new Logger(AuditBatchWriterService.name);
 
   private buffer: PendingRecord[] = [];
 
@@ -23,7 +23,7 @@ export class AuditBatchWriter implements OnModuleInit, OnModuleDestroy {
   constructor(private readonly prisma: PrismaService) {}
 
   onModuleInit(): void {
-    this.flushTimer = setInterval(() => void this.flush(), AuditBatchWriter.FLUSH_INTERVAL);
+    this.flushTimer = setInterval(() => void this.flush(), AuditBatchWriterService.FLUSH_INTERVAL);
   }
 
   async onModuleDestroy(): Promise<void> {
@@ -49,7 +49,7 @@ export class AuditBatchWriter implements OnModuleInit, OnModuleDestroy {
         reject,
       });
 
-      if (this.buffer.length >= AuditBatchWriter.BATCH_SIZE) {
+      if (this.buffer.length >= AuditBatchWriterService.BATCH_SIZE) {
         void this.flush();
       }
     });
@@ -60,7 +60,7 @@ export class AuditBatchWriter implements OnModuleInit, OnModuleDestroy {
 
     this.flushing = true;
 
-    const batch = this.buffer.splice(0, AuditBatchWriter.BATCH_SIZE);
+    const batch = this.buffer.splice(0, AuditBatchWriterService.BATCH_SIZE);
     try {
       await this.prisma.auditLog.createMany({
         data: batch.map(({ record }) => record),
@@ -80,7 +80,7 @@ export class AuditBatchWriter implements OnModuleInit, OnModuleDestroy {
       }
     } finally {
       this.flushing = false;
-      if (this.buffer.length >= AuditBatchWriter.BATCH_SIZE) void this.flush();
+      if (this.buffer.length >= AuditBatchWriterService.BATCH_SIZE) void this.flush();
     }
   }
 }

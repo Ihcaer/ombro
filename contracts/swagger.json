@@ -319,6 +319,35 @@
         ]
       }
     },
+    "/admin/auth/account-settings/change-password": {
+      "post": {
+        "operationId": "AdminAccountSettingsController_changePassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "AuthAdminAccountSettings"
+        ]
+      }
+    },
     "/healthz": {
       "get": {
         "operationId": "HealthController_check",
@@ -552,6 +581,58 @@
         },
         "tags": [
           "Health"
+        ]
+      }
+    },
+    "/admin/team/profile/me": {
+      "get": {
+        "operationId": "AdminProfileController_getAdminOwnData",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminOwnProfileDataResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "TeamAdminProfile"
+        ]
+      }
+    },
+    "/admin/team/profile/{id}": {
+      "get": {
+        "operationId": "AdminProfileController_getAdminProfileData",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminProfileDataResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "TeamAdminProfile"
         ]
       }
     }
@@ -822,6 +903,96 @@
         "required": [
           "password",
           "token"
+        ]
+      },
+      "ChangePasswordRequestDto": {
+        "type": "object",
+        "properties": {
+          "currentPassword": {
+            "type": "string"
+          },
+          "newPassword": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "currentPassword",
+          "newPassword"
+        ]
+      },
+      "AdminOwnProfileDataResponseDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "lastLogged": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "email",
+          "lastLogged"
+        ]
+      },
+      "AdminProfileDataResponseDto": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string"
+          },
+          "handleName": {
+            "type": "string",
+            "nullable": true
+          },
+          "avatarUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string"
+          },
+          "lastLogged": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true
+          },
+          "verification": {
+            "type": "string",
+            "enum": [
+              "VERIFIED",
+              "WAITING",
+              "NON_VERIFIED"
+            ]
+          },
+          "isActivated": {
+            "type": "boolean"
+          },
+          "privileges": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "ADMINS_MANAGE",
+                "FILE_MANAGE",
+                "BLOG_MANAGE",
+                "SUPER_ADMIN",
+                "OWNER"
+              ]
+            }
+          }
+        },
+        "required": [
+          "displayName",
+          "handleName",
+          "avatarUrl",
+          "email",
+          "lastLogged",
+          "verification",
+          "isActivated",
+          "privileges"
         ]
       }
     }

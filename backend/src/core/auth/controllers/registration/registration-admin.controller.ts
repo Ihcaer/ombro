@@ -12,7 +12,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import type { Request } from 'express';
-import { AccessJwtPayload } from '@core/auth/types/jwt.types.js';
+import { getAdminFromRequest } from '@core/auth/utils/get-admin-from-request.util.js';
 
 @ApiTags('AuthRegistration')
 @ApiBearerAuth()
@@ -31,7 +31,7 @@ export class RegistrationAdminController {
     @Req() req: Request,
     @Body() dto: CreateAdminRequestDto,
   ): Promise<CreateAdminResponseDto> {
-    const admin = req.user as AccessJwtPayload;
+    const admin = getAdminFromRequest(req);
     return await this.adminRegistrationService.createAdminAccount(dto, admin.id);
   }
 }

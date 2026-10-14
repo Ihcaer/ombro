@@ -35,6 +35,12 @@ const throwLoginError = (
 export class AuthService implements OnModuleInit {
   static readonly ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 15; // in milliseconds
   static readonly REFRESH_TOKEN_EXPIRATION = 1000 * 60 * 60 * 24 * 7; // in milliseconds
+
+  /**
+   * Used for comparing password.
+   *
+   * This enables the application to consistently execute the most complex operations in order to prevent a timing attack.
+   */
   dummyHash!: string;
 
   constructor(

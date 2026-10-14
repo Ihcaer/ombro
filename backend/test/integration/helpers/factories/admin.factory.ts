@@ -23,7 +23,7 @@ export class AdminFactory {
 
     const adminIndex = crypto.randomUUID();
 
-    const defaultPrivileges: number = 1;
+    const defaultPrivileges: AuthAdmin['privileges'] = 1;
     const defaultPreferences: AdminPreferences = { language: Language.EN };
 
     const password = await hash(

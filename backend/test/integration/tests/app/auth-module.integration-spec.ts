@@ -16,7 +16,7 @@ import { PrivilegesUtils } from '@core/auth/utils/privileges.utils.js';
 import { AdminPrivileges } from '@core/auth/enums/admin-privileges.js';
 import { TestCreateAdminRequestDto } from '../../helpers/common-test.types.js';
 
-describe('Auth Module', () => {
+describe('Auth module', () => {
   let ctx: TestContext;
   let adminRegistrationService: AdminRegistrationService;
 
@@ -48,7 +48,7 @@ describe('Auth Module', () => {
         privileges: AdminPrivileges.ADMINS_MANAGE,
       };
 
-      const newAdmin = await adminRegistrationService.createAdminAccount(newAdminData);
+      const newAdmin = await adminRegistrationService.createAdminAccount(newAdminData, null);
 
       const mail = await ctx.email.waitForEmail({
         recipient: newAdminData.email,

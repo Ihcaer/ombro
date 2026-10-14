@@ -1,7 +1,7 @@
 import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
-import { AUDIT_QUEUE_NAME, AuditJob } from './audit-queue.constants.js';
+import { AuditJob, AUDIT_QUEUE_NAME } from '@modules/audit/audit-queue.constants.js';
 
 @Injectable()
 export class AuditService implements OnModuleInit, OnModuleDestroy {

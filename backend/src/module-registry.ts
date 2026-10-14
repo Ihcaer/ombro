@@ -7,6 +7,7 @@ import { NotificationsModule } from '@modules/notifications/notifications.module
 import { UrlManagerModule } from '@modules/url-manager/url-manager.module.js';
 import { HealthModule } from '@core/health/health.module.js';
 import { AuditModule } from '@modules/audit/audit.module.js';
+import { TeamModule } from '@modules/team/team.module.js';
 
 const coreModules: Type<unknown>[] = [
   PrismaModule,
@@ -16,6 +17,7 @@ const coreModules: Type<unknown>[] = [
   UrlManagerModule,
   NotificationsModule,
   AuditModule,
+  TeamModule,
 ] as const;
 
 const featureModules: ReadonlyArray<{ feature: FeatureModule; module: Type<unknown> }> =

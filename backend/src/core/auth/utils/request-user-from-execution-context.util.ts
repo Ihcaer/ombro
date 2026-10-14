@@ -5,7 +5,7 @@ interface RequestWithUser extends Request {
   user: AccessJwtPayload;
 }
 
-export const getRequestUser = (ctx: ExecutionContext) => {
+export const getRequestUserFromExecutionContext = (ctx: ExecutionContext) => {
   if (ctx.getType() !== 'http') return undefined;
   return ctx.switchToHttp().getRequest<RequestWithUser>().user;
 };

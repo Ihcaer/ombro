@@ -1,7 +1,7 @@
 import { PRIVILEGES_KEY } from '@core/auth/decorators/index.js';
 import { AdminPrivileges } from '@core/auth/enums/admin-privileges.js';
 import { PrivilegesUtils } from '@core/auth/utils/privileges.utils.js';
-import { getRequestUser } from '@core/auth/utils/request-user.util.js';
+import { getRequestUserFromExecutionContext } from '@core/auth/utils/request-user-from-execution-context.util.js';
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
@@ -16,7 +16,7 @@ export class PrivilegesGuard implements CanActivate {
     ]);
     if (!requiredPrivileges) return true;
 
-    const privileges = getRequestUser(context)?.privileges;
+    const privileges = getRequestUserFromExecutionContext(context)?.privileges;
     if (typeof privileges !== 'number') return false;
 
     const areCorrectPrivileges: boolean = PrivilegesUtils.hasAll(privileges, requiredPrivileges);

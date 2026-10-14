@@ -23,12 +23,17 @@ import { BullModule } from '@nestjs/bullmq';
 import { TOKEN_CLEANUP_QUEUE } from './auth.constants.js';
 import { TokenCleanupScheduler } from './cron/token-cleanup.scheduler.js';
 import { TokenCleanupConsumer } from './cron/token-cleanup.consumer.js';
+import { AdminCredentialsService } from './services/admin-credentials/admin-credentials.service.js';
+import { AdminDataService } from './services/admin-data/admin-data.service.js';
+import { AuthAdminController } from './controllers/auth/auth-admin.controller.js';
 
 const SERVICES: Provider[] = [
   AuthService,
   AuthTokenService,
   AdminRegistrationService,
   PasswordResetService,
+  AdminCredentialsService,
+  AdminDataService,
 ] as const;
 const STRATEGIES: Provider[] = [JwtStrategy, RefreshTokenStrategy] as const;
 const MISC_PROVIDERS: Provider[] = [
@@ -55,6 +60,7 @@ const MISC_PROVIDERS: Provider[] = [
     RegistrationPublicController,
     RegistrationAdminController,
     PasswordResetController,
+    AuthAdminController,
   ],
   exports: [],
 })

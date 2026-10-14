@@ -27,6 +27,7 @@ import { PrivilegesUtils } from '@core/auth/utils/privileges.utils.js';
 import { PASSWORD_STRENGTH_VALIDATOR } from '@core/auth/providers/password-strength.provider.js';
 import type { PasswordStrengthValidatorFn } from '@core/auth/providers/password-strength.provider.js';
 import {
+  AdminFieldsToCompareWithPassword,
   AdminWithoutPreferences,
   FullAdminWithoutPasswordAndTimersBeforeAndAfter,
   NewlyCreatedAdmin,
@@ -176,11 +177,7 @@ export class AdminRegistrationService {
   async accountConfirmation(dto: ConfirmAdminRequestDto): Promise<void> {
     const { oneTimeToken, language, ...fieldsToFill } = dto;
 
-    const adminFields: Readonly<keyof AdminWithoutPreferences>[] = [
-      'email',
-      'handleName',
-      'displayName',
-    ];
+    const adminFields: AdminFieldsToCompareWithPassword = ['email', 'handleName', 'displayName'];
     const tokenContext: OneTimeTokenContext = await this.tokenService.fetchTokenContext(
       oneTimeToken,
       'REGISTER',
@@ -191,7 +188,7 @@ export class AdminRegistrationService {
     await this.tokenService.validateOneTimeToken(tokenContext, 'REGISTER');
 
     const admin: Partial<AdminWithoutPreferences> = { ...tokenContext.admin, handleName };
-    const adminInfo: Readonly<string>[] = adminFields.map((key) => {
+    const adminInfo: Readonly<string[]> = adminFields.map((key) => {
       const value = admin[key];
       if (typeof value === 'boolean' || value === null || typeof value === 'undefined') return '';
       return String(value);
@@ -221,7 +218,7 @@ export class AdminRegistrationService {
     );
     if (!wasHandled) {
       this.logger.error(
-        `The ${eventName} event was emitted but no one received it. Admin (User) ID ${adminState.updatedAdmin.id}`,
+        `The ${eventName} event was emitted but no one received it. Admin (user) ID ${adminState.updatedAdmin.id}`,
       );
     }
   }

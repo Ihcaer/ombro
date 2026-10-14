@@ -1,9 +1,11 @@
 import { PrismaModule } from '@core/database/prisma/prisma.module.js';
 import { Module, Provider } from '@nestjs/common';
-import { AuditService } from './audit.service.js';
 import { BullModule } from '@nestjs/bullmq';
 import { AUDIT_QUEUE_NAME } from './audit-queue.constants.js';
 import { LogOnAdminCreatedListener } from './listeners/team/log-on-admin-created.listener.js';
+import { AuditLogService } from './services/audit-log/audit-log.service.js';
+import { AuditService } from './services/audit/audit.service.js';
+import { AuditBatchWriterService } from './services/audit-batch-writer/audit-batch-writer.service.js';
 
 const LISTENERS: Provider[] = [LogOnAdminCreatedListener];
 
@@ -20,6 +22,6 @@ const LISTENERS: Provider[] = [LogOnAdminCreatedListener];
       },
     }),
   ],
-  providers: [AuditService, ...LISTENERS],
+  providers: [AuditService, AuditBatchWriterService, ...LISTENERS, AuditLogService],
 })
 export class AuditModule {}

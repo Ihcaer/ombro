@@ -41,3 +41,17 @@ export interface AdminPrivilegeTranslatedField {
 }
 
 export type AdminAvatarUrlField = { avatarUrl: string | null };
+
+export type AdminFieldsToCompareWithPassword = Readonly<
+  keyof Pick<AdminWithoutPreferences, 'email' | 'handleName' | 'displayName'>
+>[];
+
+export type AdminProfileData = Omit<
+  AdminData,
+  'id' | 'avatarFileId' | 'privileges' | 'preferences'
+> &
+  Pick<AuthAdmin, 'email' | 'lastLogged'> &
+  AdminPrivilegeTranslatedField & {
+    avatarUrl: string | null;
+  };
+export type AdminSelfProfileData = Pick<AdminProfileData, 'email' | 'lastLogged'>;

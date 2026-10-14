@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuditService } from './audit.service.js';
 import { getQueueToken } from '@nestjs/bullmq';
-import { AUDIT_QUEUE_NAME } from './audit-queue.constants.js';
+import { AUDIT_QUEUE_NAME } from '@modules/audit/audit-queue.constants.js';
 
 describe('AuditService', () => {
   let service: AuditService;
