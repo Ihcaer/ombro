@@ -319,9 +319,9 @@
         ]
       }
     },
-    "/admin/auth/account-settings/change-password": {
-      "post": {
-        "operationId": "AdminAccountSettingsController_changePassword",
+    "/admin/auth/change-password": {
+      "patch": {
+        "operationId": "AuthAdminController_changePassword",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -344,7 +344,7 @@
           }
         ],
         "tags": [
-          "AuthAdminAccountSettings"
+          "Auth"
         ]
       }
     },
@@ -851,6 +851,9 @@
       "CreateAdminResponseDto": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "number"
+          },
           "displayName": {
             "type": "string"
           },
@@ -872,6 +875,7 @@
           }
         },
         "required": [
+          "id",
           "displayName",
           "email",
           "privileges"
@@ -923,76 +927,37 @@
       "AdminOwnProfileDataResponseDto": {
         "type": "object",
         "properties": {
-          "email": {
-            "type": "string"
+          "adminProfile": {
+            "type": "object"
           },
-          "lastLogged": {
-            "format": "date-time",
-            "type": "string",
-            "nullable": true
+          "auditLog": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
           }
         },
         "required": [
-          "email",
-          "lastLogged"
+          "adminProfile",
+          "auditLog"
         ]
       },
       "AdminProfileDataResponseDto": {
         "type": "object",
         "properties": {
-          "displayName": {
-            "type": "string"
+          "adminProfile": {
+            "type": "object"
           },
-          "handleName": {
-            "type": "string",
-            "nullable": true
-          },
-          "avatarUrl": {
-            "type": "string",
-            "nullable": true
-          },
-          "email": {
-            "type": "string"
-          },
-          "lastLogged": {
-            "format": "date-time",
-            "type": "string",
-            "nullable": true
-          },
-          "verification": {
-            "type": "string",
-            "enum": [
-              "VERIFIED",
-              "WAITING",
-              "NON_VERIFIED"
-            ]
-          },
-          "isActivated": {
-            "type": "boolean"
-          },
-          "privileges": {
+          "auditLog": {
             "type": "array",
             "items": {
-              "type": "string",
-              "enum": [
-                "ADMINS_MANAGE",
-                "FILE_MANAGE",
-                "BLOG_MANAGE",
-                "SUPER_ADMIN",
-                "OWNER"
-              ]
+              "type": "object"
             }
           }
         },
         "required": [
-          "displayName",
-          "handleName",
-          "avatarUrl",
-          "email",
-          "lastLogged",
-          "verification",
-          "isActivated",
-          "privileges"
+          "adminProfile",
+          "auditLog"
         ]
       }
     }

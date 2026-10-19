@@ -3,7 +3,7 @@ import { PublicController } from '@core/auth/decorators/index.js';
 import { ResetPasswordRequestDto } from '@core/auth/dto/index.js';
 import { ForgotPasswordRequestDto } from '@core/auth/dto/requests/forgot-password-request.dto.js';
 import { PasswordResetService } from '@core/auth/services/password-reset/password-reset.service.js';
-import { Body, HttpCode, Post } from '@nestjs/common';
+import { Body, HttpCode, Patch, Post } from '@nestjs/common';
 import {
   ApiAcceptedResponse,
   ApiInternalServerErrorResponse,
@@ -34,7 +34,7 @@ export class PasswordResetController {
   /**
    * Resets password.
    */
-  @Post('reset')
+  @Patch('reset')
   @HttpCode(204)
   @ApiNoContentResponse({ description: 'Password reset' })
   @ApiUnprocessableEntityResponse({
