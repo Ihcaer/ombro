@@ -23,18 +23,23 @@ export class AdminProfileController {
   @Get('me')
   async getAdminOwnData(@Req() req: Request): Promise<AdminOwnProfileDataResponseDto> {
     const admin = getAdminFromRequest(req);
+    const adminId = admin.id;
 
-    const adminProfile = await this.adminProfileService.getSelfProfile(admin.id);
-    const auditLog = await this.auditLogService.getLogs(admin.id, {
-      id: admin.id,
-      privileges: admin.privileges,
-    });
+    const adminProfile = await this.adminProfileService.getSelfProfile(adminId);
+    const auditLog = await this.auditLogService.getLogs(
+      adminId,
+      {
+        id: adminId,
+        privileges: admin.privileges,
+      },
+      { recordsNumber: 3 },
+    );
 
     return { adminProfile, auditLog };
   }
 
   @Get(':id')
-  @Admin('ADMINS_MANAGE')
+  @Admin()
   async getAdminProfileData(
     @Req() req: Request,
     @Param('id', ParseIntPipe) id: AdminId,
@@ -42,10 +47,14 @@ export class AdminProfileController {
     const requester = getAdminFromRequest(req);
 
     const adminProfile = await this.adminProfileService.getProfile(id);
-    const auditLog = await this.auditLogService.getLogs(id, {
-      id: requester.id,
-      privileges: requester.privileges,
-    });
+    const auditLog = await this.auditLogService.getLogs(
+      id,
+      {
+        id: requester.id,
+        privileges: requester.privileges,
+      },
+      { recordsNumber: 3 },
+    );
 
     return { adminProfile, auditLog };
   }

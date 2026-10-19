@@ -22,6 +22,7 @@ const LISTENERS: Provider[] = [LogOnAdminCreatedListener];
       },
     }),
   ],
-  providers: [AuditService, AuditBatchWriterService, ...LISTENERS, AuditLogService],
+  providers: [AuditService, AuditBatchWriterService, AuditLogService, ...LISTENERS],
+  exports: [AuditLogService],
 })
 export class AuditModule {}

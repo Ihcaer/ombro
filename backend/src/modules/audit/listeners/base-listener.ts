@@ -1,4 +1,4 @@
-import { AuditService } from '../audit.service.js';
+import { AuditService } from '../services/audit/audit.service.js';
 
 export abstract class AuditBaseListener<T extends object = object> {
   constructor(protected readonly auditService: AuditService) {}

@@ -97,6 +97,7 @@ export class AdminRegistrationService {
 
         const { admin } = createdAdmin;
         result = {
+          id: admin.id,
           displayName: admin.displayName,
           email: admin.email,
           privileges: PrivilegesUtils.bitmaskToArray(admin.privileges),

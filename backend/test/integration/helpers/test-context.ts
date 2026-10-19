@@ -12,6 +12,9 @@ import { GenericContainer, StartedTestContainer, Wait } from 'testcontainers';
 import { RedisContainer, StartedRedisContainer } from '@testcontainers/redis';
 import { Redis } from 'ioredis';
 import { execSync } from 'node:child_process';
+import { LoginRequestDto } from '@core/auth/dto/index.js';
+import { loginAsAdmin } from './actions/admin-login.action.js';
+import { Response } from 'supertest';
 
 export class TestContext {
   app!: INestApplication<App>;
@@ -25,6 +28,7 @@ export class TestContext {
     ) => Promise<MailpitSummary>;
     getEmailContent: (emailId: string) => Promise<MailpitDetail>;
   };
+  actions!: { loginAsAdmin: (credentials: LoginRequestDto) => Promise<Response> };
 
   private postgresContainer!: StartedPostgreSqlContainer;
   private redisQueueContainer!: StartedRedisContainer;
@@ -64,6 +68,8 @@ export class TestContext {
       );
       this.app.use(cookieParser());
 
+      const httpServer = this.app.getHttpServer();
+
       this.prisma = moduleFixture.get<PrismaService>(PrismaService);
       this.adminFactory = new AdminFactory(this.prisma);
       this.email = {
@@ -73,6 +79,11 @@ export class TestContext {
           delay?: number,
         ) => waitForEmail(this.getMailpitUrl(), emailData, retries, delay),
         getEmailContent: (emailId: string) => getEmailContent(this.getMailpitUrl(), emailId),
+      };
+      this.actions = {
+        async loginAsAdmin(credentials) {
+          return await loginAsAdmin(httpServer, credentials);
+        },
       };
 
       await this.app.init();

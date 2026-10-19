@@ -11,6 +11,7 @@ import { CreateLogDto } from '@modules/audit/dto/create-log.dto.js';
 import { buildChanges } from '../helpers/build-diff.js';
 import { Changes } from '@modules/audit/types/audit-log-fields.types.js';
 import { LogJobsAuthModule } from '@modules/audit/audit-queue.constants.js';
+import { Action, EntityType, Module } from '@modules/audit/audit-log-fields.enums.js';
 
 type AdminWithTranslatedPrivileges = Omit<FullAdminWithoutPasswordAndTimers, 'privileges'> &
   AdminPrivilegeTranslatedField;
@@ -37,11 +38,11 @@ export class LogOnAdminAccountConfirmationListener extends AuditBaseListener<Adm
     const log: CreateLogDto = {
       actorId: String(admin.id),
       actorType: 'ADMIN',
-      entityType: 'ADMIN',
+      entityType: EntityType.ADMIN,
       entityId: String(admin.id),
       visibility: 'MANAGER',
-      module: 'AUTH',
-      action: 'UPDATE',
+      module: Module.AUTH,
+      action: Action.UPDATE,
       changes,
     };
     this.auditService.log({ name: LogJobsAuthModule.ADMIN_ACCOUNT_CONFIRMED, log });

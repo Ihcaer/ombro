@@ -6,6 +6,7 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { AuditActorType } from '@generated/prisma-client/enums.js';
 import { buildChanges } from '../helpers/build-diff.js';
 import { AuditBaseListener } from '../base-listener.js';
+import { Action, EntityType, Module } from '@modules/audit/audit-log-fields.enums.js';
 
 @Injectable()
 export class LogOnAdminCreatedListener extends AuditBaseListener<AdminCreatedEvent> {
@@ -20,11 +21,11 @@ export class LogOnAdminCreatedListener extends AuditBaseListener<AdminCreatedEve
     const logData: CreateLogDto = {
       actorId: String(actorId),
       actorType,
-      entityType: 'ADMIN',
+      entityType: EntityType.ADMIN,
       entityId: String(eventPayload.newAdminData.id),
       visibility: 'MANAGER',
-      module: 'TEAM',
-      action: 'CREATE',
+      module: Module.TEAM,
+      action: Action.CREATE,
       changes,
     };
     this.auditService.log({ name: LogJobsAuthModule.ADMIN_CREATED, log: logData });

@@ -62,6 +62,6 @@ const MISC_PROVIDERS: Provider[] = [
     PasswordResetController,
     AuthAdminController,
   ],
-  exports: [],
+  exports: [AdminDataService],
 })
 export class AuthModule {}

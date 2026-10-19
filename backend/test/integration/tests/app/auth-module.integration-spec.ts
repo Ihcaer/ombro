@@ -83,10 +83,7 @@ describe('Auth module', () => {
         .send(confirmAccountBody)
         .expect(204);
 
-      const loginRes = await request(ctx.app.getHttpServer())
-        .post(publicPathPrefix + modulePrefix + '/login')
-        .send(loginCredentials)
-        .expect(201);
+      const loginRes = await ctx.actions.loginAsAdmin(loginCredentials);
 
       const loginResCookies = loginRes.get('Set-Cookie');
       const loginResBody = loginRes.body as LoginResponseDto;
@@ -160,10 +157,7 @@ describe('Auth module', () => {
 
       await ctx.adminFactory.create(admin);
 
-      const loginRes = await request(ctx.app.getHttpServer())
-        .post(publicPathPrefix + modulePrefix + '/login')
-        .send(loginCredentials)
-        .expect(201);
+      const loginRes = await ctx.actions.loginAsAdmin(loginCredentials);
       const accessToken = (loginRes.body as LoginResponseDto).accessToken;
 
       await request(ctx.app.getHttpServer())
@@ -202,7 +196,7 @@ describe('Auth module', () => {
       const passwordResetDto: ResetPasswordRequestDto = { token, password: newPassword };
 
       await request(ctx.app.getHttpServer())
-        .post(publicPathPrefix + modulePrefix + '/recovery' + '/reset')
+        .patch(publicPathPrefix + modulePrefix + '/recovery' + '/reset')
         .send(passwordResetDto)
         .expect(204);
     });

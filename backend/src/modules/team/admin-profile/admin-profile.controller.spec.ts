@@ -1,11 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AdminProfileController } from './admin-profile.controller.js';
 import { AdminProfileService } from './admin-profile.service.js';
-// import { Mocked } from 'vitest';
+import { AuditLogService } from '@modules/audit/services/audit-log/audit-log.service.js';
 
 describe('AdminProfileController', () => {
   let controller: AdminProfileController;
-  // let adminProfileService: Mocked<AdminProfileService>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -13,13 +12,13 @@ describe('AdminProfileController', () => {
       providers: [
         {
           provide: AdminProfileService,
-          useValue: { adminOwnProfileData: vi.fn(), adminProfileData: vi.fn() },
+          useValue: { getSelfProfile: vi.fn(), getProfile: vi.fn() },
         },
+        { provide: AuditLogService, useValue: { getLogs: vi.fn() } },
       ],
     }).compile();
 
     controller = module.get<AdminProfileController>(AdminProfileController);
-    // adminProfileService = module.get(AdminProfileService);
   });
 
   it('should be defined', () => {

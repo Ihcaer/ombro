@@ -20,18 +20,27 @@ export class AuditLogService {
   ): Promise<AuditLogRecord[]> {
     const isSelf = targetId === requester.id;
 
-    const where: AuditLogWhereInput = {
-      entityType: EntityType.ADMIN,
-      entityId: String(targetId),
-      ...(isSelf
-        ? {}
-        : {
-            OR: [
-              { actorType: 'ADMIN', actorId: String(requester.id) },
-              { visibility: { in: this.getAllowedVisibilities(requester.privileges) } },
-            ],
-          }),
-    };
+    const where: AuditLogWhereInput = isSelf
+      ? {
+          OR: [
+            {
+              actorType: 'ADMIN',
+              actorId: String(requester.id),
+            },
+            {
+              entityType: EntityType.ADMIN,
+              entityId: String(targetId),
+              visibility: { in: this.getAllowedVisibilities(requester.id, isSelf) },
+            },
+          ],
+        }
+      : {
+          visibility: { in: this.getAllowedVisibilities(requester.privileges, isSelf) },
+          OR: [
+            { entityType: EntityType.ADMIN, entityId: String(targetId) },
+            { actorType: 'ADMIN', actorId: String(targetId) },
+          ],
+        };
 
     return (await this.prisma.auditLog.findMany({
       where,
@@ -41,8 +50,13 @@ export class AuditLogService {
     })) as AuditLogRecord[];
   }
 
-  private getAllowedVisibilities(privileges: AuthAdmin['privileges']): AuditVisibility[] {
-    const allowed: AuditVisibility[] = [AuditVisibility.PUBLIC, AuditVisibility.ACTOR_AND_TARGET];
+  private getAllowedVisibilities(
+    privileges: AuthAdmin['privileges'],
+    isSelf: boolean,
+  ): AuditVisibility[] {
+    const allowed: AuditVisibility[] = [AuditVisibility.PUBLIC];
+
+    if (isSelf) allowed.push(AuditVisibility.ACTOR_AND_TARGET);
 
     if (PrivilegesUtils.hasAll(privileges, [AdminPrivileges.SUPER_ADMIN])) {
       allowed.push(AuditVisibility.SUPER_ADMIN, AuditVisibility.MANAGER);

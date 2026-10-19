@@ -97,14 +97,16 @@ describe('AdminRegistrationService', () => {
           privileges: PrivilegesUtils.arrayToBitmask(['ADMINS_MANAGE']),
         }),
       ];
+      const newAdminId: AuthAdmin['id'] = 1;
       const requestDto: Readonly<CreateAdminRequestDto> = params[0];
       const expectedResult: Readonly<CreateAdminResponseDto> = {
+        id: newAdminId,
         displayName: requestDto.displayName,
         email: requestDto.email,
         privileges: PrivilegesUtils.bitmaskToArray(requestDto.privileges),
       };
       const tokenPair = { rawToken: 'token', hashedToken: 'tokenHash' };
-      const createdAdminMock = { admin: { ...requestDto } };
+      const createdAdminMock = { admin: { id: newAdminId, ...requestDto } };
 
       tokenService.generateOneTimeTokenPair.mockReturnValue(tokenPair);
       (prismaService.authOneTimeToken.create as Mock).mockResolvedValue(createdAdminMock);
