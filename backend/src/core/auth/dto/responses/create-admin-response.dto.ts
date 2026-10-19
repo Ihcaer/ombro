@@ -5,11 +5,10 @@ import {
 import { AuthAdmin } from '@generated/prisma-client/client.js';
 
 export class CreateAdminResponseDto implements Readonly<
-  NonNullable<Pick<AuthAdmin, 'displayName' | 'email'> & AdminPrivilegeTranslatedField>
+  NonNullable<Pick<AuthAdmin, 'id' | 'displayName' | 'email'> & AdminPrivilegeTranslatedField>
 > {
-  readonly displayName!: string;
-
-  readonly email!: string;
-
+  readonly id!: AuthAdmin['id'];
+  readonly displayName!: AuthAdmin['displayName'];
+  readonly email!: AuthAdmin['email'];
   readonly privileges!: AdminPrivilegesTranslated[];
 }

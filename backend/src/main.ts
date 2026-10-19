@@ -4,11 +4,12 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import cookieParser from 'cookie-parser';
 import { checkRedisQueue } from './bootstrap/check-redis-queue.js';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
   await checkRedisQueue();
 
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get(ConfigService);
   const port = configService.get<string>('port', '3000');
   const logger = new Logger('Bootstrap');
@@ -22,6 +23,8 @@ async function bootstrap() {
     }),
   );
   app.use(cookieParser());
+
+  app.set('trust proxy', true);
 
   app.enableShutdownHooks();
 

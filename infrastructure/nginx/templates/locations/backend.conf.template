@@ -24,4 +24,5 @@ location /${BACKEND_SLUG}/ {
    }
 
    proxy_pass http://${BACKEND_API_HOST}/;
+   proxy_set_header X-Forwarded-Prefix /${BACKEND_SLUG}
 }
