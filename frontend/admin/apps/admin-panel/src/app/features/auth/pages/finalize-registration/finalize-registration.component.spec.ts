@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinalizeRegistrationComponent } from './finalize-registration.component';
 import { COMMON_TESTING_PROVIDERS } from '@ombro/admin-panel/app/shared/testing/common-testing-providers';
-import { AuthStore } from '@ombro/admin-panel/app/core/auth/store';
+import { AuthStore } from '@ombro/admin-auth';
 import { signal } from '@angular/core';
 import { getTranslocoTestingModule } from '@ombro/admin-panel/app/shared/testing/transloco-testing-module';
 

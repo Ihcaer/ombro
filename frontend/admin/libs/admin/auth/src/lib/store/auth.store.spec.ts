@@ -4,7 +4,6 @@ import { TestBed } from '@angular/core/testing';
 import { Observable, of } from 'rxjs';
 import * as jwtDecoder from 'jwt-decode';
 import { AuthState } from './auth.state';
-import { AdminPrivileges } from '../types/admin-data.types';
 import { patchState } from '@ngrx/signals';
 import {
   AuthPasswordResetService,
@@ -27,7 +26,7 @@ describe('AuthStore', () => {
         AuthStore,
         {
           provide: AuthService,
-          useValue: { login: vi.fn(), refreshToken: vi.fn() },
+          useValue: { login: vi.fn(), refreshTokens: vi.fn() },
         },
         {
           provide: AuthPasswordResetService,
@@ -50,11 +49,11 @@ describe('AuthStore', () => {
     ) as Mocked<AuthRegistrationService>;
   });
 
-  it('should have initial profile value as null', () => {
-    expect(store.admin()).toBeNull;
+  it('should have initial token value as null', () => {
+    expect(store.accessToken().token).toBeNull();
   });
 
-  it('should update status after successful login', () => {
+  it('should update token after successful login', () => {
     const mockResponse: LoginResponseDto = {
       accessToken: 'accessToken',
       adminData: {
@@ -69,64 +68,13 @@ describe('AuthStore', () => {
     };
     const mockExpTime = Math.floor(Date.now() / 1000) + 900;
 
-    const expectedAdminStateValue: AuthState['admin'] = {
-      id: 1,
-      displayName: 'displayName',
-      handleName: 'handleName',
-      avatarUrl: null,
-      privileges: new Set(['ADMINS_MANAGE']),
-      verification: 'VERIFIED',
-      isActivated: true,
-    };
-
     authService.login.mockReturnValue(of(mockResponse) as Observable<any>);
-    vi.mocked(jwtDecoder.jwtDecode).mockReturnValue({ options: { expiresIn: mockExpTime } });
+    vi.mocked(jwtDecoder.jwtDecode).mockReturnValue({ exp: mockExpTime });
 
     store.login({ identifier: 'handleName', password: 'password' });
 
-    expect(store.admin()).toEqual(expectedAdminStateValue);
-    expect(store.accessToken.token()).toBe(mockResponse.accessToken);
+    expect(store.accessToken().token).toBe(mockResponse.accessToken);
+    expect(store.accessToken().expiresAtMs).toBe(mockExpTime * 1000);
     expect(store.isLoading()).toBe(false);
-  });
-
-  describe('Privileges methods', () => {
-    type CheckPrivilegesTestCase = {
-      ownedPrivileges: AdminPrivileges;
-      requiredPrivileges: AdminPrivileges;
-      expected: boolean;
-      desc: string;
-    };
-    const checkPrivilegesCases: CheckPrivilegesTestCase[] = [
-      {
-        ownedPrivileges: new Set(['ADMINS_MANAGE']),
-        requiredPrivileges: new Set(['ADMINS_MANAGE']),
-        expected: true,
-        desc: 'correct privileges',
-      },
-      {
-        ownedPrivileges: new Set(['ADMINS_MANAGE']),
-        requiredPrivileges: new Set(['BLOG_MANAGE']),
-        expected: false,
-        desc: 'insufficient privileges',
-      },
-    ];
-    it.each(checkPrivilegesCases)(
-      'should return $expected for scenario: $desc',
-      ({ ownedPrivileges, requiredPrivileges, expected }) => {
-        const mockAdminState: AuthState['admin'] = {
-          id: 1,
-          displayName: 'displayName',
-          handleName: 'handle',
-          avatarUrl: null,
-          privileges: ownedPrivileges,
-          verification: 'VERIFIED',
-          isActivated: true,
-        };
-
-        patchState(store as any, { admin: { ...mockAdminState } });
-
-        expect(store.hasAppropriatePrivileges(requiredPrivileges)).toBe(expected);
-      },
-    );
   });
 });

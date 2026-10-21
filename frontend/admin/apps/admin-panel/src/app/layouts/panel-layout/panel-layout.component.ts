@@ -6,7 +6,11 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { TopbarComponent } from './components/topbar/topbar.component';
 import { BreadcrumbComponent } from '@ombro/shared/breadcrumb';
-import { AuthStore, loginPagePath } from '../../core/auth/store';
+import { AuthStore } from '@ombro/admin-auth';
+import { UserStore } from '@ombro/admin-user';
+import { AUTH_PATH_SLUG, AUTH_PAGE_PATHS } from '@ombro/admin-panel/app/features/auth/auth-paths';
+
+const loginPagePath = `/${AUTH_PATH_SLUG}/${AUTH_PAGE_PATHS.LOGIN}` as const;
 import { SessionExpiredModalComponent } from './components/dialogs/session-expired-modal/session-expired-modal.component';
 import { provideTranslocoScope, TranslocoService } from '@jsverse/transloco';
 
@@ -27,6 +31,7 @@ import { provideTranslocoScope, TranslocoService } from '@jsverse/transloco';
 export class PanelLayoutComponent {
   private readonly breakpointObserver = inject(BreakpointObserver);
   private readonly authStore = inject(AuthStore);
+  private readonly userStore = inject(UserStore);
   private readonly router = inject(Router);
   private readonly transloco = inject(TranslocoService);
 
@@ -55,10 +60,10 @@ export class PanelLayoutComponent {
     }
   });
   private _setLanguage = effect(() => {
-    const adminLanguage = this.authStore.admin()?.preferences.language;
-    if (!adminLanguage) return;
+    const userLanguage = this.userStore.user()?.preferences.language;
+    if (!userLanguage) return;
 
-    this.transloco.setActiveLang(adminLanguage);
+    this.transloco.setActiveLang(userLanguage);
   });
 
   protected onDialogClose(): void {

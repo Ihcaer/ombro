@@ -35,11 +35,14 @@ import {
 import { tapResponse } from '@ngrx/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthStateInternalError, initialState } from './auth.state';
-import { getAccessTokenExpirationTimeMs, loginPagePath } from './common';
+import { getAccessTokenExpirationTimeMs } from './common';
 import { isActive, NavigationEnd, Router } from '@angular/router';
-import { AdminPrivileges } from '../types/admin-data.types';
 import { PANEL_PATHS } from '@ombro/admin-panel/app/features/panel/panel-paths';
 import { AUTH_PAGE_PATHS, AUTH_PATH_SLUG } from '@ombro/admin-panel/app/features/auth/auth-paths';
+import { UserStore, AdminUser, AdminPrivileges } from '@ombro/admin-user';
+import { AdminDtoPrivilegesItem } from '@ombro/shared/data-access/api-client';
+
+export type { AdminDtoPrivilegesItem };
 
 const getInitialState = () => structuredClone(initialState);
 
@@ -76,43 +79,54 @@ export const AuthStore = signalStore(
       isLoginPage,
     };
   }),
-  withMethods((store) => ({
-    _updateAuthState(response: LoginResponseDto): void {
-      patchState(store, {
-        admin: { ...response.adminData, privileges: new Set(response.adminData.privileges) },
-        accessToken: {
-          token: response.accessToken,
-          expiresAtMs: getAccessTokenExpirationTimeMs(response.accessToken),
-        },
-        isLoading: false,
-        lastResponseError: null,
-      });
-    },
-    _resetAuthState(): void {
-      patchState(store, getInitialState);
-    },
-    _setLoading(): void {
-      patchState(store, { isLoading: true });
-    },
-    _cancelLoading(): void {
-      patchState(store, { isLoading: false });
-    },
-    _setResponseError(err: HttpErrorResponse): void {
-      patchState(store, { isLoading: false, lastResponseError: err });
-    },
-    _clearResponseError(): void {
-      patchState(store, { lastResponseError: null });
-    },
-    _startRequest(): void {
-      patchState(store, { isLoading: true, lastResponseError: null });
-    },
-    _setInternalError(type: AuthStateInternalError): void {
-      patchState(store, { lastInternalError: type });
-    },
-    clearInternalError(): void {
-      patchState(store, { lastInternalError: null });
-    },
-  })),
+  withMethods((store) => {
+    const userStore = inject(UserStore);
+    
+    return {
+      _updateAuthState(response: LoginResponseDto): void {
+        const adminUser: AdminUser = {
+          ...response.adminData,
+          privileges: new Set(response.adminData.privileges as AdminDtoPrivilegesItem[]) as AdminPrivileges,
+        };
+        
+        patchState(store, {
+          accessToken: {
+            token: response.accessToken,
+            expiresAtMs: getAccessTokenExpirationTimeMs(response.accessToken),
+          },
+          isLoading: false,
+          lastResponseError: null,
+        });
+        
+        userStore.setUser(adminUser);
+      },
+      _resetAuthState(): void {
+        patchState(store, getInitialState);
+        userStore.clearUser();
+      },
+      _setLoading(): void {
+        patchState(store, { isLoading: true });
+      },
+      _cancelLoading(): void {
+        patchState(store, { isLoading: false });
+      },
+      _setResponseError(err: HttpErrorResponse): void {
+        patchState(store, { isLoading: false, lastResponseError: err });
+      },
+      _clearResponseError(): void {
+        patchState(store, { lastResponseError: null });
+      },
+      _startRequest(): void {
+        patchState(store, { isLoading: true, lastResponseError: null });
+      },
+      _setInternalError(type: AuthStateInternalError): void {
+        patchState(store, { lastInternalError: type });
+      },
+      clearInternalError(): void {
+        patchState(store, { lastInternalError: null });
+      },
+    };
+  }),
   withMethods(
     ({
       authService,
@@ -120,15 +134,26 @@ export const AuthStore = signalStore(
       authRegistrationService,
       router,
       isLoading,
-      admin,
       _startRequest,
       _updateAuthState,
       _setResponseError,
       _resetAuthState,
       _setInternalError,
       _cancelLoading,
-    }) => ({
-      login: rxMethod<LoginRequestDto>(
+    }: {
+      authService: AuthService;
+      authPasswordResetService: AuthPasswordResetService;
+      authRegistrationService: AuthRegistrationService;
+      router: Router;
+      isLoading: () => boolean;
+      _startRequest: () => void;
+      _updateAuthState: (response: LoginResponseDto) => void;
+      _setResponseError: (err: HttpErrorResponse) => void;
+      _resetAuthState: () => void;
+      _setInternalError: (type: AuthStateInternalError) => void;
+      _cancelLoading: () => void;
+    }) => {
+      const login = rxMethod<LoginRequestDto>(
         pipe(
           tap(() => _startRequest()),
           exhaustMap((credentials) =>
@@ -143,8 +168,8 @@ export const AuthStore = signalStore(
             ),
           ),
         ),
-      ),
-      refreshTokens(): Observable<LoginResponseDto> {
+      );
+      const refreshTokens = (): Observable<LoginResponseDto> => {
         if (isLoading()) return EMPTY;
 
         _startRequest();
@@ -158,8 +183,8 @@ export const AuthStore = signalStore(
             },
           }),
         );
-      },
-      logout: rxMethod<void>(
+      };
+      const logout = rxMethod<void>(
         pipe(
           tap(() => _startRequest()),
           exhaustMap(() =>
@@ -167,19 +192,18 @@ export const AuthStore = signalStore(
               tapResponse({
                 next: () => {
                   _resetAuthState();
-                  router.navigateByUrl(loginPagePath);
+                  router.navigateByUrl('/' + AUTH_PATH_SLUG + '/' + AUTH_PAGE_PATHS.LOGIN);
                 },
                 error: () => {
                   _resetAuthState();
-                  router.navigateByUrl(loginPagePath);
+                  router.navigateByUrl('/' + AUTH_PATH_SLUG + '/' + AUTH_PAGE_PATHS.LOGIN);
                 },
               }),
             ),
           ),
         ),
-      ),
-      // Reset password methods
-      requestPasswordReset: rxMethod<ForgotPasswordRequestDto>(
+      );
+      const requestPasswordReset = rxMethod<ForgotPasswordRequestDto>(
         pipe(
           tap(() => _startRequest()),
           exhaustMap((data) =>
@@ -191,8 +215,8 @@ export const AuthStore = signalStore(
             ),
           ),
         ),
-      ),
-      resetPassword: rxMethod<ResetPasswordRequestDto>(
+      );
+      const resetPassword = rxMethod<ResetPasswordRequestDto>(
         pipe(
           tap(() => _startRequest()),
           exhaustMap((data) =>
@@ -204,11 +228,10 @@ export const AuthStore = signalStore(
             ),
           ),
         ),
-      ),
-      // Finalize registration methods
-      async checkRegistrationEligibility(
+      );
+      const checkRegistrationEligibility = async (
         token: string,
-      ): Promise<ConfirmAdminAccountFormFieldResponseDto | undefined> {
+      ): Promise<ConfirmAdminAccountFormFieldResponseDto | undefined> => {
         _startRequest();
 
         try {
@@ -217,8 +240,8 @@ export const AuthStore = signalStore(
           if (error instanceof HttpErrorResponse) _setResponseError(error);
           return;
         }
-      },
-      finalizeAdminRegistration: rxMethod<ConfirmAdminRequestDto>(
+      };
+      const finalizeAdminRegistration = rxMethod<ConfirmAdminRequestDto>(
         pipe(
           tap(() => _startRequest()),
           exhaustMap((payload) =>
@@ -230,23 +253,28 @@ export const AuthStore = signalStore(
             ),
           ),
         ),
-      ),
-      // Privileges methods
-      hasAppropriatePrivileges(neededPrivileges: AdminPrivileges): boolean {
-        if (!admin() || !admin()?.privileges || neededPrivileges === undefined) return false;
+      );
+      const hasAppropriatePrivileges = (neededPrivileges: Set<AdminDtoPrivilegesItem>): boolean => {
+        const userStore = inject(UserStore);
+        const userPrivileges = userStore.userPrivileges();
+        
+        if (!userPrivileges) return false;
         if (neededPrivileges.size === 0) return true;
 
-        const adminPrivileges: AdminPrivileges = admin()!.privileges;
-
-        if (neededPrivileges.size > adminPrivileges.size) return false;
-        return [...neededPrivileges].every((privilege) => adminPrivileges.has(privilege));
-      },
+        if (neededPrivileges.size > userPrivileges.size) return false;
+        return [...neededPrivileges].every((privilege) => userPrivileges.has(privilege as AdminDtoPrivilegesItem));
+      };
+      return { login, refreshTokens, logout, requestPasswordReset, resetPassword, checkRegistrationEligibility, finalizeAdminRegistration, hasAppropriatePrivileges };
     }),
-  ),
-  withMethods(({ router, refreshTokens, _clearResponseError, clearInternalError }) => ({
-    _processAutoRefresh: rxMethod<number | null>(
+  withMethods(({ router, refreshTokens, _clearResponseError, clearInternalError }: {
+    router: Router;
+    refreshTokens: () => Observable<LoginResponseDto>;
+    _clearResponseError: () => void;
+    clearInternalError: () => void;
+  }) => {
+    const _processAutoRefresh = rxMethod<number | null>(
       pipe(
-        switchMap((expiresAtMs) => {
+        switchMap((expiresAtMs: number | null) => {
           if (!expiresAtMs) return EMPTY;
 
           const refreshTime = expiresAtMs - 30000;
@@ -258,8 +286,8 @@ export const AuthStore = signalStore(
           );
         }),
       ),
-    ),
-    _clearErrorsOnNavigating: rxMethod<void>((trigger$) =>
+    );
+    const _clearErrorsOnNavigating = rxMethod<void>((trigger$) =>
       trigger$.pipe(
         switchMap(() => router.events),
         filter((event) => event instanceof NavigationEnd),
@@ -268,22 +296,22 @@ export const AuthStore = signalStore(
           clearInternalError();
         }),
       ),
-    ),
-  })),
+    );
+    return { _processAutoRefresh, _clearErrorsOnNavigating };
+  }),
   withComputed(({ accessToken, isAuthPage, isLoginPage }) => ({
     isAccessTokenExpired: computed<boolean>(() => {
-      const expiry = accessToken.expiresAtMs();
+      const expiry = accessToken().expiresAtMs;
       return expiry ? Date.now() > expiry : true;
     }),
     isAdminLoggedIn: computed<boolean>(() => {
-      const token = accessToken.token();
+      const token = accessToken().token;
       return !!token;
     }),
     _isAuthPathExceptLogin: computed<boolean>(() => isAuthPage() && !isLoginPage()),
   })),
   withHooks({
     onInit({
-      admin,
       accessToken,
       refreshTokens,
       _processAutoRefresh,
@@ -291,10 +319,10 @@ export const AuthStore = signalStore(
       _isAuthPathExceptLogin,
     }) {
       queueMicrotask(() => {
-        if (!admin() && !_isAuthPathExceptLogin())
+        if (!accessToken().token && !_isAuthPathExceptLogin())
           firstValueFrom(refreshTokens(), { defaultValue: null });
       });
-      _processAutoRefresh(accessToken.expiresAtMs);
+      _processAutoRefresh(accessToken().expiresAtMs);
       _clearResponseErrorWhenNavigating();
     },
   }),

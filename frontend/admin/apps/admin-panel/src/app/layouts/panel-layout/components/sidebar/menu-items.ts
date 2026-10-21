@@ -1,4 +1,4 @@
-import { AdminPrivileges } from '@ombro/admin-panel/app/core/auth/types/admin-data.types';
+import { AdminPrivileges } from '@ombro/admin-user';
 import { PANEL_PATHS } from '@ombro/admin-panel/app/features/panel/panel-paths';
 import { IconName } from '@ombro/shared/ui/ui-icons';
 
