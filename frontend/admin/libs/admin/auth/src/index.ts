@@ -4,6 +4,4 @@ export * from './lib/types/jwt.types';
 export * from './lib/store';
 export * from './lib/guards/auth/auth.guard';
 export * from './lib/guards/privileges/privileges.guard';
-export * from './lib/interceptors/api-prefix/api-prefix.interceptor';
-export * from './lib/interceptors/admin-token/admin-token.interceptor';
-export * from './lib/interceptors/auth/auth.interceptor';
+export * from './lib/interceptors/auth-interceptors';

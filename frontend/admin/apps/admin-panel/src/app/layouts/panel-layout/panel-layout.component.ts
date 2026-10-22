@@ -7,7 +7,7 @@ import { map } from 'rxjs';
 import { TopbarComponent } from './components/topbar/topbar.component';
 import { BreadcrumbComponent } from '@ombro/shared/breadcrumb';
 import { AuthStore } from '@ombro/admin-auth';
-import { UserStore } from '@ombro/admin-user';
+import { AdminUserStore } from '@ombro/admin-user';
 import { AUTH_PATH_SLUG, AUTH_PAGE_PATHS } from '@ombro/admin-panel/app/features/auth/auth-paths';
 
 const loginPagePath = `/${AUTH_PATH_SLUG}/${AUTH_PAGE_PATHS.LOGIN}` as const;
@@ -31,7 +31,7 @@ import { provideTranslocoScope, TranslocoService } from '@jsverse/transloco';
 export class PanelLayoutComponent {
   private readonly breakpointObserver = inject(BreakpointObserver);
   private readonly authStore = inject(AuthStore);
-  private readonly userStore = inject(UserStore);
+  private readonly adminUserStore = inject(AdminUserStore);
   private readonly router = inject(Router);
   private readonly transloco = inject(TranslocoService);
 
@@ -60,7 +60,7 @@ export class PanelLayoutComponent {
     }
   });
   private _setLanguage = effect(() => {
-    const userLanguage = this.userStore.user()?.preferences.language;
+    const userLanguage = this.adminUserStore.user()?.preferences.language;
     if (!userLanguage) return;
 
     this.transloco.setActiveLang(userLanguage);

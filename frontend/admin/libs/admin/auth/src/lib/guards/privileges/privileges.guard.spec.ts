@@ -2,24 +2,24 @@ import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, CanActivateFn, RouterStateSnapshot } from '@angular/router';
 import { privilegesGuard } from './privileges.guard';
 import { AuthStore, AuthStoreInstance } from '../../store';
-import { UserStore, UserStoreInstance } from '@ombro/admin-user';
+import { AdminUserStore, AdminUserStoreInstance } from '@ombro/admin-user';
 import { Mocked } from 'vitest';
 import { AppRouteData } from '@ombro/admin-panel/app/core/config/types/routing.types';
 
 describe('privilegesGuard', () => {
   let authStore: Mocked<AuthStoreInstance>;
-  let userStore: Mocked<UserStoreInstance>;
+  let userStore: Mocked<AdminUserStoreInstance>;
 
   const executeGuard: CanActivateFn = (...guardParameters) =>
     TestBed.runInInjectionContext(() => privilegesGuard(...guardParameters));
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [{ provide: UserStore, useValue: { hasAppropriatePrivileges: vi.fn() } }],
+      providers: [{ provide: AdminUserStore, useValue: { hasAppropriatePrivileges: vi.fn() } }],
     });
 
     authStore = TestBed.inject(AuthStore) as Mocked<AuthStoreInstance>;
-    userStore = TestBed.inject(UserStore) as Mocked<UserStoreInstance>;
+    userStore = TestBed.inject(AdminUserStore) as Mocked<AdminUserStoreInstance>;
   });
 
   const dummyRouterState = {} as RouterStateSnapshot;

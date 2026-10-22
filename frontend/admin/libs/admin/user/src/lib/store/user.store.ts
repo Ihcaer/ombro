@@ -1,5 +1,4 @@
-import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
-import { computed } from '@angular/core';
+import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { AdminUser, AdminPrivileges } from '../models/admin-user.model';
 import { AdminDtoPrivilegesItem } from '@ombro/shared/data-access/api-client';
 
@@ -13,7 +12,7 @@ const initialState: Readonly<UserState> = {
 
 const getInitialState = () => structuredClone(initialState);
 
-export const UserStore = signalStore(
+export const AdminUserStore = signalStore(
   { providedIn: 'root' },
   withState(getInitialState),
   withMethods((store) => ({
@@ -44,15 +43,6 @@ export const UserStore = signalStore(
       return [...neededPrivileges].every((privilege) => userPrivileges.has(privilege));
     },
   })),
-  withComputed(({ user }) => ({
-    userId: computed(() => user()?.id),
-    displayName: computed(() => user()?.displayName),
-    handleName: computed(() => user()?.handleName),
-    avatarUrl: computed(() => user()?.avatarUrl),
-    isActivated: computed(() => user()?.isActivated),
-    verification: computed(() => user()?.verification),
-    userPrivileges: computed(() => user()?.privileges),
-  })),
 );
 
-export type UserStoreInstance = InstanceType<typeof UserStore>;
+export type AdminUserStoreInstance = InstanceType<typeof AdminUserStore>;

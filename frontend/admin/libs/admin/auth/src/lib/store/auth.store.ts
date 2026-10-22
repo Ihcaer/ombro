@@ -39,7 +39,7 @@ import { getAccessTokenExpirationTimeMs } from './common';
 import { isActive, NavigationEnd, Router } from '@angular/router';
 import { PANEL_PATHS } from '@ombro/admin-panel/app/features/panel/panel-paths';
 import { AUTH_PAGE_PATHS, AUTH_PATH_SLUG } from '@ombro/admin-panel/app/features/auth/auth-paths';
-import { UserStore, AdminUser } from '@ombro/admin-user';
+import { AdminUserStore, AdminUser } from '@ombro/admin-user';
 import { AdminDtoPrivilegesItem } from '@ombro/shared/data-access/api-client';
 
 export type { AdminDtoPrivilegesItem };
@@ -50,7 +50,7 @@ export const AuthStore = signalStore(
   { providedIn: 'root' },
   withState(getInitialState),
   withProps(() => {
-    const adminUserStore = inject(UserStore);
+    const adminUserStore = inject(AdminUserStore);
     const authService = inject(AuthService);
     const authPasswordResetService = inject(AuthPasswordResetService);
     const authRegistrationService = inject(AuthRegistrationService);

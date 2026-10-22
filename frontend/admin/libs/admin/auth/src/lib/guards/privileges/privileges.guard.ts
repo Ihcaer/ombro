@@ -1,10 +1,10 @@
 import { inject } from '@angular/core';
 import { CanActivateFn } from '@angular/router';
-import { UserStore } from '@ombro/admin-user';
+import { AdminUserStore } from '@ombro/admin-user';
 import { AppRouteData } from '@ombro/admin-panel/app/core/config/types/routing.types';
 
 export const privilegesGuard: CanActivateFn = (route, state) => {
-  const userStore = inject(UserStore);
+  const adminUserStore = inject(AdminUserStore);
 
   const currentData = route.data as AppRouteData;
 
@@ -14,7 +14,7 @@ export const privilegesGuard: CanActivateFn = (route, state) => {
       .map((r) => (r.data as AppRouteData).privilegesRequired)
       .find((privilegesSet) => privilegesSet instanceof Set && privilegesSet.size > 0);
 
-  if (userStore.hasAppropriatePrivileges(requiredPrivileges)) {
+  if (adminUserStore.hasAppropriatePrivileges(requiredPrivileges)) {
     return true;
   } else {
     return false;

@@ -4,7 +4,7 @@
   "sourceRoot": "libs/admin/user/src",
   "prefix": "user",
   "projectType": "library",
-  "tags": ["scope:admin", "type:lib"],
+  "tags": ["scope:admin", "type:data-access"],
   "targets": {
     "lint": {
       "executor": "@nx/eslint:lint"
