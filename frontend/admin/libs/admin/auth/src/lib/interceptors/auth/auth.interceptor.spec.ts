@@ -6,7 +6,6 @@ import {
   HttpRequest,
   HttpResponse,
 } from '@angular/common/http';
-
 import { authInterceptor } from './auth.interceptor';
 import { signal, WritableSignal } from '@angular/core';
 import { RxMethod } from '@ngrx/signals/rxjs-interop';
@@ -109,6 +108,7 @@ describe('authInterceptor', () => {
           privileges: ['ADMINS_MANAGE'],
           verification: 'VERIFIED',
           isActivated: true,
+          preferences: { language: 'en' },
         },
       };
 

@@ -3,8 +3,6 @@ import { AuthStore, AuthStoreInstance } from './auth.store';
 import { TestBed } from '@angular/core/testing';
 import { Observable, of } from 'rxjs';
 import * as jwtDecoder from 'jwt-decode';
-import { AuthState } from './auth.state';
-import { patchState } from '@ngrx/signals';
 import {
   AuthPasswordResetService,
   AuthRegistrationService,
@@ -64,6 +62,7 @@ describe('AuthStore', () => {
         privileges: ['ADMINS_MANAGE'],
         verification: 'VERIFIED',
         isActivated: true,
+        preferences: { language: 'en' },
       },
     };
     const mockExpTime = Math.floor(Date.now() / 1000) + 900;

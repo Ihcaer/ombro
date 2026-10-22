@@ -3,7 +3,6 @@ import { IconComponent } from '@ombro/shared/ui/ui-icons';
 import { LogoComponent } from '@ombro/admin-panel/app/shared/components/logo/logo.component';
 import { SIDE_MENU_ITEMS, SideMenuItem } from './menu-items';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { AuthStore } from '@ombro/admin-auth';
 import { UserStore } from '@ombro/admin-user';
 import { NgTemplateOutlet } from '@angular/common';
 import { translateSignal, TranslocoDirective } from '@jsverse/transloco';
@@ -25,7 +24,6 @@ import { translateSignal, TranslocoDirective } from '@jsverse/transloco';
 export class SidebarComponent {
   isCollapsed = model.required<boolean>();
 
-  private readonly authStore = inject(AuthStore);
   private readonly userStore = inject(UserStore);
 
   protected navAriaLabel = translateSignal('misc.mainNavigationLabel');

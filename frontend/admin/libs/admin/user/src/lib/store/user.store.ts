@@ -1,11 +1,5 @@
-import {
-  patchState,
-  signalStore,
-  withComputed,
-  withMethods,
-  withState,
-} from '@ngrx/signals';
-import { computed, inject } from '@angular/core';
+import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
+import { computed } from '@angular/core';
 import { AdminUser, AdminPrivileges } from '../models/admin-user.model';
 import { AdminDtoPrivilegesItem } from '@ombro/shared/data-access/api-client';
 
@@ -34,20 +28,20 @@ export const UserStore = signalStore(
     hasUser(): boolean {
       return !!user();
     },
-    hasPrivilege(privilege: string): boolean {
+    hasPrivilege(privilege: AdminDtoPrivilegesItem): boolean {
       const userPrivileges = user()?.privileges;
       if (!userPrivileges) return false;
-      return userPrivileges.has(privilege as unknown as AdminDtoPrivilegesItem);
+      return userPrivileges.has(privilege);
     },
-    hasAppropriatePrivileges(neededPrivileges: Set<string>): boolean {
+    hasAppropriatePrivileges(neededPrivileges: Set<AdminDtoPrivilegesItem>): boolean {
       const userData = user();
-      if (!userData || !userData.privileges || neededPrivileges.size === 0) return false;
+      if (!userData || !userData.privileges || neededPrivileges.size === undefined) return false;
       if (neededPrivileges.size === 0) return true;
 
       const userPrivileges: AdminPrivileges = userData.privileges;
 
       if (neededPrivileges.size > userPrivileges.size) return false;
-      return [...neededPrivileges].every((privilege) => userPrivileges.has(privilege as unknown as AdminDtoPrivilegesItem));
+      return [...neededPrivileges].every((privilege) => userPrivileges.has(privilege));
     },
   })),
   withComputed(({ user }) => ({

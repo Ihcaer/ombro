@@ -5,7 +5,6 @@ import { AuthStore, AuthStoreInstance } from '../../store';
 import { UserStore, UserStoreInstance } from '@ombro/admin-user';
 import { Mocked } from 'vitest';
 import { AppRouteData } from '@ombro/admin-panel/app/core/config/types/routing.types';
-import { AdminDtoPrivilegesItem } from '@ombro/shared/data-access/api-client';
 
 describe('privilegesGuard', () => {
   let authStore: Mocked<AuthStoreInstance>;
@@ -16,10 +15,7 @@ describe('privilegesGuard', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        { provide: AuthStore, useValue: { hasAppropriatePrivileges: vi.fn() } },
-        { provide: UserStore, useValue: { hasAppropriatePrivileges: vi.fn() } },
-      ],
+      providers: [{ provide: UserStore, useValue: { hasAppropriatePrivileges: vi.fn() } }],
     });
 
     authStore = TestBed.inject(AuthStore) as Mocked<AuthStoreInstance>;
