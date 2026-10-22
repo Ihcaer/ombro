@@ -35,11 +35,14 @@ import {
 import { tapResponse } from '@ngrx/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthStateInternalError, initialState } from './auth.state';
-import { getAccessTokenExpirationTimeMs, loginPagePath } from './common';
+import { getAccessTokenExpirationTimeMs } from './common';
 import { isActive, NavigationEnd, Router } from '@angular/router';
-import { AdminPrivileges } from '../types/admin-data.types';
 import { PANEL_PATHS } from '@ombro/admin-panel/app/features/panel/panel-paths';
 import { AUTH_PAGE_PATHS, AUTH_PATH_SLUG } from '@ombro/admin-panel/app/features/auth/auth-paths';
+import { AdminUserStore, AdminUser } from '@ombro/admin-user';
+import { AdminDtoPrivilegesItem } from '@ombro/shared/data-access/api-client';
+
+export type { AdminDtoPrivilegesItem };
 
 const getInitialState = () => structuredClone(initialState);
 
@@ -47,6 +50,7 @@ export const AuthStore = signalStore(
   { providedIn: 'root' },
   withState(getInitialState),
   withProps(() => {
+    const adminUserStore = inject(AdminUserStore);
     const authService = inject(AuthService);
     const authPasswordResetService = inject(AuthPasswordResetService);
     const authRegistrationService = inject(AuthRegistrationService);
@@ -68,6 +72,7 @@ export const AuthStore = signalStore(
     });
 
     return {
+      adminUserStore,
       authService,
       authPasswordResetService,
       authRegistrationService,
@@ -76,10 +81,14 @@ export const AuthStore = signalStore(
       isLoginPage,
     };
   }),
-  withMethods((store) => ({
+  withMethods(({ adminUserStore, ...store }) => ({
     _updateAuthState(response: LoginResponseDto): void {
+      const adminUser: AdminUser = {
+        ...response.adminData,
+        privileges: new Set(response.adminData.privileges),
+      };
+
       patchState(store, {
-        admin: { ...response.adminData, privileges: new Set(response.adminData.privileges) },
         accessToken: {
           token: response.accessToken,
           expiresAtMs: getAccessTokenExpirationTimeMs(response.accessToken),
@@ -87,9 +96,12 @@ export const AuthStore = signalStore(
         isLoading: false,
         lastResponseError: null,
       });
+
+      adminUserStore.setUser(adminUser);
     },
     _resetAuthState(): void {
       patchState(store, getInitialState);
+      adminUserStore.clearUser();
     },
     _setLoading(): void {
       patchState(store, { isLoading: true });
@@ -120,7 +132,6 @@ export const AuthStore = signalStore(
       authRegistrationService,
       router,
       isLoading,
-      admin,
       _startRequest,
       _updateAuthState,
       _setResponseError,
@@ -144,7 +155,7 @@ export const AuthStore = signalStore(
           ),
         ),
       ),
-      refreshTokens(): Observable<LoginResponseDto> {
+      refreshTokens: (): Observable<LoginResponseDto> => {
         if (isLoading()) return EMPTY;
 
         _startRequest();
@@ -167,11 +178,11 @@ export const AuthStore = signalStore(
               tapResponse({
                 next: () => {
                   _resetAuthState();
-                  router.navigateByUrl(loginPagePath);
+                  router.navigateByUrl('/' + AUTH_PATH_SLUG + '/' + AUTH_PAGE_PATHS.LOGIN);
                 },
                 error: () => {
                   _resetAuthState();
-                  router.navigateByUrl(loginPagePath);
+                  router.navigateByUrl('/' + AUTH_PATH_SLUG + '/' + AUTH_PAGE_PATHS.LOGIN);
                 },
               }),
             ),
@@ -231,22 +242,12 @@ export const AuthStore = signalStore(
           ),
         ),
       ),
-      // Privileges methods
-      hasAppropriatePrivileges(neededPrivileges: AdminPrivileges): boolean {
-        if (!admin() || !admin()?.privileges || neededPrivileges === undefined) return false;
-        if (neededPrivileges.size === 0) return true;
-
-        const adminPrivileges: AdminPrivileges = admin()!.privileges;
-
-        if (neededPrivileges.size > adminPrivileges.size) return false;
-        return [...neededPrivileges].every((privilege) => adminPrivileges.has(privilege));
-      },
     }),
   ),
   withMethods(({ router, refreshTokens, _clearResponseError, clearInternalError }) => ({
     _processAutoRefresh: rxMethod<number | null>(
       pipe(
-        switchMap((expiresAtMs) => {
+        switchMap((expiresAtMs: number | null) => {
           if (!expiresAtMs) return EMPTY;
 
           const refreshTime = expiresAtMs - 30000;
@@ -272,18 +273,17 @@ export const AuthStore = signalStore(
   })),
   withComputed(({ accessToken, isAuthPage, isLoginPage }) => ({
     isAccessTokenExpired: computed<boolean>(() => {
-      const expiry = accessToken.expiresAtMs();
+      const expiry = accessToken().expiresAtMs;
       return expiry ? Date.now() > expiry : true;
     }),
     isAdminLoggedIn: computed<boolean>(() => {
-      const token = accessToken.token();
+      const token = accessToken().token;
       return !!token;
     }),
     _isAuthPathExceptLogin: computed<boolean>(() => isAuthPage() && !isLoginPage()),
   })),
   withHooks({
     onInit({
-      admin,
       accessToken,
       refreshTokens,
       _processAutoRefresh,
@@ -291,10 +291,10 @@ export const AuthStore = signalStore(
       _isAuthPathExceptLogin,
     }) {
       queueMicrotask(() => {
-        if (!admin() && !_isAuthPathExceptLogin())
+        if (!accessToken().token && !_isAuthPathExceptLogin())
           firstValueFrom(refreshTokens(), { defaultValue: null });
       });
-      _processAutoRefresh(accessToken.expiresAtMs);
+      _processAutoRefresh(accessToken().expiresAtMs);
       _clearResponseErrorWhenNavigating();
     },
   }),

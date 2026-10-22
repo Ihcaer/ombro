@@ -1,5 +1,5 @@
 import { Route } from '@angular/router';
-import { AdminPrivileges } from '../../auth/types/admin-data.types';
+import { AdminPrivileges } from '@ombro/admin-user';
 
 export type AppRouteData = { breadcrumbLabel: string; privilegesRequired: AdminPrivileges };
 

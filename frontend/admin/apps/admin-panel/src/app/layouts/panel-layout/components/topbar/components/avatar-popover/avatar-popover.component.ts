@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { AuthStore } from '@ombro/admin-panel/app/core/auth/store';
+import { AuthStore } from '@ombro/admin-auth';
+import { AdminUserStore } from '@ombro/admin-user';
 import { AvatarComponent } from '@ombro/shared/ui/ui-primitives';
 import { ProfileMenuComponent } from '../profile-menu/profile-menu.component';
 import { translateSignal } from '@jsverse/transloco';
@@ -13,6 +14,7 @@ import { translateSignal } from '@jsverse/transloco';
 })
 export class AvatarPopoverComponent {
   protected readonly authStore = inject(AuthStore);
+  protected readonly adminUserStore = inject(AdminUserStore);
 
   protected avatarSize = signal<string>('');
 
@@ -21,7 +23,7 @@ export class AvatarPopoverComponent {
   }
 
   protected buttonAriaLabel = translateSignal('misc.profile.label', {
-    name: this.authStore.admin()?.displayName,
+    name: this.adminUserStore.user()?.displayName,
   });
 
   private setAvatarSize(): void {

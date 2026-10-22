@@ -6,7 +6,6 @@ import {
   HttpRequest,
   HttpResponse,
 } from '@angular/common/http';
-
 import { authInterceptor } from './auth.interceptor';
 import { signal, WritableSignal } from '@angular/core';
 import { RxMethod } from '@ngrx/signals/rxjs-interop';
@@ -26,7 +25,6 @@ describe('authInterceptor', () => {
 
   beforeEach(() => {
     const authStoreMock: Partial<AuthStoreInstance> = {
-      admin: signal(null),
       accessToken: Object.assign(signal({ token: null, expiresAtMs: null }), {
         token: signal<string | null>(null),
         expiresAtMs: signal<number | null>(null),
@@ -68,11 +66,9 @@ describe('authInterceptor', () => {
       number | null
     >;
 
-    // 3. Ustawienie wartości
     tokenSignal.set(mockTokenState);
     subTokenSignal.set(mockTokenState.token);
     subExpiresSignal.set(mockTokenState.expiresAtMs);
-    // tokenSignal.set(mockTokenState);
 
     await firstValueFrom(interceptor(req, nextMock));
 
@@ -112,6 +108,7 @@ describe('authInterceptor', () => {
           privileges: ['ADMINS_MANAGE'],
           verification: 'VERIFIED',
           isActivated: true,
+          preferences: { language: 'en' },
         },
       };
 

@@ -1,5 +1,5 @@
 import { signal } from '@angular/core';
-import { AuthStore } from '@ombro/admin-panel/app/core/auth/store';
+import { AuthStore } from '@ombro/admin-auth';
 import { noop } from 'rxjs';
 
 const mockAuthStoreValues = {

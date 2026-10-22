@@ -10,7 +10,7 @@ import {
 import { IconComponent, IconName } from '@ombro/shared/ui/ui-icons';
 import { LogoComponent } from '@ombro/admin-panel/app/shared/components/logo/logo.component';
 import { MessageModule } from 'primeng/message';
-import { AuthStore } from '@ombro/admin-panel/app/core/auth/store/auth.store';
+import { AuthStore } from '@ombro/admin-auth';
 import { mapAuthHttpErrorToMessage } from '../../utils/mapAuthHttpErrorToMessage.util';
 import { ErrorResponseBody } from '@ombro/admin-panel/app/core/config/types/error-response-body.type';
 import { TranslocoService } from '@jsverse/transloco';

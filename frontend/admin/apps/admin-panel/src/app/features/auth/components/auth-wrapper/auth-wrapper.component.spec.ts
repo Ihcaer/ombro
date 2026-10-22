@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AuthWrapperComponent } from './auth-wrapper.component';
-import { AuthStore, AuthStoreInstance } from '@ombro/admin-panel/app/core/auth/store';
+import { AuthStore, AuthStoreInstance } from '@ombro/admin-auth';
 import { signal } from '@angular/core';
 import { COMMON_TESTING_PROVIDERS } from '@ombro/admin-panel/app/shared/testing/common-testing-providers';
 import { Mocked } from 'vitest';

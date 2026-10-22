@@ -10,9 +10,7 @@ import { providePrimeNG } from 'primeng/config';
 import { DefaultPreset } from '@ombro/themes';
 import { provideMaterialSymbols } from '@ombro/shared/ui/ui-icons';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { authInterceptor } from './core/auth/interceptors/auth/auth.interceptor';
-import { apiPrefixInterceptor } from './core/auth/interceptors/api-prefix/api-prefix.interceptor';
-import { adminTokenInterceptor } from './core/auth/interceptors/admin-token/admin-token.interceptor';
+import { authInterceptors } from '@ombro/admin-auth';
 import { TranslocoHttpLoader } from './transloco-loader';
 import { provideTransloco, provideTranslocoTranspiler } from '@jsverse/transloco';
 import { provideTranslocoPersistLang } from '@jsverse/transloco-persist-lang';
@@ -23,15 +21,14 @@ import {
 } from './core/config/i18n/i18n.config';
 import { environment } from '../environments/environment.example';
 import { NoEvalTranslocoTranspiler } from '@ombro/shared/utils/translation-utils';
+import { apiPrefixInterceptor } from './core/interceptors/api-prefix/api-prefix.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(appRoutes),
-    provideHttpClient(
-      withInterceptors([authInterceptor, apiPrefixInterceptor, adminTokenInterceptor]),
-    ),
+    provideHttpClient(withInterceptors([...authInterceptors(), apiPrefixInterceptor])),
     providePrimeNG({
       theme: {
         preset: DefaultPreset,
